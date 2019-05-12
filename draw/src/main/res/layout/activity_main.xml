@@ -13,9 +13,45 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        app:blur_color="@android:color/holo_red_light"
+        app:blur_enable_state="true"
+        app:blur_normal_color="@android:color/black"
+        app:blur_pressed_color="@color/color_227FFB"
+        app:blur_text="测试一下"
+        app:blur_text_color="@android:color/black"
+        app:blur_text_paddingLeft="@dimen/length_20"
+        app:blur_text_paddingRight="@dimen/length_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.smasher.draw.BlurMaskFilterView
+        android:id="@+id/blurMask1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:blur_color="@android:color/holo_red_light"
+        app:blur_enable_state="true"
+        app:blur_normal_color="@android:color/holo_red_light"
+        app:blur_pressed_color="@color/color_227FFB"
+        app:blur_text="测试一下"
+        app:blur_text_color="@android:color/white"
+        app:blur_text_paddingLeft="@dimen/length_80"
+        app:blur_text_paddingRight="@dimen/length_36"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/blurMask" />
+
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="@dimen/length_150"
+        android:layout_height="@dimen/length_32"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/blurMask1" />
 
 
     <com.smasher.draw.CanvasView
@@ -25,7 +61,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blurMask" />
+        app:layout_constraintTop_toBottomOf="@+id/test" />
 
 
     <com.smasher.draw.AliPaySuccessView
