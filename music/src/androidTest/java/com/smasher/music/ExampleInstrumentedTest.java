@@ -1,4 +1,4 @@
-package com.smasher.draw;
+package com.smasher.music;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.smasher.draw", appContext.getPackageName());
+        assertEquals("com.smasher.music", appContext.getPackageName());
     }
 }

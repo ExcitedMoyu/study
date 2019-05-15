@@ -1,4 +1,4 @@
-package com.smasher.study;
+package com.smasher.music;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
