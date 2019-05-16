@@ -1,6 +1,9 @@
 package com.smasher.music.service;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -10,6 +13,7 @@ import android.os.Handler;
 import android.os.IBinder;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 import com.smasher.music.MediaInfo;
 
@@ -20,6 +24,13 @@ import java.io.IOException;
  */
 public class MusicService extends Service {
     private static final String TAG = "MusicService";
+
+
+    String channelId = "musicChannelId";
+    String channelName = "musicChannelName";
+    NotificationChannel mNotificationChannel;
+    NotificationManager mNotificationManager;
+
     /**
      * 是否正在播放
      */
@@ -42,6 +53,13 @@ public class MusicService extends Service {
         super.onCreate();
         // 声明一个处理器对象
         mHandler = new Handler();
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            mNotificationChannel = new NotificationChannel(channelId, channelName,
+                    NotificationManager.IMPORTANCE_HIGH);
+            mNotificationManager.createNotificationChannel(mNotificationChannel);
+
+        }
     }
 
     @Override
@@ -58,6 +76,12 @@ public class MusicService extends Service {
                 play();
             }
         }, 100);
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
+        startForeground(0x111, builder.build());
+
+        flags = START_STICKY;
         return super.onStartCommand(intent, flags, startId);
     }
 
