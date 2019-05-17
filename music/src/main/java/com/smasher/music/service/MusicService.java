@@ -22,6 +22,7 @@ import com.smasher.music.R;
 import com.smasher.music.activity.MainActivity;
 import com.smasher.music.entity.RequestInfo;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -44,8 +45,9 @@ public class MusicService extends Service implements
 
     private Handler mHandler;
 
-
     private boolean prepared;
+
+    private static final int NOTIFY_ID = 100000;
 
     public MusicService() {
     }
@@ -56,28 +58,39 @@ public class MusicService extends Service implements
         super.onCreate();
         Log.d(TAG, "onCreate: ");
         // 声明一个处理器对象
-        mHandler = new Handler();
+        try {
+            mHandler = new Handler();
 
-        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            mNotificationChannel = new NotificationChannel(channelId, channelName,
-                    NotificationManager.IMPORTANCE_HIGH);
-            mNotificationManager.createNotificationChannel(mNotificationChannel);
+            mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mNotificationChannel = new NotificationChannel(channelId, channelName,
+                        NotificationManager.IMPORTANCE_HIGH);
+                mNotificationManager.createNotificationChannel(mNotificationChannel);
 
+            }
+
+            initIfNecessary();
+
+            Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
+            builder = new NotificationCompat.Builder(this, channelId);
+            builder.setSmallIcon(R.mipmap.ic_launcher)
+                    .setTicker("123")
+                    .setWhen(System.currentTimeMillis())
+                    .setContentText("测试Text")
+                    .setContentTitle("Title")
+                    .setAutoCancel(true)
+                    .setChannelId(channelId)
+                    .setContentIntent(pendingIntent);
+//            startForeground(NOTIFY_ID, builder.build());
+
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-        initIfNecessary();
-
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
-        builder = new NotificationCompat.Builder(this, channelId);
-        builder.setSmallIcon(R.mipmap.ic_launcher).setTicker("123")
-                .setWhen(System.currentTimeMillis())
-                .setContentText("测试Text")
-                .setContentTitle("Title")
-                .setContentIntent(pendingIntent);
-        startForeground(0x111, builder.build());
 
     }
 
@@ -85,35 +98,41 @@ public class MusicService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         Log.d(TAG, "onStartCommand: ");
-        RequestInfo requestInfo = null;
-        if ((intent.hasExtra(RequestInfo.REQUEST_TAG))) {
-            requestInfo = intent.getParcelableExtra(RequestInfo.REQUEST_TAG);
-        }
-
-        if (requestInfo != null) {
-            switch (requestInfo.getCommandType()) {
-                case RequestInfo.COMMAND_PLAY:
-                    if (prepared) {
-                        start();
-                    } else {
-                        play();
-                    }
-                    break;
-                case RequestInfo.COMMAND_PAUSE:
-                    pause();
-                    break;
-                case RequestInfo.COMMAND_NEXT:
-                    break;
-                case RequestInfo.COMMAND_PREVIOUS:
-                    break;
-                default:
-                    break;
-
+        try {
+            RequestInfo requestInfo = null;
+            if ((intent.hasExtra(RequestInfo.REQUEST_TAG))) {
+                requestInfo = intent.getParcelableExtra(RequestInfo.REQUEST_TAG);
             }
+
+            if (requestInfo != null) {
+                switch (requestInfo.getCommandType()) {
+                    case RequestInfo.COMMAND_PLAY:
+                        if (prepared) {
+                            start();
+                        } else {
+                            play();
+                        }
+                        break;
+                    case RequestInfo.COMMAND_PAUSE:
+                        pause();
+                        break;
+                    case RequestInfo.COMMAND_NEXT:
+                        break;
+                    case RequestInfo.COMMAND_PREVIOUS:
+                        break;
+                    default:
+                        break;
+
+                }
+            }
+
+
+            flags = START_STICKY;
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-        flags = START_STICKY;
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -125,8 +144,22 @@ public class MusicService extends Service implements
 
     public void play() {
         mHandler.postDelayed(() -> {
+            String mFilePath = "";
+            String foldPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath();
+            File file = new File(foldPath);
+            if (!file.exists()) {
+                Log.d(TAG, "play: exists: false");
+                return;
+            } else {
+                Log.d(TAG, "play: exists: true");
+                Log.d(TAG, "play: isDirectory" + file.isDirectory());
+                String[] list = file.list();
+                for (String name : list) {
+                    Log.d(TAG, "play: name:" + name);
+                    mFilePath = foldPath + "/" + name;
+                }
 
-            String mFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath() + "/1.mp3";
+            }
             try {
                 prepared = false;
                 mMediaPlayer.reset();
