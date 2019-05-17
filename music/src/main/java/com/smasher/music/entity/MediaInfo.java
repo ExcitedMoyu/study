@@ -1,18 +1,50 @@
-package com.smasher.music;
+package com.smasher.music.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * @author matao
+ */
 public class MediaInfo implements Parcelable {
-    private long id; // 编号
-    private String title; // 乐曲名
-    private String album; // 专辑名
-    private int duration; // 播放时长
-    private long size; // 文件大小
-    private String artist; // 演唱者
-    private String url; // 文件路径
 
-    public MediaInfo() {}
+    /**
+     * 编号
+     */
+    private long id;
+
+    /**
+     * 乐曲名
+     */
+    private String title;
+
+    /**
+     * 专辑名
+     */
+    private String album;
+
+    /**
+     * 播放时长
+     */
+    private int duration;
+
+    /**
+     * 文件大小
+     */
+    private long size;
+
+    /**
+     * 演唱者
+     */
+    private String artist;
+
+    /**
+     * 文件路径
+     */
+    private String url;
+
+    public MediaInfo() {
+    }
 
     public MediaInfo(String title, String artist, String url) {
         this.title = title;

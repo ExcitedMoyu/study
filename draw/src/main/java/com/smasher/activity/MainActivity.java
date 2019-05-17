@@ -1,5 +1,7 @@
 package com.smasher.activity;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
 import android.graphics.MaskFilter;
@@ -8,10 +10,17 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.RotateAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.smasher.draw.AliPaySuccessView;
 import com.smasher.draw.BlurMaskFilterView;
@@ -92,11 +101,72 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
     @OnClick({R.id.blurMask, R.id.blurMask1})
     public void onViewClicked() {
         success.showAnimation();
+        Animation transAnimation = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF,
+                0f,
+                Animation.RELATIVE_TO_SELF,
+                1f,
+                Animation.RELATIVE_TO_SELF,
+                0f,
+                Animation.RELATIVE_TO_SELF,
+                1f
+        );
+        transAnimation.setRepeatMode(Animation.REVERSE);
+        transAnimation.setRepeatCount(5);
+
+
+        Animation alpha = new AlphaAnimation(0.5f, 1f);
+        alpha.setRepeatMode(Animation.REVERSE);
+        alpha.setRepeatCount(5);
+
+
+        Animation rotate = new RotateAnimation(
+                0f,
+                360f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f
+
+        );
+        rotate.setRepeatMode(Animation.REVERSE);
+        rotate.setRepeatCount(5);
+
+
+        AnimationSet set = new AnimationSet(true);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.setDuration(500);
+        set.setFillEnabled(true);
+        set.setFillAfter(true);
+//        set.addAnimation(transAnimation);
+        set.addAnimation(alpha);
+        set.addAnimation(rotate);
+//        blurMask.startAnimation(set);
+
+        AnimatorSet set1 = new AnimatorSet();
+        ObjectAnimator trans = ObjectAnimator.ofFloat(
+                blurMask,
+                "translationX",
+                blurMask.getTranslationX(), 500f, blurMask.getTranslationX());
+        trans.setRepeatMode(ObjectAnimator.REVERSE);
+        trans.setRepeatCount(ObjectAnimator.INFINITE);
+
+        ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(
+                blurMask,
+                "rotation",
+                blurMask.getRotation(), 180, blurMask.getRotation()
+        );
+        rotateAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+        rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+
+        set1.playTogether(trans, rotateAnimator);
+        set1.setDuration(2000);
+        set1.start();
+
     }
 
 
