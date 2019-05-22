@@ -19,11 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.smasher.music.R;
 import com.smasher.music.entity.RequestInfo;
 import com.smasher.music.service.MusicService;
+import com.smasher.music.service.MusicService.MusicBinder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.PermissionRequest;
@@ -38,9 +38,15 @@ public class MainActivity extends AppCompatActivity {
     Button buttonStart;
     @BindView(R.id.buttonPause)
     Button buttonStop;
+    @BindView(R.id.front)
+    Button front;
+
+
     String[] permissions;
     private Handler mHandler;
     public static final int REQUEST_CODE = 1000;
+
+    private MusicService mMusicService;
 
 
     @Override
@@ -158,15 +164,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.buttonStart, R.id.buttonPause})
+    @OnClick({R.id.buttonStart, R.id.buttonPause, R.id.front})
     public void onViewClicked(View view) {
+        int id = view.getId();
+
+        switch (id) {
+            case R.id.buttonStart:
+            case R.id.buttonPause:
+                changeMusicAction(id);
+                break;
+
+            case R.id.front:
+                if (mMusicService != null) {
+                    mMusicService.startServiceFront();
+                }
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
+    private void changeMusicAction(int id) {
         try {
             Intent intent = new Intent();
             intent.setClass(this, MusicService.class);
-
             RequestInfo requestInfo = new RequestInfo();
-
-            switch (view.getId()) {
+            switch (id) {
                 case R.id.buttonStart:
                     requestInfo.setCommandType(RequestInfo.COMMAND_PLAY);
                     break;
@@ -176,9 +201,7 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     break;
             }
-
             intent.putExtra(RequestInfo.REQUEST_TAG, requestInfo);
-
 
             if (checkPermissions()) {
                 startService(intent);
@@ -193,12 +216,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(TAG, "onServiceConnected: ");
-
+            MusicBinder binder = (MusicBinder) service;
+            mMusicService = binder.getService();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.d(TAG, "onServiceDisconnected: ");
+            mMusicService = null;
         }
     };
 
@@ -213,4 +238,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 }

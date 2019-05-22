@@ -1,11 +1,10 @@
 package com.smasher.music.service;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.Notification;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -14,12 +13,14 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
 import com.smasher.music.R;
-import com.smasher.music.activity.MainActivity;
+import com.smasher.music.constant.Constant;
 import com.smasher.music.entity.RequestInfo;
 
 import java.io.File;
@@ -31,23 +32,15 @@ import java.io.IOException;
 public class MusicService extends Service implements
         MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnPreparedListener {
+        MediaPlayer.OnPreparedListener,
+        Handler.Callback {
 
     private static final String TAG = "MusicService";
 
-    String channelId = "musicChannelId";
-    String channelName = "musicChannelName";
-    NotificationChannel mNotificationChannel;
-    NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
-
-    MediaPlayer mMediaPlayer;
-
+    private MediaPlayer mMediaPlayer;
     private Handler mHandler;
-
     private boolean prepared;
-
-    private static final int NOTIFY_ID = 100000;
+    private static final int NOTIFY_ID = 2;
 
     public MusicService() {
     }
@@ -59,40 +52,41 @@ public class MusicService extends Service implements
         Log.d(TAG, "onCreate: ");
         // 声明一个处理器对象
         try {
-            mHandler = new Handler();
-
-            mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                mNotificationChannel = new NotificationChannel(channelId, channelName,
-                        NotificationManager.IMPORTANCE_HIGH);
-                mNotificationManager.createNotificationChannel(mNotificationChannel);
-
-            }
+            mHandler = new Handler(this);
 
             initIfNecessary();
 
-            Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
-            builder = new NotificationCompat.Builder(this, channelId);
-            builder.setSmallIcon(R.mipmap.ic_launcher)
-                    .setTicker("123")
-                    .setWhen(System.currentTimeMillis())
-                    .setContentText("测试Text")
-                    .setContentTitle("Title")
-                    .setAutoCancel(true)
-                    .setChannelId(channelId)
-                    .setContentIntent(pendingIntent);
-//            startForeground(NOTIFY_ID, builder.build());
-
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (RuntimeException e) {
-            e.printStackTrace();
+            startServiceFront();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
+    private Notification getNotify() {
+
+        RemoteViews notifyMusic = new RemoteViews(getPackageName(), R.layout.notify_music);
+        // 设置播放图标
+        notifyMusic.setImageViewResource(R.id.iv_play, R.drawable.btn_play);
+        // 设置文本文字
+        notifyMusic.setTextViewText(R.id.tv_play, "暂停播放");
+        // 设置已播放的时间
+        notifyMusic.setTextViewText(R.id.tv_time, "00:00");
+        // 设置远程视图内部的进度条属性
+        notifyMusic.setProgressBar(R.id.pb_play, 100, 50, false);
+
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.btn_play);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Constant.channelId);
+        builder.setTicker("music")
+                .setContentText("Text")
+                .setContentTitle("Title")
+                .setSmallIcon(R.drawable.ic_stat_name)
+                .setLargeIcon(bitmap);
+
+        return builder.build();
+    }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -122,18 +116,24 @@ public class MusicService extends Service implements
                         break;
                     default:
                         break;
-
                 }
             }
 
-
             flags = START_STICKY;
-
-
+            return START_STICKY;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        // 停止前台服务--参数：表示是否移除之前的通知
+
+        stopForeground(true);
+        super.onDestroy();
     }
 
     @Override
@@ -242,8 +242,13 @@ public class MusicService extends Service implements
         start();
     }
 
+    @Override
+    public boolean handleMessage(Message msg) {
+        return false;
+    }
 
-    class MusicBinder extends Binder {
+
+    public class MusicBinder extends Binder {
 
         public MusicBinder() {
         }
@@ -252,5 +257,16 @@ public class MusicService extends Service implements
             return MusicService.this;
         }
 
+    }
+
+
+    public void startServiceFront() {
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startForeground(NOTIFY_ID, getNotify());
+            }
+        }, 200);
     }
 }

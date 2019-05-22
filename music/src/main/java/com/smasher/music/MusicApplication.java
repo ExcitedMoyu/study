@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+
+import com.smasher.music.util.NotifyUtil;
 
 /**
  * @author matao
@@ -25,6 +28,10 @@ public class MusicApplication extends Application {
     public void onCreate() {
         super.onCreate();
         registerActivityLifecycleCallbacks(mLifecycleCallbacks);
+        // Android 8.0开始必须给每个通知分配对应的渠道
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotifyUtil.createNotifyChannel(this, null, null);
+        }
     }
 
 
