@@ -1,1 +1,1 @@
-include ':app',':draw', ':music'
+include ':dagger2',':draw', ':music', ':kotlin'
