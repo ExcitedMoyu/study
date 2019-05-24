@@ -54,7 +54,7 @@ abstract class BaseAdapter<T, VH : BaseViewHolder<T>>(context: Context) : Recycl
     }
 
     companion object {
-        val TAG = "Adapter"
+        const val TAG = "Adapter"
     }
 
 

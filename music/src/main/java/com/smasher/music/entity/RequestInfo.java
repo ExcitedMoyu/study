@@ -15,6 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 public class RequestInfo implements Parcelable {
 
     public static final String REQUEST_TAG = "Request";
+    public static final String REQUEST_MEDIA = "Media";
 
     public static final int COMMAND_START = 0;
     public static final int COMMAND_PLAY = 1;

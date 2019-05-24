@@ -6,14 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -21,9 +22,10 @@ import androidx.core.app.NotificationCompat;
 
 import com.smasher.music.R;
 import com.smasher.music.constant.Constant;
+import com.smasher.music.entity.MediaInfo;
 import com.smasher.music.entity.RequestInfo;
+import com.smasher.music.listener.PlayListener;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -33,14 +35,22 @@ public class MusicService extends Service implements
         MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener,
         MediaPlayer.OnPreparedListener,
+        AudioManager.OnAudioFocusChangeListener,
         Handler.Callback {
 
     private static final String TAG = "MusicService";
 
     private MediaPlayer mMediaPlayer;
+    private AudioManager mAudioManager;
     private Handler mHandler;
     private boolean prepared;
     private static final int NOTIFY_ID = 2;
+
+
+    private AudioAttributes mAudioAttributes;
+    private AudioFocusRequest mFocusRequest;
+    private MediaInfo mMediaInfo;
+    private PlayListener mPlayListener;
 
     public MusicService() {
     }
@@ -76,11 +86,11 @@ public class MusicService extends Service implements
         notifyMusic.setProgressBar(R.id.pb_play, 100, 50, false);
 
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.btn_play);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.music_play);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Constant.channelId);
         builder.setTicker("music")
-                .setContentText("Text")
-                .setContentTitle("Title")
+                .setContentText("服务运行中...")
+                .setContentTitle("播放器前台服务")
                 .setSmallIcon(R.drawable.ic_stat_name)
                 .setLargeIcon(bitmap);
 
@@ -93,15 +103,40 @@ public class MusicService extends Service implements
 
         Log.d(TAG, "onStartCommand: ");
         try {
+
+            boolean isSame = true;
+
             RequestInfo requestInfo = null;
-            if ((intent.hasExtra(RequestInfo.REQUEST_TAG))) {
+            if (intent.hasExtra(RequestInfo.REQUEST_TAG)) {
                 requestInfo = intent.getParcelableExtra(RequestInfo.REQUEST_TAG);
             }
+
+
+            if (intent.hasExtra(RequestInfo.REQUEST_MEDIA)) {
+                MediaInfo mediaInfo = intent.getParcelableExtra(RequestInfo.REQUEST_MEDIA);
+
+                if (mediaInfo != null) {
+                    isSame = mediaInfo.equals(mMediaInfo);
+                    if (!isSame) {
+                        mMediaInfo = mediaInfo;
+
+                        if (mPlayListener != null) {
+                            mPlayListener.onPlayItemChanged(mMediaInfo);
+                        }
+                    }
+                }
+            }
+
 
             if (requestInfo != null) {
                 switch (requestInfo.getCommandType()) {
                     case RequestInfo.COMMAND_PLAY:
-                        if (prepared) {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            mAudioManager.requestAudioFocus(mFocusRequest);
+                        }
+
+                        if (prepared && isSame) {
                             start();
                         } else {
                             play();
@@ -144,22 +179,16 @@ public class MusicService extends Service implements
 
     public void play() {
         mHandler.postDelayed(() -> {
-            String mFilePath = "";
-            String foldPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath();
-            File file = new File(foldPath);
-            if (!file.exists()) {
-                Log.d(TAG, "play: exists: false");
-                return;
-            } else {
-                Log.d(TAG, "play: exists: true");
-                Log.d(TAG, "play: isDirectory" + file.isDirectory());
-                String[] list = file.list();
-                for (String name : list) {
-                    Log.d(TAG, "play: name:" + name);
-                    mFilePath = foldPath + "/" + name;
-                }
 
+            if (mMediaInfo == null) {
+                return;
             }
+            String mFilePath = mMediaInfo.getUrl();
+
+            if (TextUtils.isEmpty(mFilePath)) {
+                return;
+            }
+
             try {
                 prepared = false;
                 mMediaPlayer.reset();
@@ -203,25 +232,45 @@ public class MusicService extends Service implements
 
 
     private void initIfNecessary() {
+
+        if (mAudioManager == null) {
+            mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+            mAudioManager.setMode(AudioManager.MODE_NORMAL);
+        }
+
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setOnErrorListener(this);
             mMediaPlayer.setOnCompletionListener(this);
             mMediaPlayer.setOnPreparedListener(this);
-
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
-                attrBuilder.setLegacyStreamType(AudioManager.STREAM_MUSIC);
-                attrBuilder.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC);
-                attrBuilder.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED);
-                attrBuilder.setUsage(AudioAttributes.USAGE_MEDIA);
-                mMediaPlayer.setAudioAttributes(attrBuilder.build());
-            } else {
-                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            }
-
+            mMediaPlayer.setVolume(1f, 1f);
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
+            attrBuilder.setLegacyStreamType(AudioManager.STREAM_MUSIC);
+            attrBuilder.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC);
+            attrBuilder.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED);
+            attrBuilder.setUsage(AudioAttributes.USAGE_MEDIA);
+            mAudioAttributes = attrBuilder.build();
+            mMediaPlayer.setAudioAttributes(mAudioAttributes);
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                AudioFocusRequest.Builder mFocusRequestBuilder = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN);
+                mFocusRequest = mFocusRequestBuilder.setAudioAttributes(mAudioAttributes)
+                        .setAcceptsDelayedFocusGain(true)
+                        .setWillPauseWhenDucked(true)
+                        .setOnAudioFocusChangeListener(this, mHandler).build();
+
+            } else {
+
+            }
+        } else {
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }
+
+
     }
 
     @Override
@@ -247,6 +296,42 @@ public class MusicService extends Service implements
         return false;
     }
 
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_LOSS:
+                //长时间丢失焦点,当其他应用申请的焦点为AUDIOFOCUS_GAIN时，
+                //会触发此回调事件，例如播放QQ音乐，网易云音乐等
+                //通常需要暂停音乐播放，若没有暂停播放就会出现和其他音乐同时输出声音
+                pause();
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                //短暂性丢失焦点，当其他应用申请AUDIOFOCUS_GAIN_TRANSIENT或AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE时，
+                //会触发此回调事件，例如播放短视频，拨打电话等。
+                //通常需要暂停音乐播放
+                pause();
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                //短暂性丢失焦点并作降音处理
+                pause();
+                break;
+            case AudioManager.AUDIOFOCUS_GAIN:
+                //当其他应用申请焦点之后又释放焦点会触发此回调
+                //可重新播放音乐
+
+                if (prepared) {
+                    start();
+                } else {
+                    play();
+                }
+
+                break;
+            default:
+                break;
+        }
+    }
+
 
     public class MusicBinder extends Binder {
 
@@ -261,12 +346,21 @@ public class MusicService extends Service implements
 
 
     public void startServiceFront() {
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startForeground(NOTIFY_ID, getNotify());
-            }
-        }, 200);
+        mHandler.postDelayed(() -> startForeground(NOTIFY_ID, getNotify()), 200);
     }
+
+
+    public boolean isPlaying() {
+        if (mMediaPlayer != null) {
+            return mMediaPlayer.isPlaying();
+        }
+        return false;
+    }
+
+
+    public void setPlayListener(PlayListener playListener) {
+        mPlayListener = playListener;
+    }
+
+
 }

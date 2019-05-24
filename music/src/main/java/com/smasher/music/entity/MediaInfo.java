@@ -3,6 +3,8 @@ package com.smasher.music.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 /**
  * @author matao
  */
@@ -145,4 +147,14 @@ public class MediaInfo implements Parcelable {
             return mediaInfo;
         }
     };
+
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+
+        if (obj instanceof MediaInfo) {
+            return ((MediaInfo) obj).getTitle().equals(this.getTitle());
+        }
+        return super.equals(obj);
+    }
 }

@@ -1,74 +1,131 @@
 package com.smasher.kotlin
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 
-import org.jetbrains.anko.toast
-
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    private var editWatcher: EditWatcher = EditWatcher()
-    private var mAdapter: Adapter = Adapter(this)
-    private var mList: MutableList<Int> = mutableListOf()
+    var count: Int = 0
 
+    open var editWatcher1: EditWatcher = EditWatcher()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         study.text = getString(R.string.app_name)
-        study.setOnClickListener { toast(getString(R.string.app_name)) }
+        study.setOnClickListener(this@MainActivity)
 
+        var editWatcher: EditWatcher = EditWatcher()
         editText.addTextChangedListener(editWatcher)
-        editText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+        editText.addTextChangedListener(editWatcher1)
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+        testObject()
+        initRecyclerView()
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        })
-        for (i in 0 until 100) {
-            mList.add(i)
-        }
+    }
 
-        mAdapter = Adapter(this)
+    private fun initRecyclerView() {
+        var mList: MutableList<Int> = mutableListOf()
+        var mAdapter = Adapter(this)
+        count++
+        Log.d(TAG, count.toString())
+        testFor(mList)
         mAdapter.setData(mList)
-
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = mAdapter
     }
 
+    private fun testFor(mList: MutableList<Int>) {
+        for (i in 0 until 100) {
+            mList.add(i)
+        }
+    }
 
-    private inner class EditWatcher : TextWatcher {
 
+    private fun testObject() {
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+    }
+
+
+    inner class EditWatcher : TextWatcher {
         init {
             Log.d(TAG, "EditWatcher init")
         }
 
         override fun afterTextChanged(s: Editable?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
     }
 
+    override fun onClick(v: View?) {
+        var id = v!!.id
+        when (id) {
+            R.id.study -> {
+
+                //way1
+                var intent1 = Intent()
+                intent1.setClass(this@MainActivity, SubActivity::class.java)
+                startActivity(intent1)
+
+                //way2
+                var intent2 = intentFor<SubActivity>(
+                        "aaa" to "asd"
+                )
+                startActivity(intent2)
+
+
+                //way3
+                var bundle1 = Bundle()
+                var intent3 = Intent()
+                intent3.setClass(this@MainActivity, SubActivity::class.java)
+                intent3.putExtras(bundle1)
+
+
+                //test
+                var bundle2 = bundleOf(
+                        Pair("", ""),
+                        Pair("232", 2))
+                var intentTest = Intent()
+                intentTest.setClass(this@MainActivity, SubActivity::class.java)
+                intentTest.putExtras(bundle2)
+
+
+                //way4
+                startActivity<SubActivity>()
+            }
+            else -> {
+                toast(getString(R.string.app_name))
+            }
+
+        }
+    }
+
+
     companion object {
-        private val TAG: String = "MainActivity"
+        private const val TAG: String = "MainActivity"
     }
 }
+

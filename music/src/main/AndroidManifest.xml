@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.smasher.music">
 
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -14,14 +13,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.PlayActivity"></activity>
 
         <service
             android:name=".service.MusicService"
             android:enabled="true"
             android:exported="true"
-            android:label="music">
-
-        </service>
+            android:label="music"></service>
 
         <activity android:name=".activity.MainActivity">
             <intent-filter>
@@ -29,7 +27,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

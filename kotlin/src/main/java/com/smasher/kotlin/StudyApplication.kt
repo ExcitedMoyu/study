@@ -10,10 +10,8 @@ import android.util.Log
  */
 class StudyApplication : Application() {
 
-    private val TAG: String = "StudyApplication"
-
     init {
-        Log.d(TAG, "StudyApplication init")
+        Log.d(Companion.TAG, "StudyApplication init")
     }
 
 
@@ -29,6 +27,10 @@ class StudyApplication : Application() {
 
     override fun onLowMemory() {
         super.onLowMemory()
+    }
+
+    companion object {
+        private const val TAG: String = "StudyApplication"
     }
 
 }
