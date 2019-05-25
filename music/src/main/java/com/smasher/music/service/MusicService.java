@@ -254,7 +254,7 @@ public class MusicService extends Service implements
             attrBuilder.setUsage(AudioAttributes.USAGE_MEDIA);
             mAudioAttributes = attrBuilder.build();
             mMediaPlayer.setAudioAttributes(mAudioAttributes);
-
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 AudioFocusRequest.Builder mFocusRequestBuilder = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN);
