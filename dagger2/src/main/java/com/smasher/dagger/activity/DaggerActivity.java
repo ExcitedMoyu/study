@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -56,9 +57,7 @@ public class DaggerActivity extends AppCompatActivity {
 
     @OnClick(R.id.hello)
     public void onViewClicked() {
-        Intent intent = new Intent();
-        intent.setClass(this, AlarmActivity.class);
-        startActivity(intent);
+        Toast.makeText(this, "測試", Toast.LENGTH_SHORT).show();
     }
 
 

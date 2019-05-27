@@ -1,4 +1,4 @@
-package com.smasher.dagger.activity;
+package com.smasher.widget;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.smasher.dagger.R;
-import com.smasher.dagger.receiver.AlarmReceiver;
+
+import com.smasher.widget.receiver.AlarmReceiver;
 
 import java.util.Calendar;
 

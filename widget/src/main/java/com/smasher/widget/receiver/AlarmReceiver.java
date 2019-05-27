@@ -1,4 +1,4 @@
-package com.smasher.dagger.receiver;
+package com.smasher.widget.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

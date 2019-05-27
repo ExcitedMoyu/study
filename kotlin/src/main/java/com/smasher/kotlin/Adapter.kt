@@ -17,7 +17,7 @@ class Adapter(context: Context) : BaseAdapter<Int, IntegerViewHolder<Int>>(conte
     }
 
     override fun createDefineViewHolder(viewGroup: ViewGroup, type: Int): IntegerViewHolder<Int> {
-        var viewTemp: View = LayoutInflater.from(mContext).inflate(R.layout.layout_item, viewGroup, false)
+        val viewTemp: View = LayoutInflater.from(mContext).inflate(R.layout.layout_item, viewGroup, false)
         return IntegerViewHolder(viewTemp)
     }
 
