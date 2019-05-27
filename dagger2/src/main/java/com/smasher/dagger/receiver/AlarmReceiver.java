@@ -1,4 +1,4 @@
-package com.smasher.study;
+package com.smasher.dagger.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     var count: Int = 0
 
-    open var editWatcher1: EditWatcher = EditWatcher()
+    var editWatcher1: EditWatcher = EditWatcher()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

@@ -1,8 +1,10 @@
 package com.smasher.kotlin
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.smasher.kotlin.IntegerViewHolder.Companion.TAG
 
 
 /**
@@ -23,6 +25,7 @@ open class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 
     private val itemListener = View.OnClickListener { v ->
+        Log.d(TAG, v.id.toString())
     }
 
     init {

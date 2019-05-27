@@ -1,4 +1,4 @@
-package com.smasher.study;
+package com.smasher.dagger;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;

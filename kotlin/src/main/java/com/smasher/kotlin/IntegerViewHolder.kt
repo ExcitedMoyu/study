@@ -25,6 +25,6 @@ class IntegerViewHolder<Int>(itemView: View) : BaseViewHolder<Int>(itemView) {
     }
 
     companion object {
-        val TAG: String = "IntegerViewHolder"
+        const val TAG: String = "IntegerViewHolder"
     }
 }

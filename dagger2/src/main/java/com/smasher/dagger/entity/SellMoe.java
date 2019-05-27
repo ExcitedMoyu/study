@@ -1,4 +1,4 @@
-package com.smasher.study.entity;
+package com.smasher.dagger.entity;
 
 import javax.inject.Inject;
 
@@ -6,8 +6,7 @@ import javax.inject.Inject;
  * @author matao
  * @date 2019/5/15
  */
-public class Product {
-
+public class SellMoe {
 
     public String getName() {
         return name;
@@ -19,10 +18,8 @@ public class Product {
 
     private String name;
 
-
-
     @Inject
-    public Product() {
+    public SellMoe() {
     }
 
 

@@ -1,4 +1,4 @@
-package com.smasher.study;
+package com.smasher.dagger;
 
 import org.junit.Test;
 
