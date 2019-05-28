@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
                 break;
             case R.id.hello_world:
+                String result = new Java2CJNI().java2C();
                 break;
             default:
                 break;
