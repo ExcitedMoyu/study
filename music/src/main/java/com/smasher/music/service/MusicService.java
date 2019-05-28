@@ -2,6 +2,7 @@ package com.smasher.music.service;
 
 import android.app.Notification;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -22,8 +25,13 @@ import androidx.core.app.NotificationCompat;
 
 import com.smasher.music.R;
 import com.smasher.music.constant.Constant;
+import com.smasher.music.core.MusicPlayer;
+import com.smasher.music.core.PlayList;
+import com.smasher.music.core.PlayerListener;
 import com.smasher.music.entity.MediaInfo;
 import com.smasher.music.entity.RequestInfo;
+import com.smasher.music.helper.AudioFocusHelper;
+import com.smasher.music.helper.MediaButtonHelper;
 import com.smasher.music.listener.PlayListener;
 
 import java.io.IOException;
@@ -36,23 +44,34 @@ public class MusicService extends Service implements
         MediaPlayer.OnCompletionListener,
         MediaPlayer.OnPreparedListener,
         AudioManager.OnAudioFocusChangeListener,
-        Handler.Callback {
+        Handler.Callback,
+        PlayerListener {
+
 
     private static final String TAG = "MusicService";
 
+    private Handler mHandler;
+
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
-    private Handler mHandler;
+    private AudioAttributes mAudioAttributes;
+    private AudioFocusRequest mFocusRequest;
+    private MediaInfo mMediaInfo;
     private boolean prepared;
     private static final int NOTIFY_ID = 2;
 
 
-    private AudioAttributes mAudioAttributes;
-    private AudioFocusRequest mFocusRequest;
-    private MediaInfo mMediaInfo;
+    private AudioFocusHelper mAudioFocusHelper;
+    private MediaButtonHelper mMediaButtonHelper;
+    private MusicPlayer mMusicPlayer;
     private PlayListener mPlayListener;
+    private int mPlayMode = -1;
+    private PlayList mPlayList = null;
+
 
     public MusicService() {
+        mPlayList = new PlayList();
+        mHandler = new Handler(this);
     }
 
 
@@ -60,12 +79,16 @@ public class MusicService extends Service implements
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate: ");
+
+
+        // 注册监听手机状态
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        telephonyManager.listen(mPsir, PhoneStateListener.LISTEN_CALL_STATE);
+
+
         // 声明一个处理器对象
         try {
-            mHandler = new Handler(this);
-
             initIfNecessary();
-
             startServiceFront();
         } catch (Exception e) {
             e.printStackTrace();
@@ -271,7 +294,41 @@ public class MusicService extends Service implements
         }
 
 
+        mMusicPlayer = new MusicPlayer(this, null);
+        // 播放列表
+        mPlayList.setOnNotifyChangeListener(this);
+
+        mAudioFocusHelper = new AudioFocusHelper(getApplicationContext(), mHandler);
+
+        mMediaButtonHelper = new MediaButtonHelper(getApplicationContext());
+
     }
+
+
+    private void registerMediaButton() {
+        if (mMediaButtonHelper != null) {
+            mMediaButtonHelper.registerMediaButtonEventReceiver();
+        }
+    }
+
+    private void unregisterMediaButton() {
+        if (mMediaButtonHelper != null) {
+            mMediaButtonHelper.unregisterMediaButtonEventReceiver();
+        }
+    }
+
+    private void reuqestAudioFocus(AudioAttributes audioAttributes) {
+        if (mAudioFocusHelper != null) {
+            mAudioFocusHelper.requestFocus(audioAttributes);
+        }
+    }
+
+    private void abandonAudioFocus(AudioAttributes audioAttributes) {
+        if (mAudioFocusHelper != null) {
+            mAudioFocusHelper.abandonFocus(audioAttributes);
+        }
+    }
+
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -330,6 +387,89 @@ public class MusicService extends Service implements
             default:
                 break;
         }
+    }
+
+    private PhoneStateListener mPsir = new PhoneStateListener() {
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+//            switch (state) {
+//                case TelephonyManager.CALL_STATE_RINGING:
+//                    // 响铃，来电话了
+//                    // 先判断是否需要响铃，如果需要，则pause，否则不需要pause.
+//                    AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+//                    int ringvolume = audioManager
+//                            .getStreamVolume(AudioManager.STREAM_RING);
+//                    if (ringvolume > 0) {
+//                        mResumeAfterCall = (isPlayingOnTheSurface() || mResumeAfterCall)
+//                                && (mPlayList.currentPosValid());
+//                        pauseLogic(false);
+//                    }
+//                    break;
+//                case TelephonyManager.CALL_STATE_OFFHOOK:
+//                    // 电话活跃中
+//                    mResumeAfterCall = (isPlayingOnTheSurface() || mResumeAfterCall)
+//                            && (mPlayList.currentPosValid());
+//                    pauseLogic(false);
+//                    break;
+//                case TelephonyManager.CALL_STATE_IDLE:
+//                    // 挂断了
+//                    if (mResumeAfterCall) {
+//                        resumeLogic();
+//                        mResumeAfterCall = false;
+//                    }
+//                    break;
+//                default:
+//                    break;
+//            }
+        }
+    };
+
+
+    public void setPlayMode(int playMode) {
+        if (mPlayMode == playMode) {
+            return;
+        }
+
+        mPlayMode = playMode;
+        switch (playMode) {
+            case PlayList.PLAY_MODE_ONESHOT:
+                mPlayList.setOneShotMode(true);
+                mPlayList.setRepeatMode(false);
+                mPlayList.setShuffleMode(false);
+                break;
+            case PlayList.PLAY_MODE_ONESHOT_REPEAT:
+                mPlayList.setOneShotMode(true);
+                mPlayList.setRepeatMode(true);
+                mPlayList.setShuffleMode(false);
+                break;
+            case PlayList.PLAY_MODE_LIST:
+                mPlayList.setOneShotMode(false);
+                mPlayList.setRepeatMode(false);
+                mPlayList.setShuffleMode(false);
+                break;
+            case PlayList.PLAY_MODE_LIST_REPEAT:
+                mPlayList.setOneShotMode(false);
+                mPlayList.setRepeatMode(true);
+                mPlayList.setShuffleMode(false);
+                break;
+            case PlayList.PLAY_MODE_LIST_SHUFFLE:
+                mPlayList.setOneShotMode(false);
+                mPlayList.setRepeatMode(false);
+                mPlayList.setShuffleMode(true);
+                break;
+            case PlayList.PLAY_MODE_LIST_SHUFFLE_REPEAT:
+                mPlayList.setOneShotMode(false);
+                mPlayList.setRepeatMode(true);
+                mPlayList.setShuffleMode(true);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void notifyEvent(int what, int subWhat, Object ex) {
+
     }
 
 

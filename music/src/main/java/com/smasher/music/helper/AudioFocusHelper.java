@@ -23,7 +23,7 @@ public class AudioFocusHelper implements AudioManager.OnAudioFocusChangeListener
     }
 
 
-    boolean requestFocus(AudioAttributes attributes) {
+    public boolean requestFocus(AudioAttributes attributes) {
 
         int focus;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -41,7 +41,7 @@ public class AudioFocusHelper implements AudioManager.OnAudioFocusChangeListener
     }
 
 
-    boolean abandonFocus(AudioAttributes attributes) {
+    public boolean abandonFocus(AudioAttributes attributes) {
         int focus;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             Builder mFocusRequestBuilder = new Builder(AudioManager.AUDIOFOCUS_GAIN)
