@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/music" />
             <option value="$PROJECT_DIR$/ndk" />
             <option value="$PROJECT_DIR$/widget" />
+            <option value="$PROJECT_DIR$/zxing" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
