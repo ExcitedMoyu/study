@@ -7,14 +7,13 @@ import android.media.MediaPlayer;
 import com.smasher.music.constant.PlayerState;
 import com.smasher.music.entity.MediaInfo;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
  * @author matao
  * @date 2019/5/25
  */
-public class MusicPlayer extends APIayer {
+public class MusicPlayer extends CorePlayer {
 
     private static final String TAG = "AudioPlayer";
 
@@ -22,6 +21,7 @@ public class MusicPlayer extends APIayer {
 
     public MusicPlayer(Context context, MediaInfo mediaInfo) {
         super(context, mediaInfo);
+        mPlayUri = mediaInfo.getUrl();
     }
 
 

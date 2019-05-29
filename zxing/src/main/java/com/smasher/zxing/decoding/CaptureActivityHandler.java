@@ -54,9 +54,7 @@ public final class CaptureActivityHandler extends Handler {
         /**
          * State
          */
-        PREVIEW,
-        SUCCESS,
-        DONE
+        PREVIEW, SUCCESS, DONE
     }
 
     public CaptureActivityHandler(CaptureFragment fragment, Vector<BarcodeFormat> decodeFormats,

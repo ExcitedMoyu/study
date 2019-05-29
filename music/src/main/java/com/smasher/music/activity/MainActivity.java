@@ -19,7 +19,6 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.smasher.music.R;
-import com.smasher.music.service.MusicService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
 
     private void doSkip() {
         Intent intent = new Intent();
-        intent.setClass(this, PlayActivity.class);
+        intent.setClass(this, PlayListActivity.class);
         startActivity(intent);
     }
 

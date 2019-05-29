@@ -31,10 +31,10 @@ public class MusicLoader {
     }
 
     private MusicLoader() {
-
+        Cursor cursor = null;
         try {
             // 通过内容解析器查询系统的音频库，并返回结果集的游标
-            Cursor cursor = mResolver.query(mAudioUri, mMediaColumn, null, null, null);
+            cursor = mResolver.query(mAudioUri, mMediaColumn, null, null, null);
             if (cursor == null) {
                 return;
             }
@@ -59,6 +59,9 @@ public class MusicLoader {
 
         } catch (Exception e) {
             e.printStackTrace();
+            if (cursor != null) {
+                cursor.close();
+            }
         }
 
     }

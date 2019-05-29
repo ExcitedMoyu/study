@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.annotation.IntDef;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.widget.Toolbar.OnMenuItemClickListener;
@@ -31,14 +30,11 @@ import com.smasher.music.constant.Constant;
 import com.smasher.music.entity.MediaInfo;
 import com.smasher.music.entity.RequestInfo;
 import com.smasher.music.helper.RequestHelper;
-import com.smasher.music.listener.PlayListener;
 import com.smasher.music.loader.MusicLoader;
 import com.smasher.music.service.MusicService;
 import com.smasher.music.service.MusicService.MusicBinder;
 
 import java.io.File;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -48,11 +44,10 @@ import butterknife.OnClick;
 /**
  * 播放页面
  */
-public class PlayActivity extends AppCompatActivity implements Handler.Callback,
-        OnItemClickListener,
-        PlayListener {
+public class PlayListActivity extends AppCompatActivity implements Handler.Callback,
+        OnItemClickListener {
 
-    private static final String TAG = "PlayActivity";
+    private static final String TAG = "PlayListActivity";
     @BindView(R.id.previous)
     ImageButton previous;
     @BindView(R.id.play_pause)
@@ -76,6 +71,8 @@ public class PlayActivity extends AppCompatActivity implements Handler.Callback,
 
     private ArrayList<MediaInfo> mList = new ArrayList<>();
 
+
+    private boolean isBind = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,8 +165,8 @@ public class PlayActivity extends AppCompatActivity implements Handler.Callback,
 
         mHandler.postDelayed(() -> {
             Intent intent1 = new Intent();
-            intent1.setClass(PlayActivity.this, MusicService.class);
-            bindService(intent1, mConnection, BIND_AUTO_CREATE);
+            intent1.setClass(PlayListActivity.this, MusicService.class);
+            isBind = bindService(intent1, mConnection, BIND_AUTO_CREATE);
         }, 200);
 
     }
@@ -184,12 +181,16 @@ public class PlayActivity extends AppCompatActivity implements Handler.Callback,
     @Override
     protected void onPause() {
         super.onPause();
-        unbindService(mConnection);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        if (isBind) {
+            unbindService(mConnection);
+            isBind = false;
+        }
     }
 
 
@@ -214,17 +215,6 @@ public class PlayActivity extends AppCompatActivity implements Handler.Callback,
 
         mHandler.postDelayed(this::initState, 500);
         Toast.makeText(this, item.getTitle() + " path:" + url, Toast.LENGTH_SHORT).show();
-    }
-
-
-    @Override
-    public void onPlayItemChanged(MediaInfo item) {
-        current = item;
-    }
-
-    @Override
-    public void onPlayStateChanged(int state) {
-
     }
 
 
@@ -296,7 +286,6 @@ public class PlayActivity extends AppCompatActivity implements Handler.Callback,
             Log.d(TAG, "onServiceConnected: ");
             MusicBinder binder = (MusicBinder) service;
             mMusicService = binder.getService();
-            mMusicService.setPlayListener(PlayActivity.this);
             initState();
         }
 

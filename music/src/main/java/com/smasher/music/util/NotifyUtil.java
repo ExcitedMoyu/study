@@ -20,11 +20,11 @@ public class NotifyUtil {
     public static void createNotifyChannel(Context ctx, String channelId, String channelName) {
 
         if (TextUtils.isEmpty(channelId)) {
-            channelId = Constant.channelId;
+            channelId = Constant.CHANNEL_ID;
         }
 
         if (TextUtils.isEmpty(channelName)) {
-            channelName = Constant.channelName;
+            channelName = Constant.CHANNEL_NAME;
         }
 
 

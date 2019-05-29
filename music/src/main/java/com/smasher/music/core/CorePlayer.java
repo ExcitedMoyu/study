@@ -9,8 +9,12 @@ import android.os.PowerManager;
 
 import com.smasher.music.constant.PlayerState;
 import com.smasher.music.entity.MediaInfo;
+import com.smasher.music.listener.PlayerListener;
 
-public abstract class APIayer extends Thread {
+/**
+ * @author moyu
+ */
+public abstract class CorePlayer extends Thread {
 
     protected MediaPlayer mPlayer;
     protected MediaInfo mMediaInfo;
@@ -18,12 +22,14 @@ public abstract class APIayer extends Thread {
     protected Builder mBuilder;
     protected Context mContext;
 
+    private PlayerListener mListener;
+
     protected String mSecretKey;
     protected boolean mIsInitialized;
     protected PlayerState mPlayState = PlayerState.PLAY_STATE_PLAY;
 
 
-    public APIayer(Context context, MediaInfo mediaInfo) {
+    public CorePlayer(Context context, MediaInfo mediaInfo) {
 
         mContext = context;
         mMediaInfo = mediaInfo;
@@ -40,6 +46,18 @@ public abstract class APIayer extends Thread {
             mBuilder.setLegacyStreamType(AudioManager.STREAM_MUSIC);
             mBuilder.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED);
             mAudioAttributes = mBuilder.build();
+        }
+    }
+
+
+    public void setListener(PlayerListener listener) {
+        mListener = listener;
+    }
+
+
+    protected final void notifyEvent(int what, int subwhat, Object ex) {
+        if (mListener != null) {
+            mListener.notifyEvent(what, subwhat, ex);
         }
 
     }
@@ -99,7 +117,7 @@ public abstract class APIayer extends Thread {
     private MediaPlayer.OnErrorListener mErrorListener = (mp, what, extra) -> {
         switch (what) {
             case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                //notifyEvent(PlayerListener.PLAY_EVENT_ERROR, 0, mCurSongInfo);
+                notifyEvent(PlayerListener.PLAY_EVENT_ERROR, 0, mMediaInfo);
                 return true;
             case MediaPlayer.MEDIA_ERROR_UNKNOWN:
                 break;

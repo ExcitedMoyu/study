@@ -1,4 +1,4 @@
-package com.smasher.music.core;
+package com.smasher.music.listener;
 
 public interface PlayerListener {
     // play event     

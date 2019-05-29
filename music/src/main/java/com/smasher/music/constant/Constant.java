@@ -5,8 +5,8 @@ package com.smasher.music.constant;
  * @date 2019/5/22
  */
 public class Constant {
-    public static final String channelId = "musicChannelId";
-    public static final String channelName = "musicChannelName";
+    public static final String CHANNEL_ID = "ForegroundServiceChannelId";
+    public static final String CHANNEL_NAME = "ForegroundService";
 
 
     public static final int MUSIC_STATE_PLAY = 0;
