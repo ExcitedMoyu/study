@@ -9,7 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.smasher.widget.MainActivity">
+        <activity
+            android:name=".basic.BasicActivity"
+            android:label="@string/title_activity_basic"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,12 +25,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".Alarm.AlarmActivity"></activity>
 
-        <activity android:name="com.smasher.widget.AlarmActivity">
-
-        </activity>
-
-        <receiver android:name="com.smasher.widget.receiver.AlarmReceiver">
+        <receiver android:name=".receiver.AlarmReceiver">
             <intent-filter>
                 <action android:name="com.smasher.study.AlarmEvent" />
             </intent-filter>
