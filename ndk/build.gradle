@@ -14,8 +14,14 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk{
-            moduleName "Java2C" //so文件名
-            abiFilters "armeabi", "armeabi-v7a", "x86" //CPU类型
+//            moduleName "Java2C-jni" //so文件名
+            abiFilters "x86_64", "armeabi-v7a", "x86" //CPU类型arm64-v8a, armeabi-v7a, x86, x86_64
+        }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++14"
+            }
         }
     }
 
@@ -28,6 +34,13 @@ android {
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version "3.10.2"
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -65,7 +66,12 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
                 break;
             case R.id.hello_world:
-                String result = new Java2CJNI().java2C();
+                try {
+                    String result = new Java2CJNI().stringFromJNI();
+                    Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
                 break;

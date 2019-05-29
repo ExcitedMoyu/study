@@ -2,12 +2,13 @@ package com.smasher.widget.basic;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.smasher.widget.R;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
+import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.UIUtil;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
@@ -91,7 +93,7 @@ public class BasicActivity extends AppCompatActivity {
     }
 
     private void initMagicIndicator() {
-        magicIndicator.setBackgroundColor(Color.parseColor("#ED424B"));
+        magicIndicator.setBackgroundColor(Color.parseColor("#00000000"));
 
         CommonNavigator commonNavigator = new CommonNavigator(this);
         commonNavigator.setAdapter(new CommonNavigatorAdapter() {
@@ -104,24 +106,20 @@ public class BasicActivity extends AppCompatActivity {
             public IPagerTitleView getTitleView(Context context, int index) {
                 SimplePagerTitleView simplePagerTitleView = new ColorFlipPagerTitleView(context);
                 simplePagerTitleView.setText("Title" + index);
-                simplePagerTitleView.setNormalColor(Color.parseColor("#9e9e9e"));
-                simplePagerTitleView.setSelectedColor(Color.parseColor("#00c853"));
-                simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        mViewPager.setCurrentItem(index);
-                    }
-                });
+                simplePagerTitleView.setNormalColor(Color.parseColor("#838A96"));
+                simplePagerTitleView.setSelectedColor(Color.parseColor("#3b3F47"));
+                simplePagerTitleView.setOnClickListener(v -> viewPager.setCurrentItem(index));
                 return simplePagerTitleView;
             }
 
             @Override
             public IPagerIndicator getIndicator(Context context) {
                 LinePagerIndicator indicator = new LinePagerIndicator(context);
+                indicator.setYOffset(10);
                 indicator.setMode(LinePagerIndicator.MODE_EXACTLY);
                 indicator.setLineHeight(UIUtil.dip2px(context, 6));
-                indicator.setLineWidth(UIUtil.dip2px(context, 10));
-                indicator.setRoundRadius(UIUtil.dip2px(context, 3));
+                indicator.setLineWidth(UIUtil.dip2px(context, 30));
+//                indicator.setRoundRadius(UIUtil.dip2px(context, 3));
                 indicator.setStartInterpolator(new AccelerateInterpolator());
                 indicator.setEndInterpolator(new DecelerateInterpolator(2.0f));
                 indicator.setColors(Color.parseColor("#00c853"));
@@ -129,24 +127,19 @@ public class BasicActivity extends AppCompatActivity {
             }
         });
         magicIndicator.setNavigator(commonNavigator);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                magicIndicator.onPageScrolled(position, positionOffset, positionOffsetPixels);
-            }
+        LinearLayout linearLayout = commonNavigator.getTitleContainer();
+        linearLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE | LinearLayout.SHOW_DIVIDER_BEGINNING | LinearLayout.SHOW_DIVIDER_END);
+        linearLayout.setDividerPadding(UIUtil.dip2px(this, 35));
+        linearLayout.setDividerDrawable(new ColorDrawable(Color.parseColor("#00000000")) {
 
             @Override
-            public void onPageSelected(int position) {
-                magicIndicator.onPageSelected(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                magicIndicator.onPageScrollStateChanged(state);
+            public int getIntrinsicWidth() {
+                return UIUtil.dip2px(BasicActivity.this, 25);
             }
         });
 
 
+        ViewPagerHelper.bind(magicIndicator, viewPager);
     }
 
 
