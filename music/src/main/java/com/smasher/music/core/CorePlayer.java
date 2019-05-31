@@ -15,12 +15,12 @@ public abstract class CorePlayer extends Thread implements
         MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener {
 
-    protected MediaPlayer mPlayer;
-    protected MediaInfo mMediaInfo;
-    protected Context mContext;
-    protected PlayerState mPlayState = PlayerState.PLAY_STATE_PLAY;
-    protected boolean mIsInitialized;
+    MediaPlayer mPlayer;
+    Context mContext;
+    PlayerState mPlayState = PlayerState.PLAY_STATE_PLAY;
+    boolean mIsInitialized;
 
+    private MediaInfo mMediaInfo;
     private PlayerListener mListener;
 
     public CorePlayer(Context context, MediaInfo mediaInfo) {

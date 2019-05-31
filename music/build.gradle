@@ -30,7 +30,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.media:media:1.0.1'
+    implementation 'androidx.media:media:1.1.0-beta01'
     implementation 'androidx.media2:media2-common:1.0.0-beta01'
     implementation 'androidx.media2:media2-player:1.0.0-beta01'
     implementation 'androidx.media2:media2-session:1.0.0-beta01'
@@ -41,7 +41,7 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0-alpha04'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test:runner:1.2.0-beta01'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
 
