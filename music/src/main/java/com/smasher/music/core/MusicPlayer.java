@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 
 import com.smasher.music.constant.PlayerState;
 import com.smasher.music.entity.MediaInfo;
+import com.smasher.music.listener.PlayerListener;
 
 import java.io.IOException;
 
@@ -138,7 +139,7 @@ public class MusicPlayer extends CorePlayer {
 
     @Override
     protected void onCompletionLogic(MediaPlayer mediaPlayer) {
-
+        notifyEvent(PlayerListener.PLAY_EVENT_END, 0, null);
     }
 
 
@@ -150,14 +151,14 @@ public class MusicPlayer extends CorePlayer {
 
             mPlayer.reset();
 
-            mPlayer.setDataSource(mPlayUri);
-
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 mPlayer.setAudioAttributes(mAudioAttributes);
             } else {
                 mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             }
 
+
+            mPlayer.setDataSource(mPlayUri);
             mPlayer.prepare();
             mIsInitialized = true;
         } catch (IOException e) {

@@ -31,6 +31,7 @@ public class MediaPlayerProxy {
                 mPlayer.onStop();
             }
             mPlayer = new MusicPlayer(context, info);
+            mPlayer.setListener(mListener);
             initOk = mPlayer.onPrepare();
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,7 +39,6 @@ public class MediaPlayerProxy {
         }
         return initOk;
     }
-
 
 
     public void close() {

@@ -1,6 +1,8 @@
 package com.smasher.music.core;
 
 
+import android.util.Log;
+
 import com.smasher.music.entity.MediaInfo;
 import com.smasher.music.listener.PlayerListener;
 import com.smasher.music.util.AudioUtil;
@@ -21,7 +23,6 @@ public class PlayList {
     public static final int PLAY_MODE_LIST_REPEAT = 13;// ??〃寰??
     public static final int PLAY_MODE_LIST_SHUFFLE = 14;// ??〃???锛??寰??锛?
     public static final int PLAY_MODE_LIST_SHUFFLE_REPEAT = 15;// ??〃寰?????
-
 
 
     private int mPlayListLen = 0;
@@ -204,6 +205,7 @@ public class PlayList {
     }
 
     public boolean currentPosValid() {
+        Log.d(TAG, "currentPosValid: mPlayListLen=" + mPlayListLen + " mPlayPos=" + mPlayPos);
         return (mPlayPos >= 0 && mPlayPos < mPlayListLen);
     }
 
@@ -333,7 +335,7 @@ public class PlayList {
         if (list == null) {
             mPlayListLen = 0;
             mPlayList = null;
-            notifyChange(PlayerListener.PLAY_EVENT_PLAYLISTCHANGED);
+            notifyChange(PlayerListener.PLAY_EVENT_PLAYLIST_CHANGED);
             gotonext = true;
             return gotonext;
         }
@@ -364,7 +366,7 @@ public class PlayList {
 
             gotonext = endBack(back);
 
-            notifyChange(PlayerListener.PLAY_EVENT_PLAYLISTCHANGED);
+            notifyChange(PlayerListener.PLAY_EVENT_PLAYLIST_CHANGED);
         }
         return gotonext;
     }
@@ -469,7 +471,7 @@ public class PlayList {
 
             gotonext = endBack(back);
 
-            notifyChange(PlayerListener.PLAY_EVENT_PLAYLISTCHANGED);
+            notifyChange(PlayerListener.PLAY_EVENT_PLAYLIST_CHANGED);
 
             return gotonext;
         }

@@ -13,14 +13,14 @@ public enum PlayerState {
     PLAY_STATE_PLAY(0), PLAY_STATE_PAUSE(1), PLAY_STATE_STOP(2), PLAY_STATE_CLOSE(3),
     PLAY_STATE_CONNECTING(4), PLAY_STATE_BUFFERING(5), PLAY_STATE_PAUSING(6);
 
-    private int state;
+    private int mState;
 
     PlayerState(int state) {
-        state = state;
+        mState = state;
     }
 
     public int getState() {
-        return state;
+        return mState;
     }
 
 

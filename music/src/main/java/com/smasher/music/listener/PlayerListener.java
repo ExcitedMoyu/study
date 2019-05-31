@@ -7,7 +7,7 @@ public interface PlayerListener {
     int PLAY_EVENT_ERROR = 2;
     int PLAY_EVENT_STATE_CHANGED = 4;
     int PLAY_EVENT_CONN_ERROR = 7;
-    int PLAY_EVENT_PLAYLISTCHANGED = 8;
+    int PLAY_EVENT_PLAYLIST_CHANGED = 8;
     int PLAY_EVENT_UPDATE_SONG_PATH = 11;
 
 

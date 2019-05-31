@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -23,16 +25,17 @@ import androidx.appcompat.widget.Toolbar.OnMenuItemClickListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.smasher.music.IMusicService;
 import com.smasher.music.R;
 import com.smasher.music.activity.adapter.MusicListAdapter;
 import com.smasher.music.adapter.OnItemClickListener;
 import com.smasher.music.constant.Constant;
+import com.smasher.music.constant.PlayerState;
 import com.smasher.music.entity.MediaInfo;
 import com.smasher.music.entity.RequestInfo;
 import com.smasher.music.helper.RequestHelper;
 import com.smasher.music.loader.MusicLoader;
 import com.smasher.music.service.MusicService;
-import com.smasher.music.service.MusicService.MusicBinder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,6 +46,8 @@ import butterknife.OnClick;
 
 /**
  * 播放页面
+ *
+ * @author matao
  */
 public class PlayListActivity extends AppCompatActivity implements Handler.Callback,
         OnItemClickListener {
@@ -60,14 +65,11 @@ public class PlayListActivity extends AppCompatActivity implements Handler.Callb
     Toolbar toolbar;
 
 
-    private MusicService mMusicService;
     private Handler mHandler;
     private MusicLoader loader;
-    private AudioManager mAudioMgr;
     private MusicListAdapter musicListAdapter;
-    private MediaInfo current;
 
-    private RequestHelper mHelper;
+    private IMusicService mBinder;
 
     private ArrayList<MediaInfo> mList = new ArrayList<>();
 
@@ -81,10 +83,7 @@ public class PlayListActivity extends AppCompatActivity implements Handler.Callb
         ButterKnife.bind(this);
         mHandler = new Handler(this);
 
-        // 从系统服务中获取音频管理器
-        mAudioMgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         loader = MusicLoader.getInstance(getContentResolver());
-        mHelper = new RequestHelper();
 
         initToolbar();
         initState();
@@ -100,9 +99,23 @@ public class PlayListActivity extends AppCompatActivity implements Handler.Callb
     }
 
     private void initData() {
-        mList = loader.getMusicList();
-        musicListAdapter.setData(mList);
-        musicListAdapter.notifyDataSetChanged();
+
+        loader.getMusicList(list -> {
+            mList.addAll(list);
+            musicListAdapter.setData(mList);
+            musicListAdapter.notifyDataSetChanged();
+            if (mBinder != null) {
+                int size = mList.size();
+                MediaInfo[] temp = mList.toArray(new MediaInfo[size]);
+                Log.d(TAG, "initData: " + temp.length);
+                try {
+                    mBinder.setList(temp, null);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
         String foldPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath();
         File file = new File(foldPath);
@@ -118,7 +131,6 @@ public class PlayListActivity extends AppCompatActivity implements Handler.Callb
 
     }
 
-
     private void initList() {
 
         musicListAdapter = new MusicListAdapter(this);
@@ -128,15 +140,20 @@ public class PlayListActivity extends AppCompatActivity implements Handler.Callb
 
     }
 
-
     private void initState() {
-        if (mMusicService == null) {
+        if (mBinder == null) {
             playAndPause.setTag(Constant.MUSIC_STATE_PLAY);
             playAndPause.setImageResource(R.drawable.music_play);
             return;
         }
 
-        boolean isPlaying = mMusicService.isPlaying();
+        boolean isPlaying = false;
+        try {
+            isPlaying = mBinder.isPlayingOnTheSurface();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
         playAndPause.setTag(isPlaying ? Constant.MUSIC_STATE_PAUSE : Constant.MUSIC_STATE_PLAY);
         playAndPause.setImageResource(isPlaying ? R.drawable.music_pause : R.drawable.music_play);
     }
@@ -204,17 +221,17 @@ public class PlayListActivity extends AppCompatActivity implements Handler.Callb
     public void onClick(View view, int position) {
         MediaInfo item = mList.get(position);
         String url = item.getUrl();
-
-        Intent intent = new Intent();
-        intent.setClass(this, MusicService.class);
-        RequestInfo requestInfo = new RequestInfo();
-        requestInfo.setCommandType(RequestInfo.COMMAND_PLAY);
-        intent.putExtra(RequestInfo.REQUEST_TAG, requestInfo);
-        intent.putExtra(RequestInfo.REQUEST_MEDIA, item);
-        startService(intent);
-
-        mHandler.postDelayed(this::initState, 500);
         Toast.makeText(this, item.getTitle() + " path:" + url, Toast.LENGTH_SHORT).show();
+
+
+        if (mBinder != null) {
+            try {
+                mBinder.playPos(position);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        mHandler.postDelayed(this::initState, 500);
     }
 
 
@@ -222,10 +239,12 @@ public class PlayListActivity extends AppCompatActivity implements Handler.Callb
 
         switch (item.getItemId()) {
             case R.id.action_exit:
-
-                if (mMusicService != null) {
-                    mMusicService.stopForeground(true);
-                    mMusicService.stopSelf();
+                try {
+                    if (mBinder != null) {
+                        mBinder.exit();
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
 
                 break;
@@ -238,33 +257,30 @@ public class PlayListActivity extends AppCompatActivity implements Handler.Callb
 
     private void changeMusicAction(View view, int id) {
         try {
-            MediaInfo target;
-            int state;
-            int position = mList.indexOf(current);
-            Intent intent = new Intent();
-            intent.setClass(this, MusicService.class);
-            RequestInfo requestInfo = new RequestInfo();
+            int temp = mBinder.getCurPos();
+            int position = temp > -1 ? temp : 0;
             switch (id) {
                 case R.id.previous:
-                    state = Constant.MUSIC_STATE_PLAY;
-                    mHelper.packState(requestInfo, state);
-                    target = getTargetItem(position - 1);
-                    intent.putExtra(RequestInfo.REQUEST_MEDIA, target);
+                    position = position - 1;
+                    mBinder.playPos(position);
                     break;
                 case R.id.play_pause:
-                    state = (int) view.getTag();
-                    mHelper.packState(requestInfo, state);
+                    if (mBinder.isPlayingOnTheSurface()) {
+                        mBinder.pause(false);
+                    } else if (mBinder.getPlayState() == PlayerState.PLAY_STATE_PAUSE.getState()) {
+                        mBinder.resume();
+                    } else {
+                        mBinder.play();
+                    }
                     break;
                 case R.id.next:
-                    requestInfo.setCommandType(RequestInfo.COMMAND_PLAY);
-                    target = getTargetItem(position + 1);
-                    intent.putExtra(RequestInfo.REQUEST_MEDIA, target);
+                    position = position + 1;
+                    mBinder.playPos(position);
                     break;
                 default:
                     break;
             }
-            intent.putExtra(RequestInfo.REQUEST_TAG, requestInfo);
-            startService(intent);
+
 
             mHandler.postDelayed(this::initState, 500);
         } catch (Exception e) {
@@ -284,15 +300,20 @@ public class PlayListActivity extends AppCompatActivity implements Handler.Callb
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(TAG, "onServiceConnected: ");
-            MusicBinder binder = (MusicBinder) service;
-            mMusicService = binder.getService();
-            initState();
+            mBinder = IMusicService.Stub.asInterface(service);
+            int size = mList.size();
+            MediaInfo[] list = (MediaInfo[]) mList.toArray(new MediaInfo[size]);
+            Log.d(TAG, "onServiceConnected: " + list.length);
+            try {
+                mBinder.setList(list, null);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.d(TAG, "onServiceDisconnected: ");
-            mMusicService = null;
         }
     };
 

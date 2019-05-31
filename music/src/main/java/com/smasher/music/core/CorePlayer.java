@@ -24,7 +24,6 @@ public abstract class CorePlayer extends Thread {
 
     private PlayerListener mListener;
 
-    protected String mSecretKey;
     protected boolean mIsInitialized;
     protected PlayerState mPlayState = PlayerState.PLAY_STATE_PLAY;
 
@@ -38,7 +37,7 @@ public abstract class CorePlayer extends Thread {
         mPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
         mPlayer.setOnErrorListener(mErrorListener);
         mPlayer.setOnCompletionListener(mCompletionListener);
-
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             mBuilder = new AudioAttributes.Builder();
             mBuilder.setUsage(AudioAttributes.USAGE_MEDIA);
@@ -46,6 +45,7 @@ public abstract class CorePlayer extends Thread {
             mBuilder.setLegacyStreamType(AudioManager.STREAM_MUSIC);
             mBuilder.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED);
             mAudioAttributes = mBuilder.build();
+            mPlayer.setAudioAttributes(mAudioAttributes);
         }
     }
 
