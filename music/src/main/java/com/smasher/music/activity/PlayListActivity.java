@@ -1,11 +1,8 @@
 package com.smasher.music.activity;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.AudioManager;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,7 +30,6 @@ import com.smasher.music.constant.Constant;
 import com.smasher.music.constant.PlayerState;
 import com.smasher.music.entity.MediaInfo;
 import com.smasher.music.entity.RequestInfo;
-import com.smasher.music.helper.RequestHelper;
 import com.smasher.music.loader.MusicLoader;
 import com.smasher.music.service.MusicService;
 
