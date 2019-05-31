@@ -345,7 +345,8 @@ public class MusicService extends Service implements
         mPlayer = new MediaPlayerProxy(this);
         mPlayList.setOnNotifyChangeListener(this);
         mNotificationHelper = new NotificationHelper();
-        mAudioFocusHelper = new AudioFocusHelper(getApplicationContext(), mBinder);
+        mAudioFocusHelper = AudioFocusHelper.getInstance();
+        mAudioFocusHelper.init(getApplicationContext(), mBinder);
         mMediaButtonHelper = new MediaButtonHelper(getApplicationContext());
         mPlayModeHelper = new PlayModeHelper(mPlayList);
         mTelephonyHelper = new TelephonyHelper(this, mBinder, mPlayList);

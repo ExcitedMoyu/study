@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 
 import com.smasher.music.constant.PlayerState;
 import com.smasher.music.entity.MediaInfo;
+import com.smasher.music.helper.AudioFocusHelper;
 import com.smasher.music.listener.PlayerListener;
 
 import java.io.IOException;
@@ -151,13 +152,7 @@ public class MusicPlayer extends CorePlayer {
 
             mPlayer.reset();
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                mPlayer.setAudioAttributes(mAudioAttributes);
-            } else {
-                mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            }
-
-
+            AudioFocusHelper.getInstance().setAudioStreamType(mPlayer);
             mPlayer.setDataSource(mPlayUri);
             mPlayer.prepare();
             mIsInitialized = true;

@@ -1,9 +1,6 @@
 package com.smasher.music.core;
 
 import android.content.Context;
-import android.media.AudioAttributes;
-import android.media.AudioAttributes.Builder;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
 
@@ -14,19 +11,17 @@ import com.smasher.music.listener.PlayerListener;
 /**
  * @author moyu
  */
-public abstract class CorePlayer extends Thread {
+public abstract class CorePlayer extends Thread implements
+        MediaPlayer.OnErrorListener,
+        MediaPlayer.OnCompletionListener {
 
     protected MediaPlayer mPlayer;
     protected MediaInfo mMediaInfo;
-    protected AudioAttributes mAudioAttributes;
-    protected Builder mBuilder;
     protected Context mContext;
+    protected PlayerState mPlayState = PlayerState.PLAY_STATE_PLAY;
+    protected boolean mIsInitialized;
 
     private PlayerListener mListener;
-
-    protected boolean mIsInitialized;
-    protected PlayerState mPlayState = PlayerState.PLAY_STATE_PLAY;
-
 
     public CorePlayer(Context context, MediaInfo mediaInfo) {
 
@@ -35,18 +30,8 @@ public abstract class CorePlayer extends Thread {
 
         mPlayer = new MediaPlayer();
         mPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
-        mPlayer.setOnErrorListener(mErrorListener);
-        mPlayer.setOnCompletionListener(mCompletionListener);
-        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            mBuilder = new AudioAttributes.Builder();
-            mBuilder.setUsage(AudioAttributes.USAGE_MEDIA);
-            mBuilder.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC);
-            mBuilder.setLegacyStreamType(AudioManager.STREAM_MUSIC);
-            mBuilder.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED);
-            mAudioAttributes = mBuilder.build();
-            mPlayer.setAudioAttributes(mAudioAttributes);
-        }
+        mPlayer.setOnErrorListener(this);
+        mPlayer.setOnCompletionListener(this);
     }
 
 
@@ -55,9 +40,9 @@ public abstract class CorePlayer extends Thread {
     }
 
 
-    protected final void notifyEvent(int what, int subwhat, Object ex) {
+    protected final void notifyEvent(int what, int subWhat, Object ex) {
         if (mListener != null) {
-            mListener.notifyEvent(what, subwhat, ex);
+            mListener.notifyEvent(what, subWhat, ex);
         }
 
     }
@@ -68,6 +53,7 @@ public abstract class CorePlayer extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     protected boolean isInitialized() {
@@ -112,9 +98,14 @@ public abstract class CorePlayer extends Thread {
 
     protected abstract void onCompletionLogic(MediaPlayer mp);
 
-    private MediaPlayer.OnCompletionListener mCompletionListener = this::onCompletionLogic;
 
-    private MediaPlayer.OnErrorListener mErrorListener = (mp, what, extra) -> {
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        onCompletionLogic(mp);
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
         switch (what) {
             case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
                 notifyEvent(PlayerListener.PLAY_EVENT_ERROR, 0, mMediaInfo);
@@ -125,7 +116,5 @@ public abstract class CorePlayer extends Thread {
                 break;
         }
         return false;
-    };
-
-
+    }
 }

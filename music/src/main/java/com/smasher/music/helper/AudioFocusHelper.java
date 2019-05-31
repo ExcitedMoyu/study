@@ -2,10 +2,13 @@ package com.smasher.music.helper;
 
 import android.content.Context;
 import android.media.AudioAttributes;
-import android.media.AudioFocusRequest.Builder;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.smasher.music.IMusicService;
 
@@ -14,65 +17,96 @@ import com.smasher.music.IMusicService;
  * @date 2019/5/25
  */
 public class AudioFocusHelper implements AudioManager.OnAudioFocusChangeListener {
-    private IMusicService mPlayer;
-    private AudioManager mAudioManager;
-    private Handler mHandler;
-    private boolean mPausedByTransientLossOfFocus;
 
-    protected AudioAttributes mAudioAttributes;
-    protected AudioAttributes.Builder mBuilder;
 
-    public AudioFocusHelper(Context context, IMusicService player) {
-        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        mPlayer = player;
-        mHandler = new Handler();
-        mAudioAttributes = getAudioAttributes();
-        mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+    private static final String TAG = "AudioFocusHelper";
+    private static AudioFocusHelper INSTANCE = null;
+    private boolean isInit = false;
+
+    public static synchronized AudioFocusHelper getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new AudioFocusHelper();
+        }
+        return INSTANCE;
     }
 
 
-    public AudioAttributes getAudioAttributes() {
-        if (mAudioAttributes == null) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                mBuilder = new AudioAttributes.Builder();
-                mBuilder.setUsage(AudioAttributes.USAGE_MEDIA);
-                mBuilder.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC);
-                mBuilder.setLegacyStreamType(AudioManager.STREAM_MUSIC);
-                mBuilder.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED);
-                mAudioAttributes = mBuilder.build();
-            }
+    private IMusicService mPlayer;
+    private AudioManager mAudioManager;
+    private AudioAttributes mAudioAttributes;
+    private AudioFocusRequest.Builder mFocusRequestBuilder;
+    private Handler mHandler;
+    private boolean mPausedByTransientLossOfFocus;
+
+
+    public AudioFocusHelper() {
+        mHandler = new Handler();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes.Builder builder = new AudioAttributes.Builder();
+            builder.setUsage(AudioAttributes.USAGE_MEDIA);
+            builder.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC);
+            mAudioAttributes = builder.build();
         }
-        return mAudioAttributes;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mFocusRequestBuilder = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(mAudioAttributes)
+                    .setAcceptsDelayedFocusGain(true)
+                    .setWillPauseWhenDucked(true);
+        }
+    }
+
+
+    public void init(Context context, IMusicService player) {
+        if (!isInit) {
+            mPlayer = player;
+            mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            isInit = true;
+        }
+    }
+
+
+    public void setAudioStreamType(MediaPlayer mediaPlayer) {
+        if (mediaPlayer == null) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mediaPlayer.setAudioAttributes(mAudioAttributes);
+        } else {
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }
     }
 
 
     public boolean requestFocus() {
-
+        if (mAudioManager == null) {
+            Log.e(TAG, "requestFocus: is not init yet");
+            return false;
+        }
         int focus;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Builder mFocusRequestBuilder = new Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setAudioAttributes(mAudioAttributes)
-                    .setAcceptsDelayedFocusGain(true)
-                    .setWillPauseWhenDucked(true)
-                    .setOnAudioFocusChangeListener(this, mHandler);
-            focus = mAudioManager.requestAudioFocus(mFocusRequestBuilder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && mFocusRequestBuilder != null) {
+            mFocusRequestBuilder.setOnAudioFocusChangeListener(this, mHandler);
+            AudioFocusRequest audioFocusRequest = mFocusRequestBuilder.build();
+            focus = mAudioManager.requestAudioFocus(audioFocusRequest);
         } else {
             focus = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         }
-
         return focus == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
 
     public boolean abandonFocus() {
+        if (mAudioManager == null) {
+            Log.e(TAG, "requestFocus: is not init yet");
+            return false;
+        }
         int focus;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Builder mFocusRequestBuilder = new Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setAudioAttributes(mAudioAttributes)
-                    .setAcceptsDelayedFocusGain(true)
-                    .setWillPauseWhenDucked(true)
-                    .setOnAudioFocusChangeListener(this, mHandler);
-            focus = mAudioManager.abandonAudioFocusRequest(mFocusRequestBuilder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && mFocusRequestBuilder != null) {
+            mFocusRequestBuilder.setOnAudioFocusChangeListener(this, mHandler);
+            AudioFocusRequest audioFocusRequest = mFocusRequestBuilder.build();
+            focus = mAudioManager.abandonAudioFocusRequest(audioFocusRequest);
         } else {
             focus = mAudioManager.abandonAudioFocus(this);
         }
@@ -145,4 +179,6 @@ public class AudioFocusHelper implements AudioManager.OnAudioFocusChangeListener
                 break;
         }
     }
+
+
 }
