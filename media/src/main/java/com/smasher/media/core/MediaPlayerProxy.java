@@ -1,6 +1,12 @@
 package com.smasher.media.core;
 
 import android.content.Context;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.MediaSessionCompat.QueueItem;
+import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
+
+import com.smasher.media.manager.PlaybackManager;
 
 
 /**
@@ -11,8 +17,14 @@ import android.content.Context;
 public class MediaPlayerProxy {
     private static final String TAG = "MediaPlayerProxy";
     private CorePlayer mPlayer = null;
+    private PlaybackManager mPlaybackManager;
+    private PlaybackStateCompat mState;
+    private MediaSessionCompat mSession;
 
-    public MediaPlayerProxy() {
+    public MediaPlayerProxy(MediaSessionCompat session) {
+        mSession = session;
+        mPlaybackManager = PlaybackManager.getInstance();
+        mPlaybackManager.setState(mSession, PlaybackStateCompat.STATE_NONE);
     }
 
 
@@ -23,7 +35,6 @@ public class MediaPlayerProxy {
                 mPlayer.onStop();
             }
             mPlayer = new MusicPlayer(context);
-            initOk = mPlayer.onPrepare();
         } catch (Exception e) {
             e.printStackTrace();
             initOk = false;
@@ -32,9 +43,11 @@ public class MediaPlayerProxy {
     }
 
 
-    public void onPrepare(String uri) {
+    public void onPrepare(QueueItem currentMusic) {
         if (mPlayer != null) {
-            mPlayer.onPrepare(uri);
+            String path = currentMusic.getDescription().getMediaUri().toString();
+            Log.d(TAG, "onPrepare: " + path);
+            mPlayer.onPrepare(path);
         }
     }
 
@@ -48,12 +61,14 @@ public class MediaPlayerProxy {
 
     public void play() {
         if (mPlayer != null) {
+            Log.d(TAG, "play: ");
             mPlayer.onPlay();
         }
     }
 
     public void stop() {
         if (mPlayer != null) {
+            Log.d(TAG, "stop: ");
             mPlayer.onStop();
         }
     }
@@ -66,6 +81,7 @@ public class MediaPlayerProxy {
 
     public void pause() {
         if (mPlayer != null) {
+            Log.d(TAG, "pause: ");
             mPlayer.onPause();
         }
     }
@@ -93,12 +109,6 @@ public class MediaPlayerProxy {
     public long getDuration() {
         if (mPlayer != null) {
             long duration = mPlayer.getDuration();
-//            int realDuration = (mRealDuration + 1) * 1000;
-//            if (realDuration > duration) {
-//                return mRealDuration * 1000;
-//            } else {
-//                return mPlayer.getDuration();
-//            }
         }
         return 0;
     }
@@ -148,4 +158,14 @@ public class MediaPlayerProxy {
     private interface IPathSuccessListener {
         void onSuccess();
     }
+
+
+    //region state
+
+    public PlaybackStateCompat getState() {
+        return mState;
+    }
+
+
+    //endregion
 }

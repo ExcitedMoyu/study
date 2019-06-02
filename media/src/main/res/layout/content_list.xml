@@ -8,10 +8,116 @@
     tools:context=".activity.ListActivity"
     tools:showIn="@layout/activity_list">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+
+        <Button
+            android:id="@+id/load"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="load"
+            app:layout_constraintBottom_toTopOf="@+id/prepare"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="16dp" />
+
+
+        <Button
+            android:id="@+id/prepare"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="prepare"
+            app:layout_constraintBottom_toTopOf="@+id/play"
+            app:layout_constraintTop_toTopOf="@+id/load"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <Button
+            android:id="@+id/play"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="paly"
+            app:layout_constraintBottom_toTopOf="@+id/pause"
+            app:layout_constraintTop_toBottomOf="@+id/prepare"
+            tools:layout_editor_absoluteX="16dp" />
+
+
+        <Button
+            android:id="@+id/pause"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="pause"
+            app:layout_constraintBottom_toTopOf="@+id/next"
+            app:layout_constraintTop_toBottomOf="@+id/play"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <Button
+            android:id="@+id/next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="next"
+            app:layout_constraintBottom_toTopOf="@+id/previous"
+            app:layout_constraintTop_toBottomOf="@+id/pause"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <Button
+            android:id="@+id/previous"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="previous"
+            app:layout_constraintBottom_toTopOf="@+id/stop"
+            app:layout_constraintTop_toBottomOf="@+id/next"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <Button
+            android:id="@+id/stop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="stop"
+            app:layout_constraintBottom_toTopOf="@+id/release"
+            app:layout_constraintTop_toBottomOf="@+id/previous"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <Button
+            android:id="@+id/release"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="release"
+            app:layout_constraintBottom_toTopOf="@+id/produce"
+            app:layout_constraintTop_toBottomOf="@+id/stop"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <Button
+            android:id="@+id/produce"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="produce"
+            app:layout_constraintBottom_toTopOf="@+id/producer"
+            app:layout_constraintTop_toBottomOf="@+id/release"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <Button
+            android:id="@+id/producer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="producer"
+            app:layout_constraintBottom_toTopOf="@+id/text"
+            app:layout_constraintTop_toBottomOf="@+id/produce"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="@string/large_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/producer" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.core.widget.NestedScrollView>
