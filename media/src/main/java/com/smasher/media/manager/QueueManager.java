@@ -2,6 +2,7 @@ package com.smasher.media.manager;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -61,7 +62,7 @@ public class QueueManager {
     }
 
 
-    protected void setCurrentQueue(String title, List<MediaSessionCompat.QueueItem> newQueue,
+    public void setCurrentQueue(String title, List<MediaSessionCompat.QueueItem> newQueue,
                                    String initialMediaId) {
         mPlayingQueue = newQueue;
         int index = 0;
@@ -140,6 +141,18 @@ public class QueueManager {
             // We don't expect queues to change after created, so we use the item index as the
             // queueId. Any other number unique in the queue would work.
             QueueItem item = new QueueItem(trackCopy.getDescription(), count++);
+            queue.add(item);
+        }
+        return queue;
+
+    }
+
+
+    public List<QueueItem> convertToQueue(List<MediaBrowserCompat.MediaItem> items) {
+        List<QueueItem> queue = new ArrayList<>();
+        for (MediaBrowserCompat.MediaItem track : items) {
+            long QueueId = 0;
+            QueueItem item = new QueueItem(track.getDescription(), QueueId);
             queue.add(item);
         }
         return queue;

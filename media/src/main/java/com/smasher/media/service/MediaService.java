@@ -10,8 +10,8 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.RatingCompat;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.media.session.MediaSessionCompat.QueueItem;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -22,7 +22,7 @@ import com.smasher.media.core.MediaPlayerProxy;
 import com.smasher.media.loader.MusicLoader;
 import com.smasher.media.manager.QueueManager;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -54,14 +54,14 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
 
         mSession.setCallback(mSessionCallback);
         mSession.addOnActiveChangeListener(this);
+        mSession.setActive(true);
 
         //设置token后会触发MediaBrowserCompat.ConnectionCallback的回调方法
         //表示MediaBrowser与MediaBrowserService连接成功
         setSessionToken(mSession.getSessionToken());
 
         mQueueManager = new QueueManager(mLoader, mQueueListener);
-        mPlayer = new MediaPlayerProxy(mSession);
-        mPlayer.initPlay(this);
+        mPlayer = new MediaPlayerProxy(this, mSession);
 
     }
 
@@ -92,8 +92,12 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
     @Override
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result) {
         Log.d(TAG, "onLoadChildren: ");
+        List<MediaItem> list = mLoader.getChildren();
+        List<QueueItem> queueItemList = mQueueManager.convertToQueue(list);
+        mSession.setQueue(queueItemList);
+        String queueTitle = "local_music";
+        mQueueManager.setCurrentQueue(queueTitle, queueItemList, "");
         result.sendResult(mLoader.getChildren());
-
     }
 
 
@@ -122,15 +126,9 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
     public class MediaSessionCallback extends MediaSessionCompat.Callback {
 
 
-        public MediaSessionCallback() {
-        }
-
-
         @Override
         public void onPrepare() {
             super.onPrepare();
-            mSession.setActive(true);
-            mQueueManager.getCurrentMusic();
             Log.d(TAG, "onPrepare: ");
         }
 
@@ -156,19 +154,38 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         public void onPlay() {
             super.onPlay();
             Log.d(TAG, "onPlay: ");
-
-            QueueItem currentMusic = mQueueManager.getCurrentMusic();
-            if (currentMusic != null) {
-                MediaMetadataCompat metadataCompat = null;
-                metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
-                mSession.setMetadata(metadataCompat);
-                if (mPlayer != null) {
-                    mPlayer.onPrepare(currentMusic);
-                    mPlayer.play();
-                }
+            if (mPlayer == null) {
+                Log.e(TAG, "onPlay: player is not init yet");
+                return;
             }
-
-
+            int state = mPlayer.getState();
+            switch (state) {
+                case PlaybackStateCompat.STATE_PAUSED:
+                    if (mPlayer != null) {
+                        mPlayer.start();
+                    }
+                    break;
+                case PlaybackStateCompat.STATE_NONE:
+                case PlaybackStateCompat.STATE_PLAYING:
+                    try {
+                        QueueItem currentMusic = mQueueManager.getCurrentMusic();
+                        if (currentMusic != null) {
+                            MediaMetadataCompat metadataCompat = null;
+                            metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
+                            mSession.setMetadata(metadataCompat);
+                            if (mPlayer != null) {
+                                mPlayer.reset();
+                                mPlayer.setDataSource(currentMusic.getDescription().getMediaUri());
+                                mPlayer.prepare();
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         @Override
@@ -180,18 +197,22 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             super.onPlayFromMediaId(mediaId, extras);
-            mQueueManager.setQueueFromMusic(mediaId);
             Log.d(TAG, "onPlayFromMediaId: ");
-            QueueItem currentMusic = mQueueManager.getCurrentMusic();
-            if (currentMusic != null) {
-                MediaMetadataCompat metadataCompat = null;
-                metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
-                mSession.setMetadata(metadataCompat);
-                if (mPlayer != null) {
-                    mPlayer.onPrepare(currentMusic);
-                    mPlayer.play();
-                }
-            }
+//            QueueItem currentMusic = mQueueManager.getCurrentMusic();
+//            if (currentMusic != null) {
+//                MediaMetadataCompat metadataCompat = null;
+//                metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
+//                mSession.setMetadata(metadataCompat);
+//                if (mPlayer != null) {
+//                    try {
+//                        mPlayer.reset();
+//                        mPlayer.setDataSource(currentMusic.getDescription().getMediaUri());
+//                        mPlayer.prepare();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
         }
 
         @Override
@@ -211,7 +232,13 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         public void onPause() {
             super.onPause();
             Log.d(TAG, "onPause: ");
-            if (mPlayer != null) {
+
+            if (mPlayer == null) {
+                Log.e(TAG, "onPlay: player is not init yet");
+                return;
+            }
+
+            if (mPlayer.getState() == PlaybackStateCompat.STATE_PLAYING) {
                 mPlayer.pause();
             }
         }
@@ -221,15 +248,29 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
             super.onSkipToNext();
             Log.d(TAG, "onSkipToNext: ");
             mQueueManager.skipQueuePosition(+1);
-            QueueItem currentMusic = mQueueManager.getCurrentMusic();
-            if (currentMusic != null) {
-                MediaMetadataCompat metadataCompat = null;
-                metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
-                mSession.setMetadata(metadataCompat);
-                if (mPlayer != null) {
-                    mPlayer.onPrepare(currentMusic);
-                    mPlayer.play();
+            try {
+                switch (mPlayer.getState()) {
+                    case PlaybackStateCompat.STATE_PLAYING:
+                        mPlayer.pause();
+                    case PlaybackStateCompat.STATE_PAUSED:
+                    case PlaybackStateCompat.STATE_NONE:
+                        QueueItem currentMusic = mQueueManager.getCurrentMusic();
+                        if (currentMusic != null) {
+                            MediaMetadataCompat metadataCompat = null;
+                            metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
+                            mSession.setMetadata(metadataCompat);
+                            if (mPlayer != null) {
+                                mPlayer.reset();
+                                mPlayer.setDataSource(currentMusic.getDescription().getMediaUri());
+                                mPlayer.prepare();
+                            }
+                        }
+                        break;
+                    default:
+                        break;
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -238,15 +279,29 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
             super.onSkipToPrevious();
             Log.d(TAG, "onSkipToPrevious: ");
             mQueueManager.skipQueuePosition(-1);
-            QueueItem currentMusic = mQueueManager.getCurrentMusic();
-            if (currentMusic != null) {
-                MediaMetadataCompat metadataCompat = null;
-                metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
-                mSession.setMetadata(metadataCompat);
-                if (mPlayer != null) {
-                    mPlayer.onPrepare(currentMusic);
-                    mPlayer.play();
+            try {
+                switch (mPlayer.getState()) {
+                    case PlaybackStateCompat.STATE_PLAYING:
+                        mPlayer.pause();
+                    case PlaybackStateCompat.STATE_PAUSED:
+                    case PlaybackStateCompat.STATE_NONE:
+                        QueueItem currentMusic = mQueueManager.getCurrentMusic();
+                        if (currentMusic != null) {
+                            MediaMetadataCompat metadataCompat = null;
+                            metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
+                            mSession.setMetadata(metadataCompat);
+                            if (mPlayer != null) {
+                                mPlayer.reset();
+                                mPlayer.setDataSource(currentMusic.getDescription().getMediaUri());
+                                mPlayer.prepare();
+                            }
+                        }
+                        break;
+                    default:
+                        break;
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 

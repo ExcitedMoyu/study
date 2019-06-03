@@ -3,25 +3,37 @@ package com.smasher.media.activity;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaBrowserCompat.MediaItem;
+import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback;
+import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaControllerCompat.TransportControls;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.smasher.media.R;
+import com.smasher.media.adapter.MusicListAdapter;
+import com.smasher.media.adapter.OnItemClickListener;
 import com.smasher.media.helper.MediaBrowserHelper;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +42,7 @@ import butterknife.OnClick;
 /**
  * @author moyu
  */
-public class ListActivity extends AppCompatActivity {
+public class ListActivity extends AppCompatActivity implements OnItemClickListener {
 
     private static final String TAG = "ListActivity";
 
@@ -42,32 +54,33 @@ public class ListActivity extends AppCompatActivity {
     AppBarLayout mAppBar;
     @BindView(R.id.fab)
     FloatingActionButton mFab;
+
     @BindView(R.id.prepare)
     Button mPrepare;
-    @BindView(R.id.play)
-    Button mPlay;
-    @BindView(R.id.pause)
-    Button mStart;
-    @BindView(R.id.next)
-    Button mStop;
-    @BindView(R.id.previous)
-    Button mRelease;
     @BindView(R.id.load)
     Button mLoad;
     @BindView(R.id.stop)
-    Button mButton6;
+    Button mStop;
     @BindView(R.id.release)
-    Button mButton7;
-    @BindView(R.id.produce)
-    Button mButton8;
-    @BindView(R.id.producer)
-    Button mButton9;
+    Button mRelease;
 
+    @BindView(R.id.previous)
+    ImageButton previous;
+    @BindView(R.id.play_pause)
+    ImageButton playPause;
+    @BindView(R.id.next)
+    ImageButton next;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     private MediaBrowserHelper mMediaBrowserHelper;
     private TransportControls mController;
+    private MusicListAdapter mAdapter;
+    private MediaBrowserCompat mMediaBrowser;
 
-    private boolean isLoad = false;
+    private PlaybackStateCompat mState;
+
+    private List<MediaItem> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +88,12 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+        initView();
+        initMediaBrowser();
 
+    }
+
+    private void initMediaBrowser() {
         mMediaBrowserHelper = new MediaBrowserHelper(this) {
             @Override
             public void connectToSession(MediaSessionCompat.Token token) {
@@ -85,32 +103,24 @@ public class ListActivity extends AppCompatActivity {
                 connectToSessionImp(token);
             }
         };
+        mMediaBrowser = mMediaBrowserHelper.getMediaBrowser();
+        mSubscriptionCallback = new MediaBrowserSubscriptionCallback();
     }
 
-    private void connectToSessionImp(MediaSessionCompat.Token token) {
+    private void initView() {
+        mAdapter = new MusicListAdapter(this);
+        mAdapter.setOnItemClickListener(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(mAdapter);
+        updateViewState();
 
-        try {
-            MediaControllerCompat controller = new MediaControllerCompat(this, token);
-            MediaControllerCompat.setMediaController(this, controller);
-            controller.registerCallback(mMediaBrowserHelper.buildControlCallback());
-            mController = controller.getTransportControls();
-            mMediaBrowserHelper.getMediaBrowserCompat().getItem("default", new MediaBrowserCompat.ItemCallback() {
-                @Override
-                public void onItemLoaded(MediaBrowserCompat.MediaItem item) {
-                    super.onItemLoaded(item);
-                    isLoad = true;
-                }
 
-                @Override
-                public void onError(@NonNull String itemId) {
-                    super.onError(itemId);
-                }
-            });
+    }
 
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
 
+    private void updateViewState() {
+        boolean isPlaying = isPlaying();
+        playPause.setImageResource(isPlaying ? R.drawable.music_pause : R.drawable.music_play);
     }
 
 
@@ -166,39 +176,59 @@ public class ListActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.load, R.id.fab, R.id.prepare, R.id.play, R.id.pause, R.id.next, R.id.previous,
-            R.id.stop, R.id.release, R.id.produce, R.id.producer})
+    private void connectToSessionImp(MediaSessionCompat.Token token) {
+
+        try {
+            MediaControllerCompat controller = new MediaControllerCompat(this, token);
+            MediaControllerCompat.setMediaController(this, controller);
+            controller.registerCallback(new MediaControllerCallback());
+            mController = controller.getTransportControls();
+
+            mState = controller.getPlaybackState();
+            Log.d(TAG, "connectToSessionImp: init state:" + mState.getState());
+
+            if (mMediaBrowserHelper != null && mMediaBrowserHelper.isConnected()) {
+                subscribe("default");
+            }
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    @OnClick({R.id.fab, R.id.load, R.id.prepare, R.id.stop, R.id.release,
+            R.id.previous, R.id.play_pause, R.id.next})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.fab:
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar snackbar = Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG);
+                snackbar.setAction("Action", null);
+                snackbar.show();
                 break;
 
             case R.id.load:
-                if (mMediaBrowserHelper != null && mMediaBrowserHelper.isConnected()) {
-                    mMediaBrowserHelper.subscribe("default");
-                }
+
                 break;
             case R.id.prepare:
                 if (mController != null) {
                     mController.prepare();
                 }
                 break;
-            case R.id.play:
-                if (mController != null) {
-                    Log.d(TAG, "play:isLoad=" + isLoad);
 
-                    if (isLoad) {
-                        mController.play();
-                    } else {
-                        mController.playFromMediaId("default", null);
-                    }
+            case R.id.play_pause:
+
+                if (mController == null) {
+                    return;
                 }
-                break;
-            case R.id.pause:
 
-                if (mController != null) {
+
+                boolean isPlaying = isPlaying();
+                if (!isPlaying) {
+                    Log.d(TAG, "play:isLoad");
+                    mController.play();
+                } else {
                     mController.pause();
                 }
                 break;
@@ -216,13 +246,191 @@ public class ListActivity extends AppCompatActivity {
                 break;
             case R.id.release:
                 break;
-            case R.id.produce:
-                break;
-            case R.id.producer:
-                break;
             default:
                 break;
         }
     }
 
+    @Override
+    public void onClick(View view, int position) {
+
+    }
+
+
+    private boolean isPlaying() {
+        boolean isPlaying = false;
+        if (mState != null) {
+            isPlaying = mState.getState() == PlaybackStateCompat.STATE_PLAYING;
+        }
+        return isPlaying;
+    }
+
+
+    private boolean isInitPlay() {
+        boolean ok = false;
+        if (mState == null) {
+            ok = mState.getState() == PlaybackStateCompat.STATE_NONE;
+        }
+        return ok;
+    }
+
+
+    //region Subscription
+
+    /**
+     * MediaBrowserSubscriptionCallback
+     */
+    public class MediaBrowserSubscriptionCallback extends SubscriptionCallback {
+
+        public static final String TAG = "SubscriptionCallback";
+
+        MediaBrowserSubscriptionCallback() {
+            super();
+        }
+
+
+        @Override
+        public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaItem> children) {
+            super.onChildrenLoaded(parentId, children);
+            //加载到的
+            Log.d(TAG, "onChildrenLoaded: " + parentId);
+            mList = children;
+            mAdapter.setData(mList);
+            mAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaItem> children, @NonNull Bundle options) {
+            super.onChildrenLoaded(parentId, children, options);
+            Log.d(TAG, "onChildrenLoaded: ");
+        }
+
+        @Override
+        public void onError(@NonNull String parentId) {
+            super.onError(parentId);
+            Log.d(TAG, "onError: ");
+        }
+
+        @Override
+        public void onError(@NonNull String parentId, @NonNull Bundle options) {
+            super.onError(parentId, options);
+            Log.d(TAG, "onError: ");
+        }
+    }
+
+    MediaBrowserSubscriptionCallback mSubscriptionCallback;
+
+    private void unsubscribe(String parentId) {
+        mMediaBrowser.unsubscribe(parentId);
+    }
+
+    private void subscribe(String parentId) {
+        unsubscribe(parentId);
+        mMediaBrowser.subscribe(parentId, mSubscriptionCallback);
+    }
+
+    //endregion
+
+
+    //region ControllerCallback
+
+    /**
+     * MediaControllerCallback
+     */
+    class MediaControllerCallback extends MediaControllerCompat.Callback {
+        public static final String TAG = "ControllerCallback";
+
+        public MediaControllerCallback() {
+            super();
+        }
+
+        @Override
+        public void onSessionReady() {
+            super.onSessionReady();
+            Log.d(TAG, "onSessionReady: ");
+        }
+
+        @Override
+        public void onSessionDestroyed() {
+            super.onSessionDestroyed();
+            Log.d(TAG, "onSessionDestroyed: ");
+        }
+
+        @Override
+        public void onSessionEvent(@NonNull String event, @Nullable Bundle extras) {
+            super.onSessionEvent(event, extras);
+            Log.d(TAG, "onSessionEvent: " + event);
+        }
+
+        @Override
+        public void onPlaybackStateChanged(@Nullable PlaybackStateCompat state) {
+            super.onPlaybackStateChanged(state);
+            mState = state;
+            updateViewState();
+            String value = state != null ? String.valueOf(state.getState()) : "";
+            Log.d(TAG, "onPlaybackStateChanged " + value);
+        }
+
+        @Override
+        public void onMetadataChanged(@Nullable MediaMetadataCompat metadata) {
+            super.onMetadataChanged(metadata);
+            if (metadata != null) {
+                Log.d(TAG, "onMetadataChanged: " + metadata.getDescription().getTitle());
+            } else {
+                Log.d(TAG, "onMetadataChanged ");
+            }
+        }
+
+        @Override
+        public void onQueueChanged(@Nullable List<MediaSessionCompat.QueueItem> queue) {
+            super.onQueueChanged(queue);
+            if (queue != null) {
+                Log.d(TAG, "onQueueChanged: " + queue.size());
+            } else {
+                Log.d(TAG, "onQueueChanged ");
+            }
+        }
+
+        @Override
+        public void onQueueTitleChanged(@Nullable CharSequence title) {
+            super.onQueueTitleChanged(title);
+            Log.d(TAG, "onQueueTitleChanged: " + title);
+        }
+
+        @Override
+        public void onExtrasChanged(@Nullable Bundle extras) {
+            super.onExtrasChanged(extras);
+            Log.d(TAG, "onExtrasChanged");
+        }
+
+        @Override
+        public void onAudioInfoChanged(MediaControllerCompat.PlaybackInfo info) {
+            super.onAudioInfoChanged(info);
+            Log.d(TAG, "onAudioInfoChanged: ");
+        }
+
+
+        @Override
+        public void onCaptioningEnabledChanged(boolean enabled) {
+            super.onCaptioningEnabledChanged(enabled);
+            Log.d(TAG, "onCaptioningEnabledChanged: " + enabled);
+        }
+
+
+        @Override
+        public void onRepeatModeChanged(int repeatMode) {
+            super.onRepeatModeChanged(repeatMode);
+            Log.d(TAG, "onRepeatModeChanged: ");
+        }
+
+
+        @Override
+        public void onShuffleModeChanged(int shuffleMode) {
+            super.onShuffleModeChanged(shuffleMode);
+            Log.d(TAG, "onShuffleModeChanged: ");
+        }
+    }
+
+
+    //endregion
 }

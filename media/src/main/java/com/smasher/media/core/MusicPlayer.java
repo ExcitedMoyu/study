@@ -2,6 +2,10 @@ package com.smasher.media.core;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 
 import java.io.IOException;
@@ -15,30 +19,63 @@ public class MusicPlayer extends CorePlayer {
     private static final String TAG = "AudioPlayer";
 
 
-    public MusicPlayer(Context context) {
-        super(context);
+    public MusicPlayer(Context context, MediaSessionCompat session) {
+        super(context, session);
     }
 
-
-
     @Override
-    protected boolean onPrepare(String uri) {
-        return prepare(uri);
+    protected void reset() {
+        if (mPlayer != null) {
+            mPlayer.reset();
+        }
     }
 
+    @Override
+    protected void setDataSource(Uri uri) throws IOException {
+        if (mPlayer != null) {
+            Log.d(TAG, "setDataSource: " + uri.toString());
+            mPlayer.setDataSource(uri.toString());
+        }
+    }
 
     @Override
-    protected void onPlay() {
+    protected void prepare() throws IOException {
+        if (mPlayer != null) {
+            mPlayer.prepare();
+            mPlaybackManager.setState(PlaybackStateCompat.STATE_CONNECTING);
+        }
+    }
+
+    @Override
+    protected void start() {
         if (mPlayer != null) {
             mPlayer.start();
+            mPlaybackManager.setState(PlaybackStateCompat.STATE_PLAYING);
         }
-
     }
 
     @Override
-    protected void onPause() {
-        if (mPlayer != null && mIsInitialized) {
+    protected void play() {
+        if (mPlayer != null) {
+            mPlayer.start();
+            mPlaybackManager.setState(PlaybackStateCompat.STATE_PLAYING);
+        }
+    }
+
+    @Override
+    protected void pause() {
+        if (mPlayer != null) {
             mPlayer.pause();
+            mPlaybackManager.setState(PlaybackStateCompat.STATE_PAUSED);
+
+        }
+    }
+
+    @Override
+    protected void stop() {
+        if (mPlayer != null) {
+            mPlayer.stop();
+            mPlaybackManager.setState(PlaybackStateCompat.STATE_STOPPED);
         }
     }
 
@@ -51,27 +88,22 @@ public class MusicPlayer extends CorePlayer {
     }
 
     @Override
-    protected void onResume() {
-        if (mPlayer != null) {
-            mPlayer.start();
-        }
-    }
-
-    @Override
     protected void onShutDownPausing() {
         if (mPlayer != null) {
+
         }
     }
 
+
     @Override
-    protected void onStop() {
-        if (mIsInitialized) {
-            mPlayer.release();
-            mPlayer = null;
-            mIsInitialized = false;
+    protected boolean isPlaying() {
+        boolean isPlaying = false;
+        if (mPlayer != null) {
+            isPlaying = mPlayer.isPlaying();
         }
-        mContext = null;
+        return isPlaying;
     }
+
 
     @Override
     protected long getDuration() {
@@ -108,10 +140,6 @@ public class MusicPlayer extends CorePlayer {
         return 100;
     }
 
-    @Override
-    protected boolean isPlaying() {
-        return false;
-    }
 
     @Override
     protected int getBufferPercent() {
@@ -119,8 +147,23 @@ public class MusicPlayer extends CorePlayer {
     }
 
     @Override
-    protected void onCompletionLogic(MediaPlayer mediaPlayer) {
+    protected void onPreparedLogic(MediaPlayer mp) {
+        Log.d(TAG, "onPreparedLogic: ");
+        mPlaybackManager.setState(PlaybackStateCompat.STATE_PAUSED);
+        mPlayer.start();
+        mPlaybackManager.setState(PlaybackStateCompat.STATE_PLAYING);
+    }
 
+    @Override
+    protected void onCompletionLogic(MediaPlayer mediaPlayer) {
+        Log.d(TAG, "onCompletionLogic: ");
+        mPlayer.reset();
+        mPlaybackManager.setState(PlaybackStateCompat.STATE_NONE);
+    }
+
+    @Override
+    protected void onBufferingUpdateLogic(MediaPlayer mp, int percent) {
+        Log.d(TAG, "onBufferingUpdateLogic: ");
     }
 
 

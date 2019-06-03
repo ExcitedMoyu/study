@@ -108,6 +108,7 @@ public class MusicLoader {
 
     private MediaItem createMediaItem(MediaMetadataCompat item) {
         String id = item.getDescription().getMediaId();
+        Log.d(TAG, "createMediaItem: " + id);
         MediaMetadataCompat temp = new Builder(item)
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id).build();
         return new MediaItem(temp.getDescription(), MediaItem.FLAG_PLAYABLE);
@@ -166,7 +167,7 @@ public class MusicLoader {
 
 
         Builder mBuilder = new Builder();
-        mBuilder.putText(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, "default")
+        mBuilder.putText(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, String.valueOf(musciId))
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, album)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)

@@ -1,12 +1,11 @@
 package com.smasher.media.core;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.MediaSessionCompat.QueueItem;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
-import com.smasher.media.manager.PlaybackManager;
+import java.io.IOException;
 
 
 /**
@@ -17,59 +16,62 @@ import com.smasher.media.manager.PlaybackManager;
 public class MediaPlayerProxy {
     private static final String TAG = "MediaPlayerProxy";
     private CorePlayer mPlayer = null;
-    private PlaybackManager mPlaybackManager;
-    private PlaybackStateCompat mState;
-    private MediaSessionCompat mSession;
 
-    public MediaPlayerProxy(MediaSessionCompat session) {
-        mSession = session;
-        mPlaybackManager = PlaybackManager.getInstance();
-        mPlaybackManager.setState(mSession, PlaybackStateCompat.STATE_NONE);
+
+    public MediaPlayerProxy(Context context, MediaSessionCompat session) {
+        mPlayer = new MusicPlayer(context, session);
     }
 
 
-    public boolean initPlay(Context context) {
-        boolean initOk = false;
-        try {
-            if (mPlayer != null) {
-                mPlayer.onStop();
-            }
-            mPlayer = new MusicPlayer(context);
-        } catch (Exception e) {
-            e.printStackTrace();
-            initOk = false;
-        }
-        return initOk;
-    }
-
-
-    public void onPrepare(QueueItem currentMusic) {
+    public void reset() {
         if (mPlayer != null) {
-            String path = currentMusic.getDescription().getMediaUri().toString();
-            Log.d(TAG, "onPrepare: " + path);
-            mPlayer.onPrepare(path);
+            mPlayer.reset();
         }
     }
 
-
-    public void close() {
+    public void setDataSource(Uri uri) throws IOException {
         if (mPlayer != null) {
-            mPlayer.onStop();
-            mPlayer = null;
+            mPlayer.setDataSource(uri);
         }
     }
+
+
+    public void prepare() throws IOException {
+        if (mPlayer != null) {
+            Log.d(TAG, "prepare: ");
+            mPlayer.prepare();
+
+        }
+    }
+
+
+    public void start() {
+        if (mPlayer != null) {
+            mPlayer.start();
+        }
+    }
+
 
     public void play() {
         if (mPlayer != null) {
             Log.d(TAG, "play: ");
-            mPlayer.onPlay();
+            mPlayer.play();
         }
     }
+
+
+    public void pause() {
+        if (mPlayer != null) {
+            Log.d(TAG, "pause: ");
+            mPlayer.pause();
+        }
+    }
+
 
     public void stop() {
         if (mPlayer != null) {
             Log.d(TAG, "stop: ");
-            mPlayer.onStop();
+            mPlayer.stop();
         }
     }
 
@@ -79,22 +81,9 @@ public class MediaPlayerProxy {
         }
     }
 
-    public void pause() {
-        if (mPlayer != null) {
-            Log.d(TAG, "pause: ");
-            mPlayer.onPause();
-        }
-    }
-
     public void shutDownPausing() {
         if (mPlayer != null) {
             mPlayer.onShutDownPausing();
-        }
-    }
-
-    public void resume() {
-        if (mPlayer != null) {
-            mPlayer.onResume();
         }
     }
 
@@ -155,15 +144,10 @@ public class MediaPlayerProxy {
     }
 
 
-    private interface IPathSuccessListener {
-        void onSuccess();
-    }
-
-
     //region state
 
-    public PlaybackStateCompat getState() {
-        return mState;
+    public int getState() {
+        return mPlayer.getState();
     }
 
 

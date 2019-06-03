@@ -37,27 +37,25 @@ public class PlaybackManager {
                     | PlaybackStateCompat.ACTION_STOP
                     | PlaybackStateCompat.ACTION_SEEK_TO;
 
-    private static final int MEDIA_SESSION_STATE =
-            PlaybackStateCompat.STATE_NONE
-                    | PlaybackStateCompat.STATE_STOPPED
-                    | PlaybackStateCompat.STATE_PAUSED
-                    | PlaybackStateCompat.STATE_PLAYING
-                    | PlaybackStateCompat.STATE_FAST_FORWARDING
-                    | PlaybackStateCompat.STATE_REWINDING
-                    | PlaybackStateCompat.STATE_ERROR
-                    | PlaybackStateCompat.STATE_CONNECTING
-                    | PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS
-                    | PlaybackStateCompat.STATE_SKIPPING_TO_NEXT
-                    | PlaybackStateCompat.STATE_SKIPPING_TO_QUEUE_ITEM;
-
 
     private PlaybackStateCompat.Builder mBuilder;
     private PlaybackStateCompat mState;
+    private MediaSessionCompat mSession;
+
+    public void setMediaSession(MediaSessionCompat session) {
+        mSession = session;
+    }
 
 
-    public void setState(MediaSessionCompat session, int state) {
+    public void setState(int state) {
         mBuilder.setState(state, 0, 1f);
         mState = mBuilder.build();
-        session.setPlaybackState(mState);
+        if (mSession != null) {
+            mSession.setPlaybackState(mState);
+        }
+    }
+
+    public PlaybackStateCompat getState() {
+        return mState;
     }
 }
