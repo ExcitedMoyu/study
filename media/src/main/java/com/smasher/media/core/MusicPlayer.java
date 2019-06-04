@@ -1,12 +1,15 @@
 package com.smasher.media.core;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.smasher.media.helper.NotificationHelper;
 
 import java.io.IOException;
 
@@ -21,6 +24,11 @@ public class MusicPlayer extends CorePlayer {
 
     public MusicPlayer(Context context, MediaSessionCompat session) {
         super(context, session);
+    }
+
+    @Override
+    protected void setNotificationHelper(NotificationHelper notificationHelper) {
+        mNotificationHelper = notificationHelper;
     }
 
     @Override
@@ -48,17 +56,31 @@ public class MusicPlayer extends CorePlayer {
 
     @Override
     protected void start() {
+
+        if (mAudioFocusHelper != null) {
+            boolean result = mAudioFocusHelper.requestFocus(mContext);
+            Log.d(TAG, "start: focus:" + result);
+        }
+
+
         if (mPlayer != null) {
             mPlayer.start();
             mPlaybackManager.setState(PlaybackStateCompat.STATE_PLAYING);
+            mNotificationHelper.updateNotification();
         }
     }
 
     @Override
     protected void play() {
+        if (mAudioFocusHelper != null) {
+            boolean result = mAudioFocusHelper.requestFocus(mContext);
+            Log.d(TAG, "start: focus:" + result);
+        }
+
         if (mPlayer != null) {
             mPlayer.start();
             mPlaybackManager.setState(PlaybackStateCompat.STATE_PLAYING);
+            mNotificationHelper.updateNotification();
         }
     }
 
@@ -67,6 +89,7 @@ public class MusicPlayer extends CorePlayer {
         if (mPlayer != null) {
             mPlayer.pause();
             mPlaybackManager.setState(PlaybackStateCompat.STATE_PAUSED);
+            mNotificationHelper.updateNotification();
 
         }
     }
@@ -76,6 +99,34 @@ public class MusicPlayer extends CorePlayer {
         if (mPlayer != null) {
             mPlayer.stop();
             mPlaybackManager.setState(PlaybackStateCompat.STATE_STOPPED);
+        }
+
+        if (mAudioFocusHelper != null) {
+
+            boolean result = mAudioFocusHelper.abandonFocus(mContext);
+            Log.d(TAG, "start: focus:" + result);
+        }
+
+    }
+
+    @Override
+    protected void skipToPrevious(Uri uri) throws IOException {
+        if (mPlayer != null) {
+            mPlayer.reset();
+            mPlaybackManager.setState(PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS);
+            mPlayer.setDataSource(uri.toString());
+            mPlayer.prepare();
+        }
+
+    }
+
+    @Override
+    protected void skipToNext(Uri uri) throws IOException {
+        if (mPlayer != null) {
+            mPlayer.reset();
+            mPlaybackManager.setState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT);
+            mPlayer.setDataSource(uri.toString());
+            mPlayer.prepare();
         }
     }
 
@@ -149,9 +200,14 @@ public class MusicPlayer extends CorePlayer {
     @Override
     protected void onPreparedLogic(MediaPlayer mp) {
         Log.d(TAG, "onPreparedLogic: ");
-        mPlaybackManager.setState(PlaybackStateCompat.STATE_PAUSED);
+
+        if (mAudioFocusHelper != null) {
+            boolean result = mAudioFocusHelper.requestFocus(mContext);
+            Log.d(TAG, "start: focus:" + result);
+        }
         mPlayer.start();
         mPlaybackManager.setState(PlaybackStateCompat.STATE_PLAYING);
+        mNotificationHelper.updateNotification();
     }
 
     @Override
@@ -168,6 +224,7 @@ public class MusicPlayer extends CorePlayer {
 
 
     private boolean prepare(String mPlayUri) {
+        boolean isInitialized = false;
         try {
             if (mPlayer == null) {
                 return false;
@@ -176,13 +233,131 @@ public class MusicPlayer extends CorePlayer {
             mPlayer.reset();
             mPlayer.setDataSource(mPlayUri);
             mPlayer.prepare();
-            mIsInitialized = true;
+            isInitialized = true;
         } catch (IOException e) {
-            mIsInitialized = false;
+            isInitialized = false;
             e.printStackTrace();
         }
 
-        return mIsInitialized;
+        return isInitialized;
     }
 
+
+    @Override
+    public void onAudioFocusChangeImp(int focusChange) {
+        Log.d(TAG, "onAudioFocusChange: ");
+        if (mPlayer == null) {
+            return;
+        }
+
+        boolean isPlaying = false;
+        try {
+            isPlaying = mPlayer.isPlaying();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_LOSS:
+                Log.d(TAG, "onAudioFocusChange: AUDIO_FOCUS_LOSS");
+                //长时间丢失焦点,当其他应用申请的焦点为AUDIOFOCUS_GAIN时，
+                //会触发此回调事件，例如播放QQ音乐，网易云音乐等
+                //通常需要暂停音乐播放，若没有暂停播放就会出现和其他音乐同时输出声音
+                loseFocus(isPlaying);
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                Log.d(TAG, "onAudioFocusChange: AUDIO_FOCUS_LOSS_TRANSIENT");
+                //短暂性丢失焦点，当其他应用申请AUDIOFOCUS_GAIN_TRANSIENT或AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE时，
+                //会触发此回调事件，例如播放短视频，拨打电话等。
+                //通常需要暂停音乐播放
+                loseFocus(isPlaying);
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                Log.d(TAG, "onAudioFocusChange: AUDIO_FOCUS_LOSS_TRANSIENT_CAN_DUCK");
+                //短暂性丢失焦点并作降音处理
+                loseFocus(isPlaying);
+                break;
+            case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
+                Log.d(TAG, "onAudioFocusChange: AUDIO_FOCUS_GAIN_TRANSIENT_MAY_DUCK");
+                gainFocus(isPlaying);
+                break;
+            case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
+                Log.d(TAG, "onAudioFocusChange: AUDIO_FOCUS_GAIN_TRANSIENT");
+                gainFocus(isPlaying);
+                break;
+            case AudioManager.AUDIOFOCUS_GAIN:
+                Log.d(TAG, "onAudioFocusChange: AUDIO_FOCUS_GAIN");
+                //当其他应用申请焦点之后又释放焦点会触发此回调
+                //可重新播放音乐
+                gainFocus(isPlaying);
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onCallStateChangedImp(int state, String phoneNumber) {
+        boolean isPlaying = false;
+        try {
+            isPlaying = mPlayer.isPlaying();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        switch (state) {
+            case TelephonyManager.CALL_STATE_RINGING:
+                // 响铃，来电话了
+                // 先判断是否需要响铃，如果需要，则pause，否则不需要pause.
+                AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+                int ringVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
+                if (ringVolume > 0) {
+                    mResumeAfterCall = (isPlaying || mResumeAfterCall);
+                    pause();
+                }
+                break;
+            case TelephonyManager.CALL_STATE_OFFHOOK:
+                // 电话活跃中
+                mResumeAfterCall = (isPlaying || mResumeAfterCall);
+                pause();
+                break;
+            case TelephonyManager.CALL_STATE_IDLE:
+                // 挂断了
+                if (mResumeAfterCall) {
+                    start();
+                    mResumeAfterCall = false;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void gainFocus(boolean isPlaying) {
+        try {
+            if (!isPlaying && mPausedByTransientLossOfFocus) {
+                mPausedByTransientLossOfFocus = false;
+                mPlayer.start();
+                mPlaybackManager.setState(PlaybackStateCompat.STATE_PLAYING);
+                mNotificationHelper.updateNotification();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loseFocus(boolean isPlaying) {
+        try {
+            if (isPlaying) {
+                mPausedByTransientLossOfFocus = true;
+                mPlayer.pause();
+                mPlaybackManager.setState(PlaybackStateCompat.STATE_PAUSED);
+                mNotificationHelper.updateNotification();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -5,6 +5,9 @@ import android.net.Uri;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 
+import com.smasher.media.helper.AudioFocusHelper;
+import com.smasher.media.helper.NotificationHelper;
+
 import java.io.IOException;
 
 
@@ -20,6 +23,11 @@ public class MediaPlayerProxy {
 
     public MediaPlayerProxy(Context context, MediaSessionCompat session) {
         mPlayer = new MusicPlayer(context, session);
+    }
+
+
+    public void setNotificationManager(NotificationHelper notificationHelper) {
+        mPlayer.setNotificationHelper(notificationHelper);
     }
 
 
@@ -53,6 +61,7 @@ public class MediaPlayerProxy {
 
 
     public void play() {
+
         if (mPlayer != null) {
             Log.d(TAG, "play: ");
             mPlayer.play();
@@ -64,6 +73,22 @@ public class MediaPlayerProxy {
         if (mPlayer != null) {
             Log.d(TAG, "pause: ");
             mPlayer.pause();
+        }
+    }
+
+
+    public void skipToPrevious(Uri uri) throws IOException {
+        if (mPlayer != null) {
+            Log.d(TAG, "skipToPrevious: ");
+            mPlayer.skipToPrevious(uri);
+        }
+    }
+
+
+    public void skipToNext(Uri uri) throws IOException {
+        if (mPlayer != null) {
+            Log.d(TAG, "skipToNext: ");
+            mPlayer.skipToNext(uri);
         }
     }
 
@@ -149,7 +174,6 @@ public class MediaPlayerProxy {
     public int getState() {
         return mPlayer.getState();
     }
-
 
     //endregion
 }

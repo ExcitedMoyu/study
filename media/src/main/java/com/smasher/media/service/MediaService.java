@@ -1,6 +1,8 @@
 package com.smasher.media.service;
 
 
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.RatingCompat;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.MediaSessionCompat.QueueItem;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -20,7 +23,9 @@ import androidx.media.MediaBrowserServiceCompat;
 
 import com.smasher.media.core.MediaPlayerProxy;
 import com.smasher.media.loader.MusicLoader;
+import com.smasher.media.helper.NotificationHelper;
 import com.smasher.media.manager.QueueManager;
+import com.smasher.media.receiver.MediaButtonIntentReceiver;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,12 +39,16 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
 
     private static final String TAG = "MediaService";
     public static final String MEDIA_ID_ROOT = "MediaService_browser_root";
+
+    public static final String ACTION_FOREGROUND = "action_foreground";
+
     private MediaSessionCompat mSession;
     private MediaSessionCallback mSessionCallback;
 
     private MediaPlayerProxy mPlayer;
     private MusicLoader mLoader;
     private QueueManager mQueueManager;
+    private NotificationHelper mNotificationHelper;
 
     @Override
     public void onCreate() {
@@ -47,9 +56,10 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         Log.d(TAG, "onCreate: ");
         mLoader = MusicLoader.getInstance();
         mLoader.init(this);
-        mLoader.requestData();
 
-        mSession = new MediaSessionCompat(this, TAG);
+        PendingIntent pendingIntent = null;
+        ComponentName componentName = new ComponentName(getPackageName(), MediaButtonIntentReceiver.class.getName());
+        mSession = new MediaSessionCompat(this, TAG, componentName, pendingIntent);
         mSessionCallback = new MediaSessionCallback();
 
         mSession.setCallback(mSessionCallback);
@@ -60,15 +70,65 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         //表示MediaBrowser与MediaBrowserService连接成功
         setSessionToken(mSession.getSessionToken());
 
+        mNotificationHelper = new NotificationHelper(this, mSession);
         mQueueManager = new QueueManager(mLoader, mQueueListener);
+
         mPlayer = new MediaPlayerProxy(this, mSession);
+        mPlayer.setNotificationManager(mNotificationHelper);
 
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: ");
-        return super.onStartCommand(intent, flags, startId);
+        MediaControllerCompat.TransportControls transportControls = null;
+        if (mSession != null) {
+            MediaControllerCompat controllerCompat = mSession.getController();
+            transportControls = controllerCompat.getTransportControls();
+        }
+        handleAction(intent, transportControls);
+        return START_STICKY;
+    }
+
+    /**
+     * notification控制
+     *
+     * @param intent            intent
+     * @param transportControls transportControls
+     */
+    private void handleAction(Intent intent, MediaControllerCompat.TransportControls transportControls) {
+        String action = intent.getAction();
+        if (action != null) {
+            switch (action) {
+
+                case ACTION_FOREGROUND:
+                    startForeground(NotificationHelper.NOTIFICATION_ID, mNotificationHelper.createNotification());
+                    break;
+
+                case NotificationHelper.ACTION_NEXT:
+                    if (transportControls != null) {
+                        transportControls.skipToNext();
+                    }
+                    break;
+                case NotificationHelper.ACTION_PREVIOUS:
+                    if (transportControls != null) {
+                        transportControls.skipToPrevious();
+                    }
+                    break;
+                case NotificationHelper.ACTION_PAUSE:
+                    if (transportControls != null) {
+                        transportControls.pause();
+                    }
+                    break;
+                case NotificationHelper.ACTION_PLAY:
+                    if (transportControls != null) {
+                        transportControls.play();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     @Override
@@ -81,6 +141,7 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
     public void onActiveChanged() {
         Log.d(TAG, "onActiveChanged: " + mSession.isActive());
     }
+
 
     @Nullable
     @Override
@@ -97,32 +158,14 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         mSession.setQueue(queueItemList);
         String queueTitle = "local_music";
         mQueueManager.setCurrentQueue(queueTitle, queueItemList, "");
-        result.sendResult(mLoader.getChildren());
+        result.sendResult(list);
     }
 
 
-    private QueueManager.QueueListener mQueueListener = new QueueManager.QueueListener() {
-        @Override
-        public void onMetadataChanged(MediaMetadataCompat metadata) {
-            Log.d(TAG, "onMetadataChanged: ");
-        }
-
-        @Override
-        public void onMetadataRetrieveError() {
-
-        }
-
-        @Override
-        public void onCurrentQueueIndexUpdated(int queueIndex) {
-
-        }
-
-        @Override
-        public void onQueueUpdated(String title, List<QueueItem> newQueue) {
-
-        }
-    };
-
+    /**
+     * 操作回调
+     * 执行操作
+     */
     public class MediaSessionCallback extends MediaSessionCompat.Callback {
 
 
@@ -166,7 +209,7 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
                     }
                     break;
                 case PlaybackStateCompat.STATE_NONE:
-                case PlaybackStateCompat.STATE_PLAYING:
+
                     try {
                         QueueItem currentMusic = mQueueManager.getCurrentMusic();
                         if (currentMusic != null) {
@@ -183,6 +226,8 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
                         e.printStackTrace();
                     }
                     break;
+                case PlaybackStateCompat.STATE_PLAYING:
+                    break;
                 default:
                     break;
             }
@@ -198,21 +243,26 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             super.onPlayFromMediaId(mediaId, extras);
             Log.d(TAG, "onPlayFromMediaId: ");
-//            QueueItem currentMusic = mQueueManager.getCurrentMusic();
-//            if (currentMusic != null) {
-//                MediaMetadataCompat metadataCompat = null;
-//                metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
-//                mSession.setMetadata(metadataCompat);
-//                if (mPlayer != null) {
-//                    try {
-//                        mPlayer.reset();
-//                        mPlayer.setDataSource(currentMusic.getDescription().getMediaUri());
-//                        mPlayer.prepare();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
+
+            mQueueManager.skipQueuePositionByMediaId(mediaId);
+
+            try {
+                QueueItem currentMusic = mQueueManager.getCurrentMusic();
+                if (currentMusic != null) {
+                    MediaMetadataCompat metadataCompat = null;
+                    metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
+                    mSession.setMetadata(metadataCompat);
+                    if (mPlayer != null) {
+                        mPlayer.reset();
+                        mPlayer.setDataSource(currentMusic.getDescription().getMediaUri());
+                        mPlayer.prepare();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
         }
 
         @Override
@@ -247,22 +297,25 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         public void onSkipToNext() {
             super.onSkipToNext();
             Log.d(TAG, "onSkipToNext: ");
-            mQueueManager.skipQueuePosition(+1);
+
+            if (mPlayer == null) {
+                Log.e(TAG, "onPlay: player is not init yet");
+                return;
+            }
+
             try {
                 switch (mPlayer.getState()) {
                     case PlaybackStateCompat.STATE_PLAYING:
-                        mPlayer.pause();
                     case PlaybackStateCompat.STATE_PAUSED:
                     case PlaybackStateCompat.STATE_NONE:
+                        mQueueManager.skipQueuePosition(+1);
                         QueueItem currentMusic = mQueueManager.getCurrentMusic();
                         if (currentMusic != null) {
                             MediaMetadataCompat metadataCompat = null;
                             metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
                             mSession.setMetadata(metadataCompat);
                             if (mPlayer != null) {
-                                mPlayer.reset();
-                                mPlayer.setDataSource(currentMusic.getDescription().getMediaUri());
-                                mPlayer.prepare();
+                                mPlayer.skipToNext(currentMusic.getDescription().getMediaUri());
                             }
                         }
                         break;
@@ -278,22 +331,25 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
             Log.d(TAG, "onSkipToPrevious: ");
-            mQueueManager.skipQueuePosition(-1);
+
+            if (mPlayer == null) {
+                Log.e(TAG, "onPlay: player is not init yet");
+                return;
+            }
+
             try {
                 switch (mPlayer.getState()) {
                     case PlaybackStateCompat.STATE_PLAYING:
-                        mPlayer.pause();
                     case PlaybackStateCompat.STATE_PAUSED:
                     case PlaybackStateCompat.STATE_NONE:
+                        mQueueManager.skipQueuePosition(-1);
                         QueueItem currentMusic = mQueueManager.getCurrentMusic();
                         if (currentMusic != null) {
                             MediaMetadataCompat metadataCompat = null;
                             metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
                             mSession.setMetadata(metadataCompat);
                             if (mPlayer != null) {
-                                mPlayer.reset();
-                                mPlayer.setDataSource(currentMusic.getDescription().getMediaUri());
-                                mPlayer.prepare();
+                                mPlayer.skipToPrevious(currentMusic.getDescription().getMediaUri());
                             }
                         }
                         break;
@@ -404,7 +460,28 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
             super.onCommand(command, args, cb);
             Log.d(TAG, "onCommand: ");
         }
-
-
     }
+
+
+    private QueueManager.QueueListener mQueueListener = new QueueManager.QueueListener() {
+        @Override
+        public void onMetadataChanged(MediaMetadataCompat metadata) {
+            Log.d(TAG, "onMetadataChanged: ");
+        }
+
+        @Override
+        public void onMetadataRetrieveError() {
+
+        }
+
+        @Override
+        public void onCurrentQueueIndexUpdated(int queueIndex) {
+
+        }
+
+        @Override
+        public void onQueueUpdated(String title, List<QueueItem> newQueue) {
+
+        }
+    };
 }

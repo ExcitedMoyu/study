@@ -1,5 +1,6 @@
 package com.smasher.media.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.media.MediaBrowserCompat;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +34,7 @@ import com.smasher.media.R;
 import com.smasher.media.adapter.MusicListAdapter;
 import com.smasher.media.adapter.OnItemClickListener;
 import com.smasher.media.helper.MediaBrowserHelper;
+import com.smasher.media.service.MediaService;
 
 import java.util.List;
 
@@ -74,11 +77,10 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     RecyclerView recyclerView;
 
     private MediaBrowserHelper mMediaBrowserHelper;
-    private TransportControls mController;
+    private MediaControllerCompat mController;
     private MusicListAdapter mAdapter;
     private MediaBrowserCompat mMediaBrowser;
 
-    private PlaybackStateCompat mState;
 
     private List<MediaItem> mList;
 
@@ -119,7 +121,8 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
 
 
     private void updateViewState() {
-        boolean isPlaying = isPlaying();
+        int state = mController == null ? PlaybackStateCompat.STATE_NONE : mController.getPlaybackState().getState();
+        boolean isPlaying = state == PlaybackStateCompat.STATE_PLAYING;
         playPause.setImageResource(isPlaying ? R.drawable.music_pause : R.drawable.music_play);
     }
 
@@ -179,17 +182,19 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     private void connectToSessionImp(MediaSessionCompat.Token token) {
 
         try {
-            MediaControllerCompat controller = new MediaControllerCompat(this, token);
-            MediaControllerCompat.setMediaController(this, controller);
-            controller.registerCallback(new MediaControllerCallback());
-            mController = controller.getTransportControls();
-
-            mState = controller.getPlaybackState();
-            Log.d(TAG, "connectToSessionImp: init state:" + mState.getState());
+            mController = new MediaControllerCompat(this, token);
+            MediaControllerCompat.setMediaController(this, mController);
+            mController.registerCallback(new MediaControllerCallback());
 
             if (mMediaBrowserHelper != null && mMediaBrowserHelper.isConnected()) {
                 subscribe("default");
             }
+
+            //启动前台
+            Intent intent = new Intent();
+            intent.setAction(MediaService.ACTION_FOREGROUND);
+            intent.setClass(this, MediaService.class);
+            startService(intent);
 
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -198,48 +203,48 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     }
 
 
-    @OnClick({R.id.fab, R.id.load, R.id.prepare, R.id.stop, R.id.release,
+    @OnClick({R.id.load, R.id.prepare, R.id.stop, R.id.release,
             R.id.previous, R.id.play_pause, R.id.next})
-    public void onViewClicked(View view) {
+    public void onOperation(View view) {
+        TransportControls transportControls = mController.getTransportControls();
         switch (view.getId()) {
-            case R.id.fab:
-                Snackbar snackbar = Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG);
-                snackbar.setAction("Action", null);
-                snackbar.show();
-                break;
-
             case R.id.load:
+
 
                 break;
             case R.id.prepare:
-                if (mController != null) {
-                    mController.prepare();
+                if (transportControls != null) {
+                    transportControls.prepare();
                 }
                 break;
 
             case R.id.play_pause:
-
-                if (mController == null) {
+                if (transportControls == null) {
                     return;
                 }
 
-
-                boolean isPlaying = isPlaying();
-                if (!isPlaying) {
-                    Log.d(TAG, "play:isLoad");
-                    mController.play();
-                } else {
-                    mController.pause();
+                int state = mController.getPlaybackState().getState();
+                switch (state) {
+                    case PlaybackStateCompat.STATE_PLAYING:
+                        transportControls.pause();
+                        break;
+                    case PlaybackStateCompat.STATE_PAUSED:
+                        transportControls.play();
+                        break;
+                    default:
+                        transportControls.play();
+                        break;
                 }
+
                 break;
             case R.id.next:
-                if (mController != null) {
-                    mController.skipToNext();
+                if (transportControls != null) {
+                    transportControls.skipToNext();
                 }
                 break;
             case R.id.previous:
-                if (mController != null) {
-                    mController.skipToPrevious();
+                if (transportControls != null) {
+                    transportControls.skipToPrevious();
                 }
                 break;
             case R.id.stop:
@@ -251,27 +256,27 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         }
     }
 
+
+    @OnClick({R.id.fab})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.fab:
+                Snackbar snackbar = Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG);
+                snackbar.setAction("Action", null);
+                snackbar.show();
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     public void onClick(View view, int position) {
-
-    }
-
-
-    private boolean isPlaying() {
-        boolean isPlaying = false;
-        if (mState != null) {
-            isPlaying = mState.getState() == PlaybackStateCompat.STATE_PLAYING;
+        MediaItem item = mList.get(position);
+        TransportControls transportControls = mController.getTransportControls();
+        if (transportControls != null) {
+            transportControls.playFromMediaId(item.getMediaId(), null);
         }
-        return isPlaying;
-    }
-
-
-    private boolean isInitPlay() {
-        boolean ok = false;
-        if (mState == null) {
-            ok = mState.getState() == PlaybackStateCompat.STATE_NONE;
-        }
-        return ok;
     }
 
 
@@ -365,20 +370,23 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         @Override
         public void onPlaybackStateChanged(@Nullable PlaybackStateCompat state) {
             super.onPlaybackStateChanged(state);
-            mState = state;
-            updateViewState();
             String value = state != null ? String.valueOf(state.getState()) : "";
             Log.d(TAG, "onPlaybackStateChanged " + value);
+            updateViewState();
         }
 
         @Override
         public void onMetadataChanged(@Nullable MediaMetadataCompat metadata) {
             super.onMetadataChanged(metadata);
+
+            String title = "";
             if (metadata != null) {
                 Log.d(TAG, "onMetadataChanged: " + metadata.getDescription().getTitle());
+                title = metadata.getDescription().getTitle().toString();
             } else {
                 Log.d(TAG, "onMetadataChanged ");
             }
+            Toast.makeText(ListActivity.this, title, Toast.LENGTH_SHORT).show();
         }
 
         @Override

@@ -7,6 +7,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.smasher.widget.basic.BasicActivity;
+import com.smasher.widget.behavior.BehaviorActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.start)
     public void onViewClicked() {
         Intent intent = new Intent();
-        intent.setClass(this, BasicActivity.class);
+//        intent.setClass(this, BasicActivity.class);
+        intent.setClass(this, BehaviorActivity.class);
+
         startActivity(intent);
     }
 }

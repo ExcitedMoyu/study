@@ -1,12 +1,18 @@
 package com.smasher.media.core;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.PowerManager;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 
+import com.smasher.media.helper.AudioFocusHelper;
+import com.smasher.media.helper.NotificationHelper;
+import com.smasher.media.helper.TelephonyHelper;
 import com.smasher.media.manager.PlaybackManager;
 
 import java.io.IOException;
@@ -15,24 +21,46 @@ import java.io.IOException;
 /**
  * @author moyu
  */
-public abstract class CorePlayer implements
+public abstract class CorePlayer extends PhoneStateListener implements
         MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener,
         MediaPlayer.OnBufferingUpdateListener,
-        MediaPlayer.OnPreparedListener {
+        MediaPlayer.OnPreparedListener,
+        AudioManager.OnAudioFocusChangeListener {
 
-    PlaybackManager mPlaybackManager;
-    MediaPlayer mPlayer;
+    private static final String TAG = "CorePlayer";
+
     Context mContext;
-    boolean mIsInitialized;
+    MediaPlayer mPlayer;
+    PlaybackManager mPlaybackManager;
+
+    NotificationHelper mNotificationHelper;
+
     AudioFocusHelper mAudioFocusHelper;
+    TelephonyHelper mTelephonyHelper;
+
+
+    /**
+     * 是否因失去焦点暂停
+     */
+    boolean mPausedByTransientLossOfFocus;
+
+
+    /**
+     * 手机状态监听器：来电话、来短信事件
+     */
+    boolean mResumeAfterCall = false;
 
 
     public CorePlayer(Context context, MediaSessionCompat session) {
 
         mContext = context;
 
-        mAudioFocusHelper = new AudioFocusHelper();
+        mAudioFocusHelper = new AudioFocusHelper(this);
+        mTelephonyHelper = new TelephonyHelper(mContext);
+        mTelephonyHelper.setListener(this);
+
+
         mPlaybackManager = PlaybackManager.getInstance();
         mPlaybackManager.setMediaSession(session);
         mPlaybackManager.setState(PlaybackStateCompat.STATE_NONE);
@@ -55,9 +83,7 @@ public abstract class CorePlayer implements
 
     }
 
-    protected boolean isInitialized() {
-        return mIsInitialized;
-    }
+    protected abstract void setNotificationHelper(NotificationHelper notificationHelper);
 
     protected abstract void reset();
 
@@ -72,6 +98,10 @@ public abstract class CorePlayer implements
     protected abstract void pause();
 
     protected abstract void stop();
+
+    protected abstract void skipToPrevious(Uri uri) throws IOException;
+
+    protected abstract void skipToNext(Uri uri) throws IOException;
 
     protected abstract boolean isPlaying();
 
@@ -97,6 +127,11 @@ public abstract class CorePlayer implements
     protected abstract void onCompletionLogic(MediaPlayer mp);
 
     protected abstract void onBufferingUpdateLogic(MediaPlayer mp, int percent);
+
+
+    protected abstract void onAudioFocusChangeImp(int focusChange);
+
+    protected abstract void onCallStateChangedImp(int state, String phoneNumber);
 
 
     @Override
@@ -138,4 +173,15 @@ public abstract class CorePlayer implements
 
 
     //endregion
+
+
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        onAudioFocusChangeImp(focusChange);
+    }
+
+    @Override
+    public void onCallStateChanged(int state, String phoneNumber) {
+        onCallStateChangedImp(state, phoneNumber);
+    }
 }

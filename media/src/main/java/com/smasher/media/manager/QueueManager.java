@@ -63,7 +63,7 @@ public class QueueManager {
 
 
     public void setCurrentQueue(String title, List<MediaSessionCompat.QueueItem> newQueue,
-                                   String initialMediaId) {
+                                String initialMediaId) {
         mPlayingQueue = newQueue;
         int index = 0;
         if (initialMediaId != null) {
@@ -86,6 +86,12 @@ public class QueueManager {
             return false;
         }
         mCurrentIndex = index;
+        return true;
+    }
+
+
+    public boolean skipQueuePositionByMediaId(String mediaId) {
+        mCurrentIndex = getMusicIndexOnQueue(mPlayingQueue, mediaId);
         return true;
     }
 

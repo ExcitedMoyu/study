@@ -29,7 +29,6 @@ public class MFragment extends Fragment {
 
     Context mContext;
 
-
     String mPosition;
 
     View mView;
