@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".behavior.BehaviorActivity">
+
+
+    <com.smasher.widget.behavior.SlidingCardLayout
+        android:id="@+id/card1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:colorBackground="#ED4"
+        android:text="CARD1" />
+
+
+    <com.smasher.widget.behavior.SlidingCardLayout
+        android:id="@+id/card2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:colorBackground="#24B"
+        android:text="CARD2" />
+
+
+    <com.smasher.widget.behavior.SlidingCardLayout
+        android:id="@+id/card3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:colorBackground="#424"
+        android:text="CARD3" />
+
+
+    <com.smasher.widget.behavior.SlidingCardLayout
+        android:id="@+id/card4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:colorBackground="#ED424B"
+        android:text="CARD4" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

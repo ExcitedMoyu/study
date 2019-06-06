@@ -38,6 +38,7 @@
         <service android:name=".service.MediaService" />
 
         <receiver android:name=".receiver.MediaButtonIntentReceiver" />
+
     </application>
 
 </manifest>

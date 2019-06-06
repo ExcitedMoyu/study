@@ -1,48 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".behavior.BehaviorActivity">
+    android:gravity="center"
+    android:orientation="vertical">
 
 
-    <com.smasher.widget.behavior.SlidingCardLayout
-        android:id="@+id/card1"
+    <com.smasher.widget.behavior.SlidingCardContainer
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:colorBackground="#ED4"
-        android:text="CARD1">
+        android:layout_height="800dp"
+        android:layout_marginTop="60dp">
 
-    </com.smasher.widget.behavior.SlidingCardLayout>
+    </com.smasher.widget.behavior.SlidingCardContainer>
 
-
-    <com.smasher.widget.behavior.SlidingCardLayout
-        android:id="@+id/card2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:colorBackground="#24B"
-        android:text="CARD2">
-
-    </com.smasher.widget.behavior.SlidingCardLayout>
-
-    <com.smasher.widget.behavior.SlidingCardLayout
-        android:id="@+id/card3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:colorBackground="#424"
-        android:text="CARD3">
-
-    </com.smasher.widget.behavior.SlidingCardLayout>
-
-    <com.smasher.widget.behavior.SlidingCardLayout
-        android:id="@+id/card4"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:colorBackground="#ED424B"
-        android:text="CARD4">
-
-    </com.smasher.widget.behavior.SlidingCardLayout>
-
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

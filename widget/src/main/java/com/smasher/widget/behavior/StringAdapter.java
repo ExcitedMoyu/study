@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 
 import com.smasher.widget.R;
+import com.smasher.widget.base.BaseRecyclerViewAdapter;
 
 /**
  * @author matao

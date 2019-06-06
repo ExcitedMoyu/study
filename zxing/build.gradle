@@ -24,19 +24,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
 
-
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    testImplementation 'junit:junit:4.12'
-
     api 'com.google.zxing:android-core:3.3.0'
     api 'com.google.zxing:core:3.4.0'
+
+    implementation "androidx.appcompat:appcompat:$appcompat"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    testImplementation "junit:junit:$junit"
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
 }
 

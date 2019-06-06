@@ -6,6 +6,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.smasher.widget.R;
+import com.smasher.widget.base.BaseRecyclerViewHolder;
 
 /**
  * @author matao

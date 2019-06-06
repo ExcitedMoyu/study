@@ -1,4 +1,4 @@
-package com.smasher.widget.behavior;
+package com.smasher.widget.base;
 
 import android.view.View;
 

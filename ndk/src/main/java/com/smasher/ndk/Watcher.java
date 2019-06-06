@@ -4,8 +4,7 @@ package com.smasher.ndk;
  * @author matao
  * @date 2019/5/28
  */
-public class Java2CJNI {
-
+public class Watcher {
 
 
     /**
@@ -15,20 +14,13 @@ public class Java2CJNI {
     public native String stringFromJNI();
 
 
-//    public native String java2C();
-//
-//
-//    public native void close();
+    public native void createWatcher(String userId);
 
+
+    public native void connectMonitor();
 
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
     }
-
-
-//    static {
-//        System.loadLibrary("Java2C-jni");
-//    }
-
 }
