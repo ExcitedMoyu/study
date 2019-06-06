@@ -31,20 +31,15 @@ public abstract class CorePlayer extends PhoneStateListener implements
     private static final String TAG = "CorePlayer";
 
     Context mContext;
-    MediaPlayer mPlayer;
-    PlaybackManager mPlaybackManager;
-
-    NotificationHelper mNotificationHelper;
 
     AudioFocusHelper mAudioFocusHelper;
-    TelephonyHelper mTelephonyHelper;
+    CompleteListener mCompleteListener;
 
-
+    private TelephonyHelper mTelephonyHelper;
     /**
      * 是否因失去焦点暂停
      */
     boolean mPausedByTransientLossOfFocus;
-
 
     /**
      * 手机状态监听器：来电话、来短信事件
@@ -52,36 +47,17 @@ public abstract class CorePlayer extends PhoneStateListener implements
     boolean mResumeAfterCall = false;
 
 
-    public CorePlayer(Context context, MediaSessionCompat session) {
+    CorePlayer(Context context, MediaSessionCompat session) {
 
         mContext = context;
-
         mAudioFocusHelper = new AudioFocusHelper(this);
         mTelephonyHelper = new TelephonyHelper(mContext);
         mTelephonyHelper.setListener(this);
-
-
-        mPlaybackManager = PlaybackManager.getInstance();
-        mPlaybackManager.setMediaSession(session);
-        mPlaybackManager.setState(PlaybackStateCompat.STATE_NONE);
-
-        mPlayer = new MediaPlayer();
-        mPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
-        mPlayer.setOnErrorListener(this);
-        mPlayer.setOnCompletionListener(this);
-        mPlayer.setOnBufferingUpdateListener(this);
-        mPlayer.setOnPreparedListener(this);
     }
 
+    protected abstract void setCompleteListener(CompleteListener listener);
 
-    protected void setVolume(float vol) {
-        try {
-            mPlayer.setVolume(vol, vol);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
+    protected abstract void setVolume(float vol);
 
     protected abstract void setNotificationHelper(NotificationHelper notificationHelper);
 
@@ -93,8 +69,6 @@ public abstract class CorePlayer extends PhoneStateListener implements
 
     protected abstract void start();
 
-    protected abstract void play();
-
     protected abstract void pause();
 
     protected abstract void stop();
@@ -105,9 +79,6 @@ public abstract class CorePlayer extends PhoneStateListener implements
 
     protected abstract boolean isPlaying();
 
-    protected abstract void onPausing();
-
-    protected abstract void onShutDownPausing();
 
     protected abstract long getDuration();
 
@@ -167,11 +138,7 @@ public abstract class CorePlayer extends PhoneStateListener implements
 
     //region state
 
-    public int getState() {
-        return mPlaybackManager.getState().getState();
-    }
-
-
+    public abstract int getState();
     //endregion
 
 
@@ -183,5 +150,10 @@ public abstract class CorePlayer extends PhoneStateListener implements
     @Override
     public void onCallStateChanged(int state, String phoneNumber) {
         onCallStateChangedImp(state, phoneNumber);
+    }
+
+
+    public interface CompleteListener {
+        void onComplete();
     }
 }

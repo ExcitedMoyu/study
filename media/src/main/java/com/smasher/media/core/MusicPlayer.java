@@ -4,12 +4,14 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.PowerManager;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.smasher.media.helper.NotificationHelper;
+import com.smasher.media.manager.PlaybackManager;
 
 import java.io.IOException;
 
@@ -21,9 +23,30 @@ public class MusicPlayer extends CorePlayer {
 
     private static final String TAG = "AudioPlayer";
 
+    private NotificationHelper mNotificationHelper;
+    private PlaybackManager mPlaybackManager;
+
+    private MediaPlayer mPlayer;
 
     public MusicPlayer(Context context, MediaSessionCompat session) {
         super(context, session);
+
+
+        mPlaybackManager = PlaybackManager.getInstance();
+        mPlaybackManager.setMediaSession(session);
+        mPlaybackManager.setState(PlaybackStateCompat.STATE_NONE);
+
+        mPlayer = new MediaPlayer();
+        mPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
+        mPlayer.setOnErrorListener(this);
+        mPlayer.setOnCompletionListener(this);
+        mPlayer.setOnBufferingUpdateListener(this);
+        mPlayer.setOnPreparedListener(this);
+    }
+
+    @Override
+    protected void setCompleteListener(CompleteListener listener) {
+        mCompleteListener = listener;
     }
 
     @Override
@@ -70,19 +93,6 @@ public class MusicPlayer extends CorePlayer {
         }
     }
 
-    @Override
-    protected void play() {
-        if (mAudioFocusHelper != null) {
-            boolean result = mAudioFocusHelper.requestFocus(mContext);
-            Log.d(TAG, "start: focus:" + result);
-        }
-
-        if (mPlayer != null) {
-            mPlayer.start();
-            mPlaybackManager.setState(PlaybackStateCompat.STATE_PLAYING);
-            mNotificationHelper.updateNotification();
-        }
-    }
 
     @Override
     protected void pause() {
@@ -127,21 +137,6 @@ public class MusicPlayer extends CorePlayer {
             mPlaybackManager.setState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT);
             mPlayer.setDataSource(uri.toString());
             mPlayer.prepare();
-        }
-    }
-
-    @Override
-    protected void onPausing() {
-        if (mPlayer != null) {
-
-        }
-
-    }
-
-    @Override
-    protected void onShutDownPausing() {
-        if (mPlayer != null) {
-
         }
     }
 
@@ -197,6 +192,18 @@ public class MusicPlayer extends CorePlayer {
         return 100;
     }
 
+
+    @Override
+    protected void setVolume(float vol) {
+        try {
+            mPlayer.setVolume(vol, vol);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
     @Override
     protected void onPreparedLogic(MediaPlayer mp) {
         Log.d(TAG, "onPreparedLogic: ");
@@ -213,8 +220,8 @@ public class MusicPlayer extends CorePlayer {
     @Override
     protected void onCompletionLogic(MediaPlayer mediaPlayer) {
         Log.d(TAG, "onCompletionLogic: ");
-        mPlayer.reset();
         mPlaybackManager.setState(PlaybackStateCompat.STATE_NONE);
+        mCompleteListener.onComplete();
     }
 
     @Override
@@ -360,4 +367,12 @@ public class MusicPlayer extends CorePlayer {
             e.printStackTrace();
         }
     }
+
+
+    @Override
+    public int getState() {
+        return mPlaybackManager.getState().getState();
+    }
+
+
 }

@@ -17,10 +17,13 @@ import android.support.v4.media.session.MediaSessionCompat.QueueItem;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
 
+import com.smasher.media.constant.Constant;
+import com.smasher.media.core.CorePlayer;
 import com.smasher.media.core.MediaPlayerProxy;
 import com.smasher.media.loader.MusicLoader;
 import com.smasher.media.helper.NotificationHelper;
@@ -28,19 +31,20 @@ import com.smasher.media.manager.QueueManager;
 import com.smasher.media.receiver.MediaButtonIntentReceiver;
 
 import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 /**
  * @author matao
  * @date 2019/5/31
  */
-public class MediaService extends MediaBrowserServiceCompat implements MediaSessionCompat.OnActiveChangeListener {
+public class MediaService extends MediaBrowserServiceCompat implements
+        MediaSessionCompat.OnActiveChangeListener,
+        CorePlayer.CompleteListener {
 
 
     private static final String TAG = "MediaService";
-    public static final String MEDIA_ID_ROOT = "MediaService_browser_root";
-
-    public static final String ACTION_FOREGROUND = "action_foreground";
 
     private MediaSessionCompat mSession;
     private MediaSessionCallback mSessionCallback;
@@ -74,7 +78,8 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         mQueueManager = new QueueManager(mLoader, mQueueListener);
 
         mPlayer = new MediaPlayerProxy(this, mSession);
-        mPlayer.setNotificationManager(mNotificationHelper);
+        mPlayer.setNotificationHelper(mNotificationHelper);
+        mPlayer.setCompleteListener(this);
 
     }
 
@@ -101,26 +106,26 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         if (action != null) {
             switch (action) {
 
-                case ACTION_FOREGROUND:
-                    startForeground(NotificationHelper.NOTIFICATION_ID, mNotificationHelper.createNotification());
+                case Constant.ACTION_FOREGROUND:
+                    startForeground(Constant.NOTIFICATION_ID, mNotificationHelper.createNotification());
                     break;
 
-                case NotificationHelper.ACTION_NEXT:
+                case Constant.ACTION_NEXT:
                     if (transportControls != null) {
                         transportControls.skipToNext();
                     }
                     break;
-                case NotificationHelper.ACTION_PREVIOUS:
+                case Constant.ACTION_PREVIOUS:
                     if (transportControls != null) {
                         transportControls.skipToPrevious();
                     }
                     break;
-                case NotificationHelper.ACTION_PAUSE:
+                case Constant.ACTION_PAUSE:
                     if (transportControls != null) {
                         transportControls.pause();
                     }
                     break;
-                case NotificationHelper.ACTION_PLAY:
+                case Constant.ACTION_PLAY:
                     if (transportControls != null) {
                         transportControls.play();
                     }
@@ -147,7 +152,7 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
     @Override
     public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid, @Nullable Bundle rootHints) {
         Log.d(TAG, "onGetRoot: ");
-        return new BrowserRoot(MEDIA_ID_ROOT, null);
+        return new BrowserRoot(Constant.MEDIA_ID_ROOT, null);
     }
 
     @Override
@@ -159,6 +164,10 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         String queueTitle = "local_music";
         mQueueManager.setCurrentQueue(queueTitle, queueItemList, "");
         result.sendResult(list);
+    }
+
+    @Override
+    public void onComplete() {
     }
 
 
@@ -196,11 +205,13 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         @Override
         public void onPlay() {
             super.onPlay();
-            Log.d(TAG, "onPlay: ");
+
             if (mPlayer == null) {
                 Log.e(TAG, "onPlay: player is not init yet");
                 return;
             }
+
+            Log.d(TAG, "onPlay: ");
             int state = mPlayer.getState();
             switch (state) {
                 case PlaybackStateCompat.STATE_PAUSED:
@@ -209,19 +220,15 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
                     }
                     break;
                 case PlaybackStateCompat.STATE_NONE:
+                    Uri uri = getMusicUri();
+                    if (uri == null) {
+                        return;
+                    }
 
                     try {
-                        QueueItem currentMusic = mQueueManager.getCurrentMusic();
-                        if (currentMusic != null) {
-                            MediaMetadataCompat metadataCompat = null;
-                            metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
-                            mSession.setMetadata(metadataCompat);
-                            if (mPlayer != null) {
-                                mPlayer.reset();
-                                mPlayer.setDataSource(currentMusic.getDescription().getMediaUri());
-                                mPlayer.prepare();
-                            }
-                        }
+                        mPlayer.reset();
+                        mPlayer.setDataSource(uri);
+                        mPlayer.prepare();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -242,27 +249,27 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             super.onPlayFromMediaId(mediaId, extras);
-            Log.d(TAG, "onPlayFromMediaId: ");
 
+            if (mPlayer == null) {
+                Log.e(TAG, "onPlay: player is not init yet");
+                return;
+            }
+
+            Log.d(TAG, "onPlayFromMediaId: ");
             mQueueManager.skipQueuePositionByMediaId(mediaId);
 
+            Uri uri = getMusicUri();
+            if (uri == null) {
+                return;
+            }
+
             try {
-                QueueItem currentMusic = mQueueManager.getCurrentMusic();
-                if (currentMusic != null) {
-                    MediaMetadataCompat metadataCompat = null;
-                    metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
-                    mSession.setMetadata(metadataCompat);
-                    if (mPlayer != null) {
-                        mPlayer.reset();
-                        mPlayer.setDataSource(currentMusic.getDescription().getMediaUri());
-                        mPlayer.prepare();
-                    }
-                }
+                mPlayer.reset();
+                mPlayer.setDataSource(uri);
+                mPlayer.prepare();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
 
         @Override
@@ -281,7 +288,6 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
         @Override
         public void onPause() {
             super.onPause();
-            Log.d(TAG, "onPause: ");
 
             if (mPlayer == null) {
                 Log.e(TAG, "onPlay: player is not init yet");
@@ -289,42 +295,23 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
             }
 
             if (mPlayer.getState() == PlaybackStateCompat.STATE_PLAYING) {
+                Log.d(TAG, "onPause: ");
                 mPlayer.pause();
             }
         }
 
+
         @Override
         public void onSkipToNext() {
             super.onSkipToNext();
-            Log.d(TAG, "onSkipToNext: ");
 
             if (mPlayer == null) {
                 Log.e(TAG, "onPlay: player is not init yet");
                 return;
             }
 
-            try {
-                switch (mPlayer.getState()) {
-                    case PlaybackStateCompat.STATE_PLAYING:
-                    case PlaybackStateCompat.STATE_PAUSED:
-                    case PlaybackStateCompat.STATE_NONE:
-                        mQueueManager.skipQueuePosition(+1);
-                        QueueItem currentMusic = mQueueManager.getCurrentMusic();
-                        if (currentMusic != null) {
-                            MediaMetadataCompat metadataCompat = null;
-                            metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
-                            mSession.setMetadata(metadataCompat);
-                            if (mPlayer != null) {
-                                mPlayer.skipToNext(currentMusic.getDescription().getMediaUri());
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Log.d(TAG, "onSkipToNext: ");
+            changeMusic(ACTION_NEXT);
         }
 
         @Override
@@ -337,28 +324,8 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
                 return;
             }
 
-            try {
-                switch (mPlayer.getState()) {
-                    case PlaybackStateCompat.STATE_PLAYING:
-                    case PlaybackStateCompat.STATE_PAUSED:
-                    case PlaybackStateCompat.STATE_NONE:
-                        mQueueManager.skipQueuePosition(-1);
-                        QueueItem currentMusic = mQueueManager.getCurrentMusic();
-                        if (currentMusic != null) {
-                            MediaMetadataCompat metadataCompat = null;
-                            metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
-                            mSession.setMetadata(metadataCompat);
-                            if (mPlayer != null) {
-                                mPlayer.skipToPrevious(currentMusic.getDescription().getMediaUri());
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Log.d(TAG, "onSkipToPrevious: ");
+            changeMusic(ACTION_PREVIOUS);
         }
 
         @Override
@@ -461,6 +428,68 @@ public class MediaService extends MediaBrowserServiceCompat implements MediaSess
             Log.d(TAG, "onCommand: ");
         }
     }
+
+
+    private Uri getMusicUri() {
+        Uri uri = null;
+        QueueItem currentMusic = mQueueManager.getCurrentMusic();
+        if (currentMusic != null) {
+            MediaMetadataCompat metadataCompat = null;
+            metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
+            mSession.setMetadata(metadataCompat);
+            uri = currentMusic.getDescription().getMediaUri();
+        }
+        return uri;
+    }
+
+
+    /**
+     * 手动切歌
+     * （上一曲/下一曲）
+     *
+     * @param action action
+     */
+    private void changeMusic(@ActionType int action) {
+        switch (mPlayer.getState()) {
+            case PlaybackStateCompat.STATE_PLAYING:
+            case PlaybackStateCompat.STATE_PAUSED:
+            case PlaybackStateCompat.STATE_NONE:
+
+                if (action == ACTION_PREVIOUS) {
+                    mQueueManager.skipQueuePosition(-1);
+                } else if (action == ACTION_NEXT) {
+                    mQueueManager.skipQueuePosition(1);
+                }
+
+                Uri uri = getMusicUri();
+                if (uri == null) {
+                    return;
+                }
+
+                try {
+                    if (action == ACTION_PREVIOUS) {
+                        mPlayer.skipToPrevious(uri);
+                    } else if (action == ACTION_NEXT) {
+                        mPlayer.skipToNext(uri);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    @IntDef({ACTION_NEXT, ACTION_PREVIOUS})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface ActionType {
+    }
+
+
+    public static final int ACTION_NEXT = 0;
+    public static final int ACTION_PREVIOUS = 1;
 
 
     private QueueManager.QueueListener mQueueListener = new QueueManager.QueueListener() {

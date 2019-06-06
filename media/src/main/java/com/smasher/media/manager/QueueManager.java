@@ -7,6 +7,8 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.MediaSessionCompat.QueueItem;
+import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 
 import com.smasher.media.loader.MusicLoader;
@@ -24,6 +26,9 @@ public class QueueManager {
     private QueueListener mQueueListener;
     private MusicLoader mLoader;
     private List<QueueItem> mPlayingQueue;
+    private ArrayList<Integer> mListIndex;
+    private int mRepeatMode;
+    private int mShuffleMode;
 
     private int mCurrentIndex;
 
@@ -31,8 +36,45 @@ public class QueueManager {
         mLoader = musicProvider;
         mQueueListener = mQueueListener;
         mPlayingQueue = Collections.synchronizedList(new ArrayList<>());
+        mListIndex = new ArrayList<>();
     }
 
+    /**
+     * Sets the repeat mode for this session.
+     *
+     * @param repeatMode The repeat mode. Must be one of the followings:
+     *                   {@link PlaybackStateCompat#REPEAT_MODE_NONE},
+     *                   {@link PlaybackStateCompat#REPEAT_MODE_ONE},
+     *                   {@link PlaybackStateCompat#REPEAT_MODE_ALL},
+     *                   {@link PlaybackStateCompat#REPEAT_MODE_GROUP}
+     */
+    public void onSetRepeatMode(int repeatMode) {
+        mRepeatMode = repeatMode;
+    }
+
+
+    /**
+     * Sets the shuffle mode for this session.
+     *
+     * @param shuffleMode The shuffle mode. Must be one of the followings:
+     *                    {@link PlaybackStateCompat#SHUFFLE_MODE_NONE},
+     *                    {@link PlaybackStateCompat#SHUFFLE_MODE_ALL},
+     *                    {@link PlaybackStateCompat#SHUFFLE_MODE_GROUP}
+     */
+    public void onSetShuffleMode(@PlaybackStateCompat.ShuffleMode int shuffleMode) {
+        mShuffleMode = shuffleMode;
+        changeShuffleMode();
+    }
+
+
+    //region 位置相关
+
+    /**
+     * 指定index曲目
+     * setCurrentQueueIndex
+     *
+     * @param index index
+     */
     private void setCurrentQueueIndex(int index) {
         if (index >= 0 && index < mPlayingQueue.size()) {
             mCurrentIndex = index;
@@ -40,39 +82,14 @@ public class QueueManager {
         }
     }
 
-    public QueueItem getCurrentMusic() {
-        if (!isIndexPlayable(mCurrentIndex, mPlayingQueue)) {
-            return null;
-        }
-        return mPlayingQueue.get(mCurrentIndex);
-    }
 
-
-    public int getCurrentQueueSize() {
-        if (mPlayingQueue == null) {
-            return 0;
-        }
-        return mPlayingQueue.size();
-    }
-
-
-    public void setQueueFromMusic(String mediaId) {
-        String queueTitle = "local_music";
-        setCurrentQueue(queueTitle, getPlayingQueue(mediaId, mLoader), mediaId);
-    }
-
-
-    public void setCurrentQueue(String title, List<MediaSessionCompat.QueueItem> newQueue,
-                                String initialMediaId) {
-        mPlayingQueue = newQueue;
-        int index = 0;
-        if (initialMediaId != null) {
-            index = getMusicIndexOnQueue(mPlayingQueue, initialMediaId);
-        }
-        mCurrentIndex = Math.max(index, 0);
-    }
-
-
+    /**
+     * 手动切歌（上一曲/下一曲）
+     * skipQueuePosition
+     *
+     * @param amount amount
+     * @return boolean
+     */
     public boolean skipQueuePosition(int amount) {
         int index = mCurrentIndex + amount;
         if (index < 0) {
@@ -90,12 +107,30 @@ public class QueueManager {
     }
 
 
+    public boolean skipNext() {
+        return false;
+    }
+
+
+    /**
+     * 指定media相关曲目
+     *
+     * @param mediaId mediaId
+     * @return boolean
+     */
     public boolean skipQueuePositionByMediaId(String mediaId) {
         mCurrentIndex = getMusicIndexOnQueue(mPlayingQueue, mediaId);
         return true;
     }
 
 
+    /**
+     * 查询对应曲目在队列中的index
+     *
+     * @param queue   queue
+     * @param mediaId mediaId
+     * @return queue
+     */
     private int getMusicIndexOnQueue(Iterable<QueueItem> queue, String mediaId) {
         int index = 0;
         for (QueueItem item : queue) {
@@ -105,6 +140,100 @@ public class QueueManager {
             index++;
         }
         return -1;
+    }
+
+
+    //endregion
+
+
+    public QueueItem getCurrentMusic() {
+        if (!isIndexPlayable(mCurrentIndex, mPlayingQueue)) {
+            return null;
+        }
+        return mPlayingQueue.get(mCurrentIndex);
+    }
+
+
+    /**
+     * 返回曲目列表size
+     *
+     * @return int
+     */
+    public int getCurrentQueueSize() {
+        if (mPlayingQueue == null) {
+            return 0;
+        }
+        return mPlayingQueue.size();
+    }
+
+
+    public void setQueueFromMusic(String mediaId) {
+        String queueTitle = "local_music";
+        setCurrentQueue(queueTitle, getPlayingQueue(mediaId, mLoader), mediaId);
+    }
+
+
+    /**
+     * 设置曲目列表
+     *
+     * @param title          title
+     * @param newQueue       newQueue
+     * @param initialMediaId initialMediaId
+     */
+    public void setCurrentQueue(String title, List<MediaSessionCompat.QueueItem> newQueue,
+                                String initialMediaId) {
+        mPlayingQueue = newQueue;
+        buildIndexList();
+        int index = 0;
+        if (initialMediaId != null) {
+            index = getMusicIndexOnQueue(mPlayingQueue, initialMediaId);
+        }
+        mCurrentIndex = Math.max(index, 0);
+    }
+
+    /**
+     * index列表
+     */
+    private void buildIndexList() {
+        if (mPlayingQueue.size() <= 0) {
+            return;
+        }
+        int size = mPlayingQueue.size();
+        if (mListIndex == null) {
+            mListIndex = new ArrayList<>();
+        } else {
+            mListIndex.clear();
+        }
+        for (int i = 0; i < size; i++) {
+            mListIndex.add(i);
+        }
+        changeShuffleMode();
+    }
+
+
+    private void changeShuffleMode() {
+        int size = mPlayingQueue.size();
+        if (size == 0) {
+            return;
+        }
+
+        if (size != mListIndex.size()) {
+            buildIndexList();
+        }
+
+        switch (mShuffleMode) {
+            case PlaybackStateCompat.SHUFFLE_MODE_NONE:
+                for (int i = 0; i < size; i++) {
+                    mListIndex.set(i, i);
+                }
+                break;
+            case PlaybackStateCompat.SHUFFLE_MODE_ALL:
+                Collections.shuffle(mListIndex);
+                break;
+            default:
+                break;
+        }
+
     }
 
 

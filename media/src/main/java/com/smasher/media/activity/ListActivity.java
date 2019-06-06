@@ -33,6 +33,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.smasher.media.R;
 import com.smasher.media.adapter.MusicListAdapter;
 import com.smasher.media.adapter.OnItemClickListener;
+import com.smasher.media.constant.Constant;
 import com.smasher.media.helper.MediaBrowserHelper;
 import com.smasher.media.service.MediaService;
 
@@ -192,7 +193,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
 
             //启动前台
             Intent intent = new Intent();
-            intent.setAction(MediaService.ACTION_FOREGROUND);
+            intent.setAction(Constant.ACTION_FOREGROUND);
             intent.setClass(this, MediaService.class);
             startService(intent);
 

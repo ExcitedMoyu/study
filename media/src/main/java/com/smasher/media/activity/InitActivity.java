@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -15,8 +14,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.smasher.media.R;
+import com.smasher.media.constant.Constant;
+import com.smasher.media.helper.TestHelper;
+import com.smasher.media.service.MediaService;
+
+import java.util.Collections;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +37,7 @@ import pub.devrel.easypermissions.PermissionRequest;
 public class InitActivity extends AppCompatActivity implements Handler.Callback {
 
     private static final String TAG = "InitActivity";
+
     @BindView(R.id.buttonAddress)
     Button buttonStart;
     @BindView(R.id.buttonPermission)
@@ -42,11 +49,12 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
     @BindView(R.id.exit)
     Button exit;
 
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
-    String[] permissions;
-
+    private String[] permissions;
     private Handler mHandler;
-    public static final int REQUEST_CODE = 1000;
+    private TestHelper mTestHelper;
 
 
     @Override
@@ -55,6 +63,7 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
         setContentView(R.layout.activity_init);
         ButterKnife.bind(this);
         mHandler = new Handler(this);
+        mTestHelper = new TestHelper();
         initPermissionNeed();
     }
 
@@ -63,7 +72,6 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
             permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.FOREGROUND_SERVICE};
         } else {
             permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
-
         }
     }
 
@@ -105,7 +113,7 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
         int id = view.getId();
         switch (id) {
             case R.id.buttonAddress:
-                initAddress();
+                textView.setText(mTestHelper.getPathString(TAG));
                 break;
             case R.id.buttonPermission:
                 doCheckPermission();
@@ -116,59 +124,18 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
             case R.id.tvAddress:
                 break;
             case R.id.exit:
-
+                exit();
                 break;
             default:
                 break;
         }
-
-
     }
 
-
-    private void initAddress() {
-        try {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Path:").append('\n');
-
-            String data = Environment.getDataDirectory().getPath();
-            Log.d(TAG, "data: " + data);
-            stringBuilder.append("data:").append(data).append('\n').append('\n');
-
-            String dataAbs = Environment.getDataDirectory().getAbsolutePath();
-            Log.d(TAG, "data_abs: " + dataAbs);
-            stringBuilder.append("dataAbs:").append(dataAbs).append('\n').append('\n');
-
-            String cache = Environment.getDownloadCacheDirectory().getPath();
-            Log.d(TAG, "cache: " + cache);
-            stringBuilder.append("cache:").append(cache).append('\n').append('\n');
-
-            String cacheAbs = Environment.getDownloadCacheDirectory().getAbsolutePath();
-            Log.d(TAG, "cache_abs: " + cacheAbs);
-            stringBuilder.append("cacheAbs:").append(cacheAbs).append('\n').append('\n');
-
-            String system = Environment.getRootDirectory().getPath();
-            Log.d(TAG, "system: " + system);
-            stringBuilder.append("system:").append(system).append('\n').append('\n');
-
-            String systemAbs = Environment.getRootDirectory().getAbsolutePath();
-            Log.d(TAG, "system_abs: " + systemAbs);
-            stringBuilder.append("systemAbs:").append(systemAbs).append('\n').append('\n');
-
-            String music = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath();
-            Log.d(TAG, "music: " + music);
-            stringBuilder.append("music:").append(music).append('\n').append('\n');
-
-            String musicAbs = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath();
-            Log.d(TAG, "music_abs: " + musicAbs);
-            stringBuilder.append("musicAbs:").append(musicAbs).append('\n').append('\n');
-
-            textView.setText(stringBuilder.toString());
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void exit() {
+        Intent intent = new Intent();
+        intent.setAction("");
+        intent.setClass(this, MediaService.class);
+        stopService(intent);
     }
 
 
@@ -188,14 +155,14 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
     }
 
 
-    @AfterPermissionGranted(REQUEST_CODE)
+    @AfterPermissionGranted(Constant.REQUEST_CODE)
     private boolean checkPermissions() {
         boolean perms = EasyPermissions.hasPermissions(this, permissions);
         if (perms) {
             //do nothing
             return true;
         } else {
-            PermissionRequest.Builder builder = new PermissionRequest.Builder(this, REQUEST_CODE, permissions);
+            PermissionRequest.Builder builder = new PermissionRequest.Builder(this, Constant.REQUEST_CODE, permissions);
             PermissionRequest request = builder.build();
             EasyPermissions.requestPermissions(request);
         }

@@ -25,6 +25,7 @@ import androidx.core.app.NotificationCompat.Builder;
 import androidx.media.app.NotificationCompat.MediaStyle;
 
 import com.smasher.media.R;
+import com.smasher.media.constant.Constant;
 import com.smasher.media.service.MediaService;
 
 
@@ -34,14 +35,6 @@ import com.smasher.media.service.MediaService;
  */
 public class NotificationHelper {
 
-    public static final String ACTION_PAUSE = "pause";
-    public static final String ACTION_PLAY = "play";
-    public static final String ACTION_NEXT = "next";
-    public static final String ACTION_PREVIOUS = "previous";
-    public static final int NOTIFICATION_ID = 10000;
-
-    public static final String CHANNEL_ID = "ForegroundServiceChannelId";
-    public static final String CHANNEL_NAME = "ForegroundService";
     private static final String TAG = "NotificationHelper";
 
     private Context mContext;
@@ -75,7 +68,7 @@ public class NotificationHelper {
     public void updateNotification() {
         Log.d(TAG, "updateNotification: ");
         Notification notification = createNotification();
-        mNotificationManager.notify(NOTIFICATION_ID, notification);
+        mNotificationManager.notify(Constant.NOTIFICATION_ID, notification);
     }
 
 
@@ -84,12 +77,14 @@ public class NotificationHelper {
         Log.d(TAG, "createNotification: isPlaying " + playing);
         Action playPauseAction = null;
         if (playing) {
-            playPauseAction = createAction(R.drawable.music_pause, "Pause", ACTION_PAUSE);
+            playPauseAction = createAction(R.drawable.music_pause, "Pause", Constant.ACTION_PAUSE);
         } else {
-            playPauseAction = createAction(R.drawable.music_play_small, "play", ACTION_PLAY);
+            playPauseAction = createAction(R.drawable.music_play_small, "play", Constant.ACTION_PLAY);
         }
-        Action next = createAction(R.drawable.music_next, "next", ACTION_NEXT);
-        Action previous = createAction(R.drawable.music_previous, "previous", ACTION_PREVIOUS);
+        Action like_red = createAction(R.drawable.music_like_red, "like", Constant.ACTION_LIKE);
+        Action like = createAction(R.drawable.music_like_black, "like", Constant.ACTION_LIKE);
+        Action next = createAction(R.drawable.music_next, "next", Constant.ACTION_NEXT);
+        Action previous = createAction(R.drawable.music_previous, "previous", Constant.ACTION_PREVIOUS);
         MediaMetadataCompat data = mSession.getController().getMetadata();
         MediaDescriptionCompat description = null;
         if (data != null) {
@@ -97,14 +92,14 @@ public class NotificationHelper {
         }
         mMediaStyle.setShowActionsInCompactView(1, 2, 3);
         Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.sea);
-        mBuilder = new Builder(mContext, CHANNEL_ID);
+        mBuilder = new Builder(mContext, Constant.CHANNEL_ID);
         mBuilder.setTicker("music")
                 .setLargeIcon(bitmap)
-                .addAction(next)
+                .addAction(like_red)
                 .addAction(previous)
                 .addAction(playPauseAction)
                 .addAction(next)
-                .addAction(previous)
+                .addAction(like)
                 .setShowWhen(false)
 
                 .setStyle(mMediaStyle)
@@ -127,11 +122,11 @@ public class NotificationHelper {
     public static void createNotifyChannel(Context ctx, String channelId, String channelName) {
 
         if (TextUtils.isEmpty(channelId)) {
-            channelId = CHANNEL_ID;
+            channelId = Constant.CHANNEL_ID;
         }
 
         if (TextUtils.isEmpty(channelName)) {
-            channelName = CHANNEL_NAME;
+            channelName = Constant.CHANNEL_NAME;
         }
 
 
