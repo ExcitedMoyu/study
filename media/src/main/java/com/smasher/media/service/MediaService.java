@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
 
+import com.smasher.media.annotation.ActionType;
 import com.smasher.media.constant.Constant;
 import com.smasher.media.core.CorePlayer;
 import com.smasher.media.core.MediaPlayerProxy;
@@ -311,7 +312,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
             }
 
             Log.d(TAG, "onSkipToNext: ");
-            changeMusic(ACTION_NEXT);
+            changeMusic(ActionType.ACTION_NEXT);
         }
 
         @Override
@@ -325,7 +326,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
             }
 
             Log.d(TAG, "onSkipToPrevious: ");
-            changeMusic(ACTION_PREVIOUS);
+            changeMusic(ActionType.ACTION_PREVIOUS);
         }
 
         @Override
@@ -425,7 +426,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
         @Override
         public void onCommand(@NonNull String command, @Nullable Bundle args, @Nullable ResultReceiver cb) {
             super.onCommand(command, args, cb);
-            Log.d(TAG, "onCommand: ");
+            Log.d(TAG, "callback onCommand: ");
         }
     }
 
@@ -454,11 +455,15 @@ public class MediaService extends MediaBrowserServiceCompat implements
             case PlaybackStateCompat.STATE_PLAYING:
             case PlaybackStateCompat.STATE_PAUSED:
             case PlaybackStateCompat.STATE_NONE:
-
-                if (action == ACTION_PREVIOUS) {
-                    mQueueManager.skipQueuePosition(-1);
-                } else if (action == ACTION_NEXT) {
-                    mQueueManager.skipQueuePosition(1);
+                switch (action) {
+                    case ActionType.ACTION_NEXT:
+                        mQueueManager.skipQueuePosition(1);
+                        break;
+                    case ActionType.ACTION_PREVIOUS:
+                        mQueueManager.skipQueuePosition(-1);
+                        break;
+                    default:
+                        break;
                 }
 
                 Uri uri = getMusicUri();
@@ -467,11 +472,18 @@ public class MediaService extends MediaBrowserServiceCompat implements
                 }
 
                 try {
-                    if (action == ACTION_PREVIOUS) {
-                        mPlayer.skipToPrevious(uri);
-                    } else if (action == ACTION_NEXT) {
-                        mPlayer.skipToNext(uri);
+
+                    switch (action) {
+                        case ActionType.ACTION_NEXT:
+                            mPlayer.skipToNext(uri);
+                            break;
+                        case ActionType.ACTION_PREVIOUS:
+                            mPlayer.skipToPrevious(uri);
+                            break;
+                        default:
+                            break;
                     }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -480,16 +492,6 @@ public class MediaService extends MediaBrowserServiceCompat implements
                 break;
         }
     }
-
-
-    @IntDef({ACTION_NEXT, ACTION_PREVIOUS})
-    @Retention(RetentionPolicy.SOURCE)
-    @interface ActionType {
-    }
-
-
-    public static final int ACTION_NEXT = 0;
-    public static final int ACTION_PREVIOUS = 1;
 
 
     private QueueManager.QueueListener mQueueListener = new QueueManager.QueueListener() {

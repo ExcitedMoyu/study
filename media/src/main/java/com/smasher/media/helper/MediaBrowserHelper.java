@@ -39,21 +39,6 @@ public abstract class MediaBrowserHelper {
                 mConnectionCallback,
                 null
         );
-
-        mMediaBrowserCompat.getItem("default", new MediaBrowserCompat.ItemCallback() {
-            @Override
-            public void onItemLoaded(MediaBrowserCompat.MediaItem item) {
-                super.onItemLoaded(item);
-                Log.d(TAG, "onItemLoaded: ");
-            }
-
-            @Override
-            public void onError(@NonNull String itemId) {
-                super.onError(itemId);
-                Log.d(TAG, "onItemLoaded: ");
-            }
-        });
-
     }
 
 
@@ -126,7 +111,6 @@ public abstract class MediaBrowserHelper {
         }
 
     }
-
 
 
 }

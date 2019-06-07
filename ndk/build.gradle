@@ -1,11 +1,10 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
 
 
     defaultConfig {
-        applicationId "com.smasher.ndk"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
@@ -53,10 +52,6 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.recyclerview:recyclerview:$recyclerview"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
-
-    //ButterKnife
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    annotationProcessor "com.jakewharton:butterknife-compiler:10.1.0"
 
     testImplementation "junit:junit:$junit"
     androidTestImplementation 'androidx.test:runner:1.2.0'

@@ -1,11 +1,10 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
 
 
     defaultConfig {
-        applicationId "com.smasher.widget"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
@@ -38,12 +37,10 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
 
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
-
     implementation 'com.github.hackware1993:MagicIndicator:1.6.0'
 
     testImplementation "junit:junit:$junit"
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation project(path: ':core')
 }

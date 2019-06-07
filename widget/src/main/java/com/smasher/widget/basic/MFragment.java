@@ -15,10 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.smasher.widget.R;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 
 /**
  * @author matao
@@ -26,15 +22,9 @@ import butterknife.OnClick;
  */
 public class MFragment extends Fragment {
 
-
-    Context mContext;
-
-    String mPosition;
-
-    View mView;
-
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
+    private Context mContext;
+    private String mPosition;
+    private RecyclerView recyclerView;
 
     @Override
     public void onAttach(Context context) {
@@ -70,8 +60,8 @@ public class MFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
 
+        recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.setAdapter(new RecyclerView.Adapter<ViewHolder>() {
             @NonNull
@@ -97,10 +87,6 @@ public class MFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @OnClick(R.id.recyclerView)
-    public void onViewClicked() {
     }
 
 

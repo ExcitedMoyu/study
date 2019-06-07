@@ -21,10 +21,6 @@ import com.smasher.widget.receiver.AlarmReceiver;
 
 import java.util.Calendar;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 
 /**
  * AlarmManager的使用 以及Receiver
@@ -36,9 +32,7 @@ public class AlarmActivity extends AppCompatActivity {
     private static final String TAG = "AlarmActivity";
     private static final String ALARM_EVENT = "com.smasher.study.AlarmEvent";
 
-    @BindView(R.id.alarm_test)
     Button alarmTest;
-    @BindView(R.id.textView)
     TextView textView;
 
 
@@ -46,7 +40,19 @@ public class AlarmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_factory);
-        ButterKnife.bind(this);
+
+        initView();
+        initListener();
+    }
+
+    private void initListener() {
+        alarmTest.setOnClickListener(mOnClickListener);
+        textView.setOnClickListener(mOnClickListener);
+    }
+
+    private void initView() {
+        alarmTest = findViewById(R.id.alarm_test);
+        textView = findViewById(R.id.textView);
     }
 
 
@@ -110,18 +116,18 @@ public class AlarmActivity extends AppCompatActivity {
     String mDesc = "";
     int mDelay = 20;
 
-    @OnClick({R.id.alarm_test, R.id.textView})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.alarm_test:
-
+    View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int i = view.getId();
+            if (i == R.id.alarm_test) {
                 Intent intent12 = new Intent();
                 intent12.setAction(ALARM_EVENT);
                 sendBroadcast(intent12);
 
                 Intent intent = new Intent(ALARM_EVENT);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        AlarmActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                 Calendar calendar = Calendar.getInstance();
@@ -132,12 +138,10 @@ public class AlarmActivity extends AppCompatActivity {
                 alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                 mDesc = System.currentTimeMillis() + " 设置闹钟";
                 alarmTest.setText(mDesc);
-                break;
-            case R.id.textView:
-                break;
-            default:
-                break;
+            } else if (i == R.id.textView) {
+                Log.d(TAG, "textView: ");
+            }
         }
-    }
+    };
 
 }

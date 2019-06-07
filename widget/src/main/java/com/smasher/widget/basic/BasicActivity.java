@@ -31,10 +31,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 
 /**
  * CoordinatorLayout等一系列的使用
@@ -44,25 +40,11 @@ import butterknife.OnClick;
 public class BasicActivity extends AppCompatActivity {
 
     private static final String TAG = "BasicActivity";
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    @BindView(R.id.fab)
     FloatingActionButton fab;
-
-
-    @BindView(R.id.appBarLayout)
     AppBarLayout appBarLayout;
-
-
-    @BindView(R.id.coordinatorLayout)
     CoordinatorLayout coordinatorLayout;
-
-
-    @BindView(R.id.magicIndicator)
     MagicIndicator magicIndicator;
-
-    @BindView(R.id.viewPager)
     ViewPager viewPager;
 
     FragmentManager mFragmentManager;
@@ -72,14 +54,29 @@ public class BasicActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic);
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
 
         Log.d(TAG, "onCreate: ");
-
-        mFragmentManager = getSupportFragmentManager();
+        initView();
+        initListener();
         initViewPager();
         initMagicIndicator();
+    }
+
+    private void initListener() {
+        fab.setOnClickListener(mOnClickListener);
+
+    }
+
+    private void initView() {
+        toolbar = findViewById(R.id.toolbar);
+        fab = findViewById(R.id.fab);
+        appBarLayout = findViewById(R.id.appBarLayout);
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        magicIndicator = findViewById(R.id.magicIndicator);
+        viewPager = findViewById(R.id.viewPager);
+        setSupportActionBar(toolbar);
+
+        mFragmentManager = getSupportFragmentManager();
     }
 
     private void initViewPager() {
@@ -119,7 +116,7 @@ public class BasicActivity extends AppCompatActivity {
                 indicator.setMode(LinePagerIndicator.MODE_EXACTLY);
                 indicator.setLineHeight(UIUtil.dip2px(context, 6));
                 indicator.setLineWidth(UIUtil.dip2px(context, 30));
-//                indicator.setRoundRadius(UIUtil.dip2px(context, 3));
+                //indicator.setRoundRadius(UIUtil.dip2px(context, 3));
                 indicator.setStartInterpolator(new AccelerateInterpolator());
                 indicator.setEndInterpolator(new DecelerateInterpolator(2.0f));
                 indicator.setColors(Color.parseColor("#00c853"));
@@ -143,21 +140,11 @@ public class BasicActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.toolbar, R.id.fab, R.id.appBarLayout, R.id.coordinatorLayout})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.toolbar:
-                break;
-            case R.id.fab:
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                break;
-            case R.id.appBarLayout:
-                break;
-            case R.id.coordinatorLayout:
-                break;
-            default:
-                break;
+    View.OnClickListener mOnClickListener = view -> {
+        int i = view.getId();
+        if (i == R.id.fab) {
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         }
-    }
+    };
 }

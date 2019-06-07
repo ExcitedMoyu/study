@@ -14,21 +14,10 @@
             android:name=".basic.BasicActivity"
             android:label="@string/title_activity_basic"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".Alarm.AlarmActivity" />
-
-        <activity android:name=".behavior.BehaviorActivity"></activity>
+        <activity android:name=".behavior.BehaviorActivity"/>
 
         <receiver android:name=".receiver.AlarmReceiver">
             <intent-filter>

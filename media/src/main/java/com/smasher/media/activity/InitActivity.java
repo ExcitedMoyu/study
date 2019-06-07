@@ -133,7 +133,7 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
 
     private void exit() {
         Intent intent = new Intent();
-        intent.setAction("");
+        intent.setAction(Constant.ACTION_PAUSE);
         intent.setClass(this, MediaService.class);
         stopService(intent);
     }

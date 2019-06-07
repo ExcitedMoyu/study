@@ -2,8 +2,7 @@ package com.smasher.media.adapter;
 
 
 import android.content.Context;
-import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaBrowserCompat.MediaItem;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import com.smasher.media.R;
  * @author matao
  * @date 2019/5/24
  */
-public class MusicListAdapter extends BaseRecyclerViewAdapter<MediaItem, MusicViewHolder> {
+public class MusicListAdapter extends BaseRecyclerViewAdapter<MediaSessionCompat.QueueItem, MusicViewHolder> {
 
     public MusicListAdapter(Context context) {
         super(context);

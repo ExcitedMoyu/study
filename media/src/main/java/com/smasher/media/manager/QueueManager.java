@@ -31,6 +31,7 @@ public class QueueManager {
     private int mShuffleMode;
 
     private int mCurrentIndex;
+    private int mRealIndex;
 
     public QueueManager(MusicLoader musicProvider, QueueListener mQueueListener) {
         mLoader = musicProvider;

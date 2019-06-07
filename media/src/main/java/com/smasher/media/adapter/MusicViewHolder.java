@@ -2,6 +2,7 @@ package com.smasher.media.adapter;
 
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,7 +16,7 @@ import com.smasher.media.R;
  * @author matao
  * @date 2019/5/24
  */
-public class MusicViewHolder extends BaseRecyclerViewHolder<MediaItem> {
+public class MusicViewHolder extends BaseRecyclerViewHolder<MediaSessionCompat.QueueItem> {
 
     ImageView mMusicIcon;
     TextView mMusicName;

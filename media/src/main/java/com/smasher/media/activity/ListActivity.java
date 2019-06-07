@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,8 +29,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.smasher.media.R;
 import com.smasher.media.adapter.MusicListAdapter;
 import com.smasher.media.adapter.OnItemClickListener;
@@ -56,8 +55,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     CollapsingToolbarLayout mToolbarLayout;
     @BindView(R.id.app_bar)
     AppBarLayout mAppBar;
-    @BindView(R.id.fab)
-    FloatingActionButton mFab;
 
     @BindView(R.id.prepare)
     Button mPrepare;
@@ -83,7 +80,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     private MediaBrowserCompat mMediaBrowser;
 
 
-    private List<MediaItem> mList;
+    private List<MediaSessionCompat.QueueItem> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,16 +184,22 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
             MediaControllerCompat.setMediaController(this, mController);
             mController.registerCallback(new MediaControllerCallback());
 
-            if (mMediaBrowserHelper != null && mMediaBrowserHelper.isConnected()) {
-                subscribe("default");
+            List<MediaSessionCompat.QueueItem> list = mController.getQueue();
+            if (list == null) {
+                if (mMediaBrowserHelper != null && mMediaBrowserHelper.isConnected()) {
+                    subscribe("default");
+                }
+
+                //启动前台
+                Intent intent = new Intent();
+                intent.setAction(Constant.ACTION_FOREGROUND);
+                intent.setClass(this, MediaService.class);
+                startService(intent);
+            } else {
+                mList = list;
+                mAdapter.setData(mList);
+                mAdapter.notifyDataSetChanged();
             }
-
-            //启动前台
-            Intent intent = new Intent();
-            intent.setAction(Constant.ACTION_FOREGROUND);
-            intent.setClass(this, MediaService.class);
-            startService(intent);
-
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -251,32 +254,21 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
             case R.id.stop:
                 break;
             case R.id.release:
+                AlertDialog alertDialog = new AlertDialog.Builder(this)
+                        .create();
                 break;
             default:
                 break;
         }
     }
 
-
-    @OnClick({R.id.fab})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.fab:
-                Snackbar snackbar = Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG);
-                snackbar.setAction("Action", null);
-                snackbar.show();
-                break;
-            default:
-                break;
-        }
-    }
 
     @Override
     public void onClick(View view, int position) {
-        MediaItem item = mList.get(position);
+        MediaSessionCompat.QueueItem item = mList.get(position);
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls != null) {
-            transportControls.playFromMediaId(item.getMediaId(), null);
+            transportControls.playFromMediaId(item.getDescription().getMediaId(), null);
         }
     }
 
@@ -300,9 +292,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
             super.onChildrenLoaded(parentId, children);
             //加载到的
             Log.d(TAG, "onChildrenLoaded: " + parentId);
-            mList = children;
-            mAdapter.setData(mList);
-            mAdapter.notifyDataSetChanged();
+
         }
 
         @Override
@@ -395,6 +385,11 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
             super.onQueueChanged(queue);
             if (queue != null) {
                 Log.d(TAG, "onQueueChanged: " + queue.size());
+
+
+                mList = queue;
+                mAdapter.setData(mList);
+                mAdapter.notifyDataSetChanged();
             } else {
                 Log.d(TAG, "onQueueChanged ");
             }

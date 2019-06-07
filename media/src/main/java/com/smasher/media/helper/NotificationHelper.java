@@ -81,7 +81,7 @@ public class NotificationHelper {
         } else {
             playPauseAction = createAction(R.drawable.music_play_small, "play", Constant.ACTION_PLAY);
         }
-        Action like_red = createAction(R.drawable.music_like_red, "like", Constant.ACTION_LIKE);
+        Action likeRed = createAction(R.drawable.music_like_red, "like", Constant.ACTION_LIKE);
         Action like = createAction(R.drawable.music_like_black, "like", Constant.ACTION_LIKE);
         Action next = createAction(R.drawable.music_next, "next", Constant.ACTION_NEXT);
         Action previous = createAction(R.drawable.music_previous, "previous", Constant.ACTION_PREVIOUS);
@@ -90,22 +90,29 @@ public class NotificationHelper {
         if (data != null) {
             description = data.getDescription();
         }
-        mMediaStyle.setShowActionsInCompactView(1, 2, 3);
+
         Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.sea);
         mBuilder = new Builder(mContext, Constant.CHANNEL_ID);
         mBuilder.setTicker("music")
+
                 .setLargeIcon(bitmap)
-                .addAction(like_red)
+                .addAction(likeRed)
                 .addAction(previous)
                 .addAction(playPauseAction)
                 .addAction(next)
                 .addAction(like)
                 .setShowWhen(false)
-
+                .setColor(Color.parseColor("#ed424b"))
+                .setColorized(true)
                 .setStyle(mMediaStyle)
                 .setContentTitle(description != null ? description.getTitle() : "播放器前台服务")
                 .setContentText(description != null ? description.getSubtitle() : "服务运行中...")
                 .setSmallIcon(R.drawable.ic_stat_name);
+
+
+        mMediaStyle.setShowActionsInCompactView(1, 2, 3);
+        mMediaStyle.setShowCancelButton(true);
+        mMediaStyle.setBuilder(mBuilder);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

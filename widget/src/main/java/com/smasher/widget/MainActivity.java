@@ -2,6 +2,7 @@ package com.smasher.widget;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,28 +10,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.smasher.widget.basic.BasicActivity;
 import com.smasher.widget.behavior.BehaviorActivity;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.start)
     Button start;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        initView();
+        initListener();
     }
 
-    @OnClick(R.id.start)
-    public void onViewClicked() {
+    private void initListener() {
+        start.setOnClickListener(mOnClickListener);
+    }
+
+    private void initView() {
+        start = findViewById(R.id.start);
+    }
+
+
+    View.OnClickListener mOnClickListener = v -> {
         Intent intent = new Intent();
 //        intent.setClass(this, BasicActivity.class);
         intent.setClass(this, BehaviorActivity.class);
-
         startActivity(intent);
-    }
+    };
 }

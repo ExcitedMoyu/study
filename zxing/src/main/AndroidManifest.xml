@@ -2,7 +2,7 @@
     package="com.smasher.zxing">
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <application android:allowBackup="false">
+    <application >
 
         <activity
             android:name="com.smasher.zxing.activity.CaptureActivity"

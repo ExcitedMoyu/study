@@ -30,9 +30,6 @@ import com.smasher.aidl.IMyAidlInterface;
 import com.smasher.aidl.R;
 import com.smasher.aidl.service.local.LocalService;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author matao
@@ -40,22 +37,16 @@ import butterknife.OnClick;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
-    @BindView(R.id.username)
-    EditText usernameEditText;
-    @BindView(R.id.password)
-    EditText passwordEditText;
-    @BindView(R.id.login)
-    Button loginButton;
-    @BindView(R.id.loading)
-    ProgressBar loadingProgressBar;
-    @BindView(R.id.container)
-    ConstraintLayout container;
-    @BindView(R.id.bind)
-    Button bind;
-    @BindView(R.id.unBind)
-    Button unBind;
-    @BindView(R.id.getInt)
-    Button getInt;
+
+    private ConstraintLayout mContainer;
+    private EditText mUsername;
+    private EditText mPassword;
+    private Button mLogin;
+    private ProgressBar mLoading;
+    private Button mBind;
+    private Button mUnBind;
+    private Button mGetInt;
+
 
     private LoginViewModel loginViewModel;
     private Intent mIntent;
@@ -65,18 +56,44 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
+        initView();
+        initListener();
+        initService();
+    }
+
+    private void initService() {
+        mIntent = new Intent(this, LocalService.class);
+        startService(mIntent);
+    }
+
+    private void initListener() {
+
+        mLogin.setOnClickListener(mOnClickListener);
+        mBind.setOnClickListener(mOnClickListener);
+        mUnBind.setOnClickListener(mOnClickListener);
+        mGetInt.setOnClickListener(mOnClickListener);
+
+        mUsername.addTextChangedListener(afterTextChangedListener);
+        mPassword.addTextChangedListener(afterTextChangedListener);
+        mPassword.setOnEditorActionListener(mOnEditorActionListener);
+    }
+
+    private void initView() {
+        mContainer = findViewById(R.id.container);
+        mUsername = findViewById(R.id.username);
+        mPassword = findViewById(R.id.password);
+        mLogin = findViewById(R.id.login);
+        mLoading = findViewById(R.id.loading);
+        mBind = findViewById(R.id.bind);
+        mUnBind = findViewById(R.id.unBind);
+        mGetInt = findViewById(R.id.getInt);
+
+
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
         loginViewModel.getLoginFormState().observe(this, loginFormState);
         loginViewModel.getLoginResult().observe(this, loginResult);
-
-        usernameEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(mOnEditorActionListener);
-        mIntent = new Intent(this, LocalService.class);
-        startService(mIntent);
     }
 
 
@@ -123,8 +140,8 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
-                    passwordEditText.getText().toString());
+            loginViewModel.loginDataChanged(mUsername.getText().toString(),
+                    mPassword.getText().toString());
         }
     };
 
@@ -134,8 +151,8 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+                loginViewModel.login(mUsername.getText().toString(),
+                        mPassword.getText().toString());
             }
             return false;
         }
@@ -148,12 +165,12 @@ public class LoginActivity extends AppCompatActivity {
             if (loginFormState == null) {
                 return;
             }
-            loginButton.setEnabled(loginFormState.isDataValid());
+            mLogin.setEnabled(loginFormState.isDataValid());
             if (loginFormState.getUsernameError() != null) {
-                usernameEditText.setError(getString(loginFormState.getUsernameError()));
+                mUsername.setError(getString(loginFormState.getUsernameError()));
             }
             if (loginFormState.getPasswordError() != null) {
-                passwordEditText.setError(getString(loginFormState.getPasswordError()));
+                mPassword.setError(getString(loginFormState.getPasswordError()));
             }
         }
     };
@@ -165,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
             if (loginResult == null) {
                 return;
             }
-            loadingProgressBar.setVisibility(View.GONE);
+            mLoading.setVisibility(View.GONE);
             if (loginResult.getError() != null) {
                 showLoginFailed(loginResult.getError());
             }
@@ -180,25 +197,23 @@ public class LoginActivity extends AppCompatActivity {
     };
 
 
-    @OnClick({R.id.login, R.id.bind, R.id.unBind, R.id.getInt})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.login:
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
-                break;
-            case R.id.bind:
+    View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int i = view.getId();
+            if (i == R.id.login) {
+                mLoading.setVisibility(View.VISIBLE);
+                loginViewModel.login(mUsername.getText().toString(),
+                        mPassword.getText().toString());
+            } else if (i == R.id.bind) {
                 try {
                     isBind = bindService(mIntent, mConnection, BIND_AUTO_CREATE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                break;
-            case R.id.unBind:
+            } else if (i == R.id.unBind) {
                 unBindMService();
-                break;
-            case R.id.getInt:
+            } else if (i == R.id.getInt) {
                 try {
                     if (myAidlInterface != null) {
                         int test = myAidlInterface.getTestInt();
@@ -208,11 +223,9 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-                break;
-            default:
-                break;
+            }
         }
-    }
+    };
 
     private void unBindMService() {
         if (isBind) {

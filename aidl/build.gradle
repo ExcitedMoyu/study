@@ -1,11 +1,10 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
 
 
     defaultConfig {
-        applicationId "com.smasher.aidl"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
@@ -40,11 +39,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
 
-    implementation 'com.jakewharton:butterknife:10.1.0'
     implementation 'androidx.annotation:annotation:1.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+
 
     testImplementation "junit:junit:$junit"
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation project(path: ':core')
 }

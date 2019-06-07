@@ -6,4 +6,5 @@ include ':dagger2',
         ':widget',
         ':aidl',
         ':ndk',
-        ':zxing'
+        ':zxing',
+        ':core'

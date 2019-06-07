@@ -16,6 +16,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.smasher.aidl.R;
@@ -28,48 +30,55 @@ import com.smasher.aidl.service.remote.RemoteService;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 public class ScrollingActivity extends AppCompatActivity {
 
 
     private static final String TAG = "ScrollingActivity";
-    @BindView(R.id.bind)
-    Button bind;
-    @BindView(R.id.unBind)
-    Button unBind;
-    @BindView(R.id.content)
-    TextView content;
 
-    private Unbinder mUnbinder;
     private Intent mIntent;
     private boolean isBind = false;
+
+
+    private AppBarLayout mAppBar;
+    private CollapsingToolbarLayout mToolbarLayout;
+    private Toolbar mToolbar;
+    private Button mBind;
+    private Button mUnBind;
+    private TextView mContent;
+    private FloatingActionButton mFab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
         Constant.TEST_INT = 100;
-        mUnbinder = ButterKnife.bind(this);
         initView();
         mIntent = new Intent(this, RemoteService.class);
     }
 
     private void initView() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        mAppBar = findViewById(R.id.app_bar);
+        mToolbarLayout = findViewById(R.id.toolbar_layout);
+        mToolbar = findViewById(R.id.toolbar);
+        mBind = findViewById(R.id.bind);
+        mUnBind = findViewById(R.id.unBind);
+        mContent = findViewById(R.id.content);
+        mFab = findViewById(R.id.fab);
+
+
+        setSupportActionBar(mToolbar);
+
+        initListener();
+    }
+
+    private void initListener() {
+        mBind.setOnClickListener(mOnClickListener);
+        mUnBind.setOnClickListener(mOnClickListener);
+        mContent.setOnClickListener(mOnClickListener);
+        mFab.setOnClickListener(mOnClickListener);
     }
 
 
@@ -113,7 +122,6 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mUnbinder.unbind();
 
         try {
             mIBookManager.unregisterListener(mObserverListener);
@@ -123,22 +131,20 @@ public class ScrollingActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.bind, R.id.unBind, R.id.content})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.bind:
-                isBind = bindMservice();
-                break;
-            case R.id.unBind:
-                unBindMService();
-                break;
-            case R.id.content:
-                addBooks();
-                break;
-            default:
-                break;
+    View.OnClickListener mOnClickListener = view -> {
+        int i = view.getId();
+        if (i == R.id.bind) {
+            isBind = bindMservice();
+        } else if (i == R.id.unBind) {
+            unBindMService();
+        } else if (i == R.id.content) {
+            addBooks();
+        } else if (i == R.id.fab) {
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         }
-    }
+    };
+
 
     private void addBooks() {
         try {
@@ -220,5 +226,4 @@ public class ScrollingActivity extends AppCompatActivity {
 
         }
     };
-
 }
