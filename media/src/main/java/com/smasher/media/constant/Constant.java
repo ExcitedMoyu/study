@@ -13,6 +13,7 @@ public class Constant {
     public static final String ACTION_PLAY = "play";
     public static final String ACTION_NEXT = "next";
     public static final String ACTION_LIKE = "like";
+    public static final String ACTION_LIST = "list";
     public static final String ACTION_PREVIOUS = "previous";
 
     public static final String CHANNEL_ID = "ForegroundServiceChannelId";

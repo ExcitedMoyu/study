@@ -7,4 +7,5 @@ include ':dagger2',
         ':aidl',
         ':ndk',
         ':zxing',
-        ':core'
+        ':core',
+        ':downloader'

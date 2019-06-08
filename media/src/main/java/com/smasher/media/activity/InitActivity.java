@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,14 +17,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.smasher.media.R;
 import com.smasher.media.constant.Constant;
 import com.smasher.media.helper.TestHelper;
 import com.smasher.media.service.MediaService;
-
-import java.util.Collections;
-import java.util.Random;
+import com.smasher.ndk.PrimaryService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,6 +65,8 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
         ButterKnife.bind(this);
         mHandler = new Handler(this);
         mTestHelper = new TestHelper();
+        mToolbar.setTitleTextColor(ContextCompat.getColor(this, android.R.color.white));
+        setSupportActionBar(mToolbar);
         initPermissionNeed();
     }
 
@@ -79,6 +82,29 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
     @Override
     protected void onStart() {
         super.onStart();
+        Intent intent = new Intent();
+        intent.setClass(this, PrimaryService.class);
+        startService(intent);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent();
+            intent.setClass(this, DebugActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -97,7 +123,6 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
     @Override
     protected void onStop() {
         super.onStop();
-
     }
 
 

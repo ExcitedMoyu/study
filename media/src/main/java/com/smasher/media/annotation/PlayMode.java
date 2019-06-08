@@ -13,8 +13,9 @@ import java.lang.annotation.RetentionPolicy;
 @IntDef()
 @Retention(RetentionPolicy.SOURCE)
 public @interface PlayMode {
+    public static final int PLAY_MODE_PREPARE = -1;
     public static final int PLAY_MODE_NONE = 0;
     public static final int PLAY_MODE_SINGLE = 1;
-    public static final int PLAY_MODE_CIRCULATE = 0;
-
+    public static final int PLAY_MODE_CIRCULATE = 2;
+    public static final int PLAY_MODE_SHUFFLE = 3;
 }

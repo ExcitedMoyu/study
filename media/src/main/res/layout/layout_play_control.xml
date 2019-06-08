@@ -2,14 +2,29 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/control"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="@android:color/transparent"
     android:paddingTop="24dp"
     android:paddingBottom="24dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHeight_max="@dimen/length_80"
     app:layout_constraintStart_toStartOf="parent">
+
+
+    <ImageButton
+        android:id="@+id/mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:padding="10dp"
+        android:src="@drawable/play_mode_sequential"
+        android:tint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/previous"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <ImageButton
@@ -19,9 +34,10 @@
         android:background="@null"
         android:padding="10dp"
         android:src="@drawable/music_previous"
+        android:tint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/play_pause"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/mode" />
 
 
     <ImageButton
@@ -30,7 +46,8 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:padding="10dp"
-        android:src="@drawable/music_pause"
+        android:src="@drawable/music_play_small"
+        android:tint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -43,9 +60,22 @@
         android:background="@null"
         android:padding="10dp"
         android:src="@drawable/music_next"
+        android:tint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/list"
+        app:layout_constraintStart_toEndOf="@+id/play_pause" />
+
+    <ImageButton
+        android:id="@+id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:padding="10dp"
+        android:src="@drawable/music_list"
+        android:tint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/play_pause" />
+        app:layout_constraintStart_toEndOf="@+id/next" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

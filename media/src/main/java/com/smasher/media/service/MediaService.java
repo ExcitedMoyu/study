@@ -17,7 +17,6 @@ import android.support.v4.media.session.MediaSessionCompat.QueueItem;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
-import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
@@ -32,8 +31,6 @@ import com.smasher.media.manager.QueueManager;
 import com.smasher.media.receiver.MediaButtonIntentReceiver;
 
 import java.io.IOException;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 /**
@@ -169,6 +166,17 @@ public class MediaService extends MediaBrowserServiceCompat implements
 
     @Override
     public void onComplete() {
+        QueueItem item = mQueueManager.nextMusic();
+        Uri uri = getMusicUri(item);
+        if (uri != null) {
+            try {
+                mPlayer.reset();
+                mPlayer.setDataSource(uri);
+                mPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -221,7 +229,8 @@ public class MediaService extends MediaBrowserServiceCompat implements
                     }
                     break;
                 case PlaybackStateCompat.STATE_NONE:
-                    Uri uri = getMusicUri();
+                    QueueItem currentMusic = mQueueManager.getCurrentMusic();
+                    Uri uri = getMusicUri(currentMusic);
                     if (uri == null) {
                         return;
                     }
@@ -259,7 +268,8 @@ public class MediaService extends MediaBrowserServiceCompat implements
             Log.d(TAG, "onPlayFromMediaId: ");
             mQueueManager.skipQueuePositionByMediaId(mediaId);
 
-            Uri uri = getMusicUri();
+            QueueItem currentMusic = mQueueManager.getCurrentMusic();
+            Uri uri = getMusicUri(currentMusic);
             if (uri == null) {
                 return;
             }
@@ -378,6 +388,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
         public void onSetRepeatMode(int repeatMode) {
             super.onSetRepeatMode(repeatMode);
             Log.d(TAG, "onSetRepeatMode: ");
+            mQueueManager.setRepeatMode(repeatMode);
         }
 
 
@@ -385,6 +396,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
         public void onSetShuffleMode(int shuffleMode) {
             super.onSetShuffleMode(shuffleMode);
             Log.d(TAG, "onSetShuffleMode: ");
+            mQueueManager.setShuffleMode(shuffleMode);
         }
 
 
@@ -431,9 +443,8 @@ public class MediaService extends MediaBrowserServiceCompat implements
     }
 
 
-    private Uri getMusicUri() {
+    private Uri getMusicUri(QueueItem currentMusic) {
         Uri uri = null;
-        QueueItem currentMusic = mQueueManager.getCurrentMusic();
         if (currentMusic != null) {
             MediaMetadataCompat metadataCompat = null;
             metadataCompat = mQueueManager.convertToMediaMetadata(currentMusic);
@@ -466,13 +477,13 @@ public class MediaService extends MediaBrowserServiceCompat implements
                         break;
                 }
 
-                Uri uri = getMusicUri();
+                QueueItem currentMusic = mQueueManager.getCurrentMusic();
+                Uri uri = getMusicUri(currentMusic);
                 if (uri == null) {
                     return;
                 }
 
                 try {
-
                     switch (action) {
                         case ActionType.ACTION_NEXT:
                             mPlayer.skipToNext(uri);

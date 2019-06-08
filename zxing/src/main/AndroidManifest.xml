@@ -2,7 +2,9 @@
     package="com.smasher.zxing">
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <application >
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application>
 
         <activity
             android:name="com.smasher.zxing.activity.CaptureActivity"

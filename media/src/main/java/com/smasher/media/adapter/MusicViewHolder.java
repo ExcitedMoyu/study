@@ -1,7 +1,6 @@
 package com.smasher.media.adapter;
 
 import android.support.v4.media.MediaDescriptionCompat;
-import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,6 +10,7 @@ import androidx.annotation.NonNull;
 
 
 import com.smasher.media.R;
+import com.smasher.widget.base.BaseRecyclerViewHolder;
 
 /**
  * @author matao

@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.DrawableActivity" />
     </application>
 
 </manifest>

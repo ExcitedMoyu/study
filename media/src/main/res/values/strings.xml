@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Media</string>
+    <string name="app_name">Music</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -90,4 +90,8 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+
+    <string name="title_activity_debug">DebugActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

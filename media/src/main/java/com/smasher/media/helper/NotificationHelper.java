@@ -28,6 +28,8 @@ import com.smasher.media.R;
 import com.smasher.media.constant.Constant;
 import com.smasher.media.service.MediaService;
 
+import java.util.Random;
+
 
 /**
  * @author matao
@@ -81,7 +83,7 @@ public class NotificationHelper {
         } else {
             playPauseAction = createAction(R.drawable.music_play_small, "play", Constant.ACTION_PLAY);
         }
-        Action likeRed = createAction(R.drawable.music_like_red, "like", Constant.ACTION_LIKE);
+        Action list = createAction(R.drawable.music_list, "like", Constant.ACTION_LIST);
         Action like = createAction(R.drawable.music_like_black, "like", Constant.ACTION_LIKE);
         Action next = createAction(R.drawable.music_next, "next", Constant.ACTION_NEXT);
         Action previous = createAction(R.drawable.music_previous, "previous", Constant.ACTION_PREVIOUS);
@@ -91,12 +93,13 @@ public class NotificationHelper {
             description = data.getDescription();
         }
 
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.sea);
+
+        Bitmap bitmap = getLargeIcon();
         mBuilder = new Builder(mContext, Constant.CHANNEL_ID);
         mBuilder.setTicker("music")
 
                 .setLargeIcon(bitmap)
-                .addAction(likeRed)
+                .addAction(list)
                 .addAction(previous)
                 .addAction(playPauseAction)
                 .addAction(next)
@@ -119,6 +122,34 @@ public class NotificationHelper {
             mBuilder.setPriority(NotificationManager.IMPORTANCE_HIGH);
         }
         return mBuilder.build();
+    }
+
+    private Bitmap getLargeIcon() {
+        Bitmap bitmap;
+        Random random = new Random();
+        int position = random.nextInt(4);
+        switch (position) {
+            case 0:
+                bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.mumu4);
+                break;
+            case 1:
+                bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.mumu1);
+                break;
+            case 2:
+                bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.mumu2);
+                break;
+            case 3:
+                bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.mumu3);
+                break;
+            case 4:
+                bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.mumu4);
+                break;
+            default:
+                bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.mumu4);
+                break;
+        }
+
+        return bitmap;
     }
 
 

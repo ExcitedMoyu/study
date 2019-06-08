@@ -1,6 +1,11 @@
 package com.smasher.media.activity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.media.MediaBrowserCompat;
@@ -15,8 +20,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,17 +34,24 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 import com.smasher.media.R;
 import com.smasher.media.adapter.MusicListAdapter;
-import com.smasher.media.adapter.OnItemClickListener;
+import com.smasher.media.annotation.PlayMode;
 import com.smasher.media.constant.Constant;
 import com.smasher.media.helper.MediaBrowserHelper;
 import com.smasher.media.service.MediaService;
+import com.smasher.widget.base.OnItemClickListener;
 
 import java.util.List;
 
@@ -73,25 +90,47 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     ImageButton next;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.mode)
+    ImageButton mMode;
+    @BindView(R.id.list)
+    ImageButton mBtnList;
+    @BindView(R.id.control)
+    ConstraintLayout mControl;
 
     private MediaBrowserHelper mMediaBrowserHelper;
     private MediaControllerCompat mController;
     private MusicListAdapter mAdapter;
     private MediaBrowserCompat mMediaBrowser;
 
-
     private List<MediaSessionCompat.QueueItem> mList;
+
+    private int mPlayMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
-        setSupportActionBar(mToolbar);
+
+        setStatusBarTransparentColor(this);
         initView();
         initMediaBrowser();
-
     }
+
+
+    public static void setStatusBarTransparentColor(Activity activity) {
+        //设置全透明状态栏
+        Window window = activity.getWindow();
+        //半透明
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
 
     private void initMediaBrowser() {
         mMediaBrowserHelper = new MediaBrowserHelper(this) {
@@ -107,21 +146,141 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         mSubscriptionCallback = new MediaBrowserSubscriptionCallback();
     }
 
+
     private void initView() {
         mAdapter = new MusicListAdapter(this);
         mAdapter.setOnItemClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
-        updateViewState();
 
-
+        Drawable ress = ContextCompat.getDrawable(this, R.drawable.space);
+        if (ress != null) {
+            ress.setAlpha(180);
+        }
+        mControl.setBackground(ress);
+        mToolbar.setTitle("");
+        setSupportActionBar(mToolbar);
+        updatePlayState();
+        updateModeState();
     }
 
 
-    private void updateViewState() {
+    private void updatePlayState() {
         int state = mController == null ? PlaybackStateCompat.STATE_NONE : mController.getPlaybackState().getState();
         boolean isPlaying = state == PlaybackStateCompat.STATE_PLAYING;
-        playPause.setImageResource(isPlaying ? R.drawable.music_pause : R.drawable.music_play);
+        playStateChangeAnimation(playPause, isPlaying ? R.drawable.music_pause : R.drawable.music_play_small);
+    }
+
+    private void playStateChangeAnimation(ImageView target, int resource) {
+        AnimatorSet set = new AnimatorSet();
+        ObjectAnimator animatorOutAlpha = ObjectAnimator.ofFloat(target, "alpha", 1.0f, 0.2f);
+        animatorOutAlpha.setDuration(400);
+        animatorOutAlpha.setInterpolator(new AccelerateInterpolator());
+        ObjectAnimator animatorScaleY = ObjectAnimator.ofFloat(target, "scaleY", 1.0f, 0.6f);
+        animatorScaleY.setDuration(400);
+        animatorScaleY.setInterpolator(new LinearInterpolator());
+        ObjectAnimator animatorScaleX = ObjectAnimator.ofFloat(target, "scaleX", 1.0f, 0.6f);
+        animatorScaleX.setDuration(400);
+        animatorScaleX.setInterpolator(new LinearInterpolator());
+
+        ObjectAnimator animatorInScaleY = ObjectAnimator.ofFloat(target, "scaleY", 0.6f, 1.0f);
+        animatorInScaleY.setDuration(400);
+        animatorInScaleY.setStartDelay(300);
+        animatorInScaleY.setInterpolator(new LinearInterpolator());
+        ObjectAnimator animatorInScaleX = ObjectAnimator.ofFloat(target, "scaleX", 0.6f, 1.0f);
+        animatorInScaleX.setDuration(400);
+        animatorInScaleX.setStartDelay(300);
+        animatorInScaleX.setInterpolator(new LinearInterpolator());
+        ObjectAnimator animatorIn = ObjectAnimator.ofFloat(target, "alpha", 0.6f, 1.0f);
+        animatorIn.setStartDelay(300);
+        animatorIn.setDuration(400);
+        animatorIn.setInterpolator(new AccelerateInterpolator());
+        animatorIn.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                super.onAnimationRepeat(animation);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                target.setImageResource(resource);
+            }
+        });
+        set.playTogether(animatorOutAlpha, animatorScaleX, animatorScaleY, animatorInScaleX, animatorInScaleY, animatorIn);
+        set.start();
+    }
+
+
+    private void updateModeState() {
+        Log.d(TAG, "updateModeState: play mode:" + mPlayMode);
+        switch (mPlayMode) {
+            case PlayMode.PLAY_MODE_NONE:
+                modeChangeAnimation(mMode, R.drawable.play_mode_sequential);
+                break;
+            case PlayMode.PLAY_MODE_SINGLE:
+                modeChangeAnimation(mMode, R.drawable.play_mode_single);
+                break;
+            case PlayMode.PLAY_MODE_CIRCULATE:
+                modeChangeAnimation(mMode, R.drawable.play_mode_circle);
+                break;
+            case PlayMode.PLAY_MODE_SHUFFLE:
+                modeChangeAnimation(mMode, R.drawable.play_mode_random);
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    private void modeChangeAnimation(ImageView target, int resource) {
+        AnimatorSet set = new AnimatorSet();
+        ObjectAnimator animatorOutAlpha = ObjectAnimator.ofFloat(target, "alpha", 1.0f, 0.2f);
+        animatorOutAlpha.setDuration(400);
+        animatorOutAlpha.setInterpolator(new AccelerateInterpolator());
+
+        ObjectAnimator animatorOut = ObjectAnimator.ofFloat(target, "rotation", 0.0f, 360.0f);
+        animatorOut.setDuration(400);
+        animatorOut.setInterpolator(new AccelerateInterpolator());
+
+        ObjectAnimator animatorIn = ObjectAnimator.ofFloat(target, "alpha", 0.2f, 1.0f);
+        animatorIn.setStartDelay(300);
+        animatorIn.setDuration(400);
+        animatorIn.setInterpolator(new AccelerateInterpolator());
+        animatorIn.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                super.onAnimationRepeat(animation);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                target.setImageResource(resource);
+            }
+        });
+        set.playTogether(animatorOutAlpha, animatorOut, animatorIn);
+        set.start();
     }
 
 
@@ -199,69 +358,15 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
                 mList = list;
                 mAdapter.setData(mList);
                 mAdapter.notifyDataSetChanged();
+                updatePlayState();
             }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
     }
 
 
-    @OnClick({R.id.load, R.id.prepare, R.id.stop, R.id.release,
-            R.id.previous, R.id.play_pause, R.id.next})
-    public void onOperation(View view) {
-        TransportControls transportControls = mController.getTransportControls();
-        switch (view.getId()) {
-            case R.id.load:
-
-
-                break;
-            case R.id.prepare:
-                if (transportControls != null) {
-                    transportControls.prepare();
-                }
-                break;
-
-            case R.id.play_pause:
-                if (transportControls == null) {
-                    return;
-                }
-
-                int state = mController.getPlaybackState().getState();
-                switch (state) {
-                    case PlaybackStateCompat.STATE_PLAYING:
-                        transportControls.pause();
-                        break;
-                    case PlaybackStateCompat.STATE_PAUSED:
-                        transportControls.play();
-                        break;
-                    default:
-                        transportControls.play();
-                        break;
-                }
-
-                break;
-            case R.id.next:
-                if (transportControls != null) {
-                    transportControls.skipToNext();
-                }
-                break;
-            case R.id.previous:
-                if (transportControls != null) {
-                    transportControls.skipToPrevious();
-                }
-                break;
-            case R.id.stop:
-                break;
-            case R.id.release:
-                AlertDialog alertDialog = new AlertDialog.Builder(this)
-                        .create();
-                break;
-            default:
-                break;
-        }
-    }
-
+    //region 点击事件
 
     @Override
     public void onClick(View view, int position) {
@@ -270,6 +375,139 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         if (transportControls != null) {
             transportControls.playFromMediaId(item.getDescription().getMediaId(), null);
         }
+    }
+
+    @OnClick(R.id.mode)
+    public void onModeClicked() {
+        TransportControls transportControls = mController.getTransportControls();
+        if (transportControls != null) {
+            mPlayMode = nextPlayMode(mPlayMode);
+            switch (mPlayMode) {
+                case PlayMode.PLAY_MODE_NONE:
+                    transportControls.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
+                    transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+                    break;
+                case PlayMode.PLAY_MODE_SINGLE:
+                    transportControls.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
+                    transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+                    break;
+                case PlayMode.PLAY_MODE_CIRCULATE:
+                    transportControls.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL);
+                    transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+                    break;
+                case PlayMode.PLAY_MODE_SHUFFLE:
+                    transportControls.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL);
+                    transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+                    break;
+                default:
+                    transportControls.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
+                    transportControls.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+                    break;
+            }
+            updateModeState();
+        }
+    }
+
+    @OnClick(R.id.list)
+    public void onListClicked() {
+        TransportControls transportControls = mController.getTransportControls();
+        if (transportControls != null) {
+            Log.d(TAG, "onListClicked: ");
+        }
+    }
+
+    @OnClick(R.id.load)
+    public void onLoadClicked() {
+        TransportControls transportControls = mController.getTransportControls();
+        if (transportControls != null) {
+            Log.d(TAG, "onLoadClicked: ");
+        }
+    }
+
+    @OnClick(R.id.stop)
+    public void onStopClicked() {
+        TransportControls transportControls = mController.getTransportControls();
+        if (transportControls != null) {
+            transportControls.stop();
+        }
+    }
+
+    @OnClick(R.id.release)
+    public void onReleaseClicked() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .create();
+    }
+
+    @OnClick(R.id.prepare)
+    public void onPrepareClicked() {
+        TransportControls transportControls = mController.getTransportControls();
+        if (transportControls != null) {
+            transportControls.prepare();
+        }
+    }
+
+    @OnClick(R.id.previous)
+    public void onPreviousClicked() {
+        TransportControls transportControls = mController.getTransportControls();
+        if (transportControls != null) {
+            transportControls.skipToPrevious();
+        }
+        playStateChangeAnimation(previous, R.drawable.music_previous);
+    }
+
+    @OnClick(R.id.play_pause)
+    public void onPlayPauseClicked() {
+        TransportControls transportControls = mController.getTransportControls();
+        if (transportControls == null) {
+            return;
+        }
+
+        int state = mController.getPlaybackState().getState();
+        switch (state) {
+            case PlaybackStateCompat.STATE_PLAYING:
+                transportControls.pause();
+                break;
+            case PlaybackStateCompat.STATE_PAUSED:
+                transportControls.play();
+                break;
+            default:
+                transportControls.play();
+                break;
+        }
+    }
+
+    @OnClick(R.id.next)
+    public void onNextClicked() {
+        TransportControls transportControls = mController.getTransportControls();
+        if (transportControls != null) {
+            transportControls.skipToNext();
+        }
+        playStateChangeAnimation(next, R.drawable.music_next);
+    }
+
+    //endregion
+
+    private int nextPlayMode(int playMode) {
+        switch (playMode) {
+            case PlayMode.PLAY_MODE_PREPARE:
+                playMode = PlayMode.PLAY_MODE_NONE;
+                break;
+            case PlayMode.PLAY_MODE_NONE:
+                playMode = PlayMode.PLAY_MODE_SINGLE;
+                break;
+            case PlayMode.PLAY_MODE_SINGLE:
+                playMode = PlayMode.PLAY_MODE_CIRCULATE;
+                break;
+            case PlayMode.PLAY_MODE_CIRCULATE:
+                playMode = PlayMode.PLAY_MODE_SHUFFLE;
+                break;
+            case PlayMode.PLAY_MODE_SHUFFLE:
+                playMode = PlayMode.PLAY_MODE_NONE;
+                break;
+            default:
+                break;
+        }
+        return playMode;
     }
 
 
@@ -363,7 +601,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
             super.onPlaybackStateChanged(state);
             String value = state != null ? String.valueOf(state.getState()) : "";
             Log.d(TAG, "onPlaybackStateChanged " + value);
-            updateViewState();
+            updatePlayState();
         }
 
         @Override

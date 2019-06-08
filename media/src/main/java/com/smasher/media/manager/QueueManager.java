@@ -23,6 +23,7 @@ import java.util.List;
  * @author moyu
  */
 public class QueueManager {
+    private static final String TAG = "QueueManager";
     private QueueListener mQueueListener;
     private MusicLoader mLoader;
     private List<QueueItem> mPlayingQueue;
@@ -49,7 +50,7 @@ public class QueueManager {
      *                   {@link PlaybackStateCompat#REPEAT_MODE_ALL},
      *                   {@link PlaybackStateCompat#REPEAT_MODE_GROUP}
      */
-    public void onSetRepeatMode(int repeatMode) {
+    public void setRepeatMode(@PlaybackStateCompat.RepeatMode int repeatMode) {
         mRepeatMode = repeatMode;
     }
 
@@ -62,9 +63,17 @@ public class QueueManager {
      *                    {@link PlaybackStateCompat#SHUFFLE_MODE_ALL},
      *                    {@link PlaybackStateCompat#SHUFFLE_MODE_GROUP}
      */
-    public void onSetShuffleMode(@PlaybackStateCompat.ShuffleMode int shuffleMode) {
+    public void setShuffleMode(@PlaybackStateCompat.ShuffleMode int shuffleMode) {
         mShuffleMode = shuffleMode;
         changeShuffleMode();
+    }
+
+    public int getRepeatMode() {
+        return mRepeatMode;
+    }
+
+    public int getShuffleMode() {
+        return mShuffleMode;
     }
 
 
@@ -108,11 +117,6 @@ public class QueueManager {
     }
 
 
-    public boolean skipNext() {
-        return false;
-    }
-
-
     /**
      * 指定media相关曲目
      *
@@ -148,10 +152,45 @@ public class QueueManager {
 
 
     public QueueItem getCurrentMusic() {
+        QueueItem target = null;
         if (!isIndexPlayable(mCurrentIndex, mPlayingQueue)) {
             return null;
         }
-        return mPlayingQueue.get(mCurrentIndex);
+
+        if (mShuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+            target = mPlayingQueue.get(mListIndex.get(mCurrentIndex));
+        } else if (mRepeatMode == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
+            target = mPlayingQueue.get(mCurrentIndex);
+        }
+
+        return target;
+    }
+
+
+    public QueueItem nextMusic() {
+        QueueItem target = null;
+        if (mRepeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) {
+            Log.d(TAG, "REPEAT_MODE_ONE:");
+        } else if (mRepeatMode == PlaybackStateCompat.REPEAT_MODE_ALL) {
+            skipQueuePosition(1);
+        } else if (mRepeatMode == PlaybackStateCompat.REPEAT_MODE_NONE) {
+            if (mCurrentIndex + 1 >= mPlayingQueue.size()) {
+                return target;
+            }
+            skipQueuePosition(1);
+        }
+
+        if (!isIndexPlayable(mCurrentIndex, mPlayingQueue)) {
+            return null;
+        }
+
+        if (mShuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+            target = mPlayingQueue.get(mListIndex.get(mCurrentIndex));
+        } else if (mShuffleMode == PlaybackStateCompat.SHUFFLE_MODE_NONE) {
+            target = mPlayingQueue.get(mCurrentIndex);
+        }
+
+        return target;
     }
 
 

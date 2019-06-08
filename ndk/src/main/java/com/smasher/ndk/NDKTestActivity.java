@@ -26,7 +26,7 @@ public class NDKTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_ndk_test);
 
         initView();
         initListener();
@@ -40,7 +40,7 @@ public class NDKTestActivity extends AppCompatActivity {
 
     private void initService() {
         Intent intent = new Intent();
-        intent.setClass(this, MainService.class);
+        intent.setClass(this, PrimaryService.class);
         startService(intent);
     }
 

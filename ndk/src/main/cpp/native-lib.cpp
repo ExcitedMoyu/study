@@ -1,7 +1,7 @@
 
 #include "native_lib.h"
 
-const char *PATH = "/data/data/com.smasher.ndk/my.sock";
+const char *PATH = "/data/data/com.smasher.media/my.sock";
 const char *userId;
 int m_child;
 
@@ -157,7 +157,7 @@ void child_listen_msg() {
                 LOGE("重新開啓服務");
                 //开启服务
                 execlp("am", "am", "startservice", "--user", userId,
-                       "com.smasher.ndk/com.smasher.ndk.MainService", (char *) NULL);
+                       "com.smasher.ndk/com.smasher.ndk.PrimaryService", (char *) NULL);
 
                 break;
             }

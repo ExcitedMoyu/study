@@ -15,7 +15,7 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
-        <service android:name=".MainService" />
+        <service android:name=".PrimaryService" />
     </application>
 
 </manifest>

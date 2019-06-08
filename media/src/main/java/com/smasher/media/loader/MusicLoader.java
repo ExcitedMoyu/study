@@ -10,7 +10,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.MediaMetadataCompat.Builder;
 import android.util.Log;
 
-import com.smasher.media.thread.IExecutor;
+import com.smasher.oa.core.thread.IExecutor;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -45,17 +45,21 @@ dependencies {
 
     implementation 'pub.devrel:easypermissions:3.0.0'
 
+    implementation 'com.nineoldandroids:library:2.4.0'
     //ButterKnife
     implementation 'com.jakewharton:butterknife:10.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor "com.jakewharton:butterknife-compiler:10.1.0"
 
     testImplementation "junit:junit:$junit"
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
     implementation project(path: ':core')
     implementation project(path: ':widget')
     implementation project(path: ':aidl')
     implementation project(path: ':zxing')
     implementation project(path: ':draw')
     implementation project(path: ':ndk')
+    implementation project(path: ':downloader')
 }
