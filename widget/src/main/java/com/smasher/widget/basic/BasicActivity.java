@@ -31,6 +31,8 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTit
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView;
 
+import java.util.ArrayList;
+
 
 /**
  * CoordinatorLayout等一系列的使用
@@ -48,7 +50,9 @@ public class BasicActivity extends AppCompatActivity {
     ViewPager viewPager;
 
     FragmentManager mFragmentManager;
-    FargmentStateAdapter mFargmentStateAdapter;
+    FragmentStateAdapter mFragmentStateAdapter;
+
+    ArrayList<MFragment> mArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,15 +79,16 @@ public class BasicActivity extends AppCompatActivity {
         magicIndicator = findViewById(R.id.magicIndicator);
         viewPager = findViewById(R.id.viewPager);
         setSupportActionBar(toolbar);
-
         mFragmentManager = getSupportFragmentManager();
     }
+
 
     private void initViewPager() {
 
         try {
-            mFargmentStateAdapter = new FargmentStateAdapter(mFragmentManager);
-            viewPager.setAdapter(mFargmentStateAdapter);
+            mFragmentStateAdapter = new FragmentStateAdapter(getSupportFragmentManager(), mArrayList);
+            viewPager.setAdapter(mFragmentStateAdapter);
+            viewPager.setOffscreenPageLimit(4);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,8 +108,8 @@ public class BasicActivity extends AppCompatActivity {
             public IPagerTitleView getTitleView(Context context, int index) {
                 SimplePagerTitleView simplePagerTitleView = new ColorFlipPagerTitleView(context);
                 simplePagerTitleView.setText("Title" + index);
-                simplePagerTitleView.setNormalColor(Color.parseColor("#838A96"));
-                simplePagerTitleView.setSelectedColor(Color.parseColor("#3b3F47"));
+                simplePagerTitleView.setNormalColor(Color.parseColor("#99fdda00"));
+                simplePagerTitleView.setSelectedColor(Color.parseColor("#fdda00"));
                 simplePagerTitleView.setOnClickListener(v -> viewPager.setCurrentItem(index));
                 return simplePagerTitleView;
             }

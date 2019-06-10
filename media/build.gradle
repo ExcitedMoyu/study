@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 
 android {
     compileSdkVersion 28
@@ -12,6 +15,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArgument "listener", "leakcanary.FailTestOnLeakRunListener"
         multiDexEnabled = true
 
     }
@@ -34,14 +38,23 @@ dependencies {
     implementation "com.google.android.material:material:$material"
 
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.media:media:1.1.0-beta01'
-    implementation 'androidx.media2:media2-common:1.0.0-beta01'
-    implementation 'androidx.media2:media2-player:1.0.0-beta01'
-    implementation 'androidx.media2:media2-session:1.0.0-beta01'
+    implementation 'androidx.media:media:1.1.0-beta02'
+    implementation 'androidx.media2:media2-common:1.0.0-beta02'
+    implementation 'androidx.media2:media2-player:1.0.0-beta02'
+    implementation 'androidx.media2:media2-session:1.0.0-beta02'
 
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.recyclerview:recyclerview:$recyclerview"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
+
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
+    implementation "org.jetbrains.anko:anko-common:${anko_version}"
+
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
 
     implementation 'pub.devrel:easypermissions:3.0.0'
 

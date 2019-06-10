@@ -35,16 +35,16 @@ dependencies {
     implementation "com.google.android.material:material:$material"
 
     implementation 'androidx.media:media:1.1.0-beta01'
-    implementation 'androidx.media2:media2-common:1.0.0-beta01'
-    implementation 'androidx.media2:media2-player:1.0.0-beta01'
-    implementation 'androidx.media2:media2-session:1.0.0-beta01'
+    implementation 'androidx.media2:media2-common:1.0.0-beta02'
+    implementation 'androidx.media2:media2-player:1.0.0-beta02'
+    implementation 'androidx.media2:media2-session:1.0.0-beta02'
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.recyclerview:recyclerview:$recyclerview"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
 
     implementation 'pub.devrel:easypermissions:3.0.0'
 
-    implementation 'androidx.viewpager2:viewpager2:1.0.0-alpha04'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0-alpha05'
 
     //ButterKnife
     implementation 'com.jakewharton:butterknife:10.1.0'

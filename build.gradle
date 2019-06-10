@@ -11,7 +11,7 @@ buildscript {
         material = '1.1.0-alpha07'
         recyclerview = '1.1.0-alpha06'
         constraintlayout = '2.0.0-beta1'
-        appcompat = '1.1.0-alpha05'
+        appcompat = '1.1.0-beta01'
         lifecycle = '2.2.0-alpha01'
 
         okhttp = '4.0.0-alpha02'
@@ -54,6 +54,6 @@ ext {
     material = '1.1.0-alpha07'
     recyclerview = '1.1.0-alpha06'
     constraintlayout = '2.0.0-beta1'
-    appcompat = '1.1.0-alpha05'
+    appcompat = '1.1.0-beta01'
     okhttp = '4.0.0-alpha02'
 }

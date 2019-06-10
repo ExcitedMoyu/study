@@ -24,20 +24,22 @@ public abstract class BaseFragment extends Fragment {
     protected int mPageIndex = 1;
 
 
-    private boolean mIsVisible;
-    private boolean mHasLoaded;
-    private boolean mHasPrepare;
+    protected boolean mIsVisible;
+    protected boolean mHasLoaded;
+    protected boolean mHasPrepare;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onViewCreated: loading" + this.toString());
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         BusProvider.getInstance().register(this);
+        Log.d(TAG, "onViewCreated: loading" + this.toString());
     }
 
 
@@ -57,12 +59,14 @@ public abstract class BaseFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        Log.d(TAG, "onViewCreated: loading" + this.toString());
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         BusProvider.getInstance().unregister(this);
+        Log.d(TAG, "onViewCreated: loading" + this.toString());
     }
 
 
@@ -102,6 +106,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     private void lazyLoad() {
+        Log.d(TAG, "onViewCreated: loading" + this.toString());
         initData();
     }
 
