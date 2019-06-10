@@ -38,6 +38,7 @@ import pub.devrel.easypermissions.PermissionRequest;
 public class InitActivity extends AppCompatActivity implements Handler.Callback {
 
     private static final String TAG = "InitActivity";
+    private static final String ALARM_EVENT = "com.smasher.study.AlarmEvent";
 
     @BindView(R.id.buttonAddress)
     Button buttonStart;
@@ -162,6 +163,8 @@ public class InitActivity extends AppCompatActivity implements Handler.Callback 
         intent.setClass(this, MediaService.class);
         stopService(intent);
     }
+
+
 
 
     private void doSkip() {

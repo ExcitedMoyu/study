@@ -2,11 +2,13 @@ package com.smasher.media.adapter;
 
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 
 import com.smasher.media.R;
@@ -18,8 +20,9 @@ import com.smasher.widget.base.BaseRecyclerViewHolder;
  */
 public class MusicViewHolder extends BaseRecyclerViewHolder<MediaSessionCompat.QueueItem> {
 
-    ImageView mMusicIcon;
-    TextView mMusicName;
+    private ImageView mMusicIcon;
+    private TextView mMusicName;
+    private String mSelectedId;
 
     MusicViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -33,7 +36,18 @@ public class MusicViewHolder extends BaseRecyclerViewHolder<MediaSessionCompat.Q
         super.bindView();
         if (mItem != null) {
             MediaDescriptionCompat description = mItem.getDescription();
+            mMusicName.setTextColor(ContextCompat.getColor(mContext, android.R.color.white));
+            if (!TextUtils.isEmpty(mSelectedId)) {
+                if (mSelectedId.equals(description.getMediaId())) {
+                    mMusicName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ED424B));
+                }
+            }
             mMusicName.setText(description.getTitle());
         }
+    }
+
+
+    public void setSelectedId(String selectedId) {
+        mSelectedId = selectedId;
     }
 }

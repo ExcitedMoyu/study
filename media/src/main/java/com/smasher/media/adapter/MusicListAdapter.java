@@ -19,6 +19,13 @@ import com.smasher.widget.base.BaseRecyclerViewAdapter;
  */
 public class MusicListAdapter extends BaseRecyclerViewAdapter<MediaSessionCompat.QueueItem, MusicViewHolder> {
 
+    private String mSelectedMediaId;
+
+
+    public void setSelectedMediaId(String selectedMediaId) {
+        mSelectedMediaId = selectedMediaId;
+    }
+
     public MusicListAdapter(Context context) {
         super(context);
     }
@@ -31,6 +38,7 @@ public class MusicListAdapter extends BaseRecyclerViewAdapter<MediaSessionCompat
 
     @Override
     public void onBindViewHolder(@NonNull MusicViewHolder holder, int position) {
+        holder.setSelectedId(mSelectedMediaId);
         super.onBindViewHolder(holder, position);
     }
 }

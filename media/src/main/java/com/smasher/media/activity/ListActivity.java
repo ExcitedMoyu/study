@@ -355,8 +355,10 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
                 intent.setClass(this, MediaService.class);
                 startService(intent);
             } else {
+                String mediaId = mController.getMetadata().getDescription().getMediaId();
                 mList = list;
                 mAdapter.setData(mList);
+                mAdapter.setSelectedMediaId(mediaId);
                 mAdapter.notifyDataSetChanged();
                 updatePlayState();
             }
@@ -612,6 +614,8 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
             if (metadata != null) {
                 Log.d(TAG, "onMetadataChanged: " + metadata.getDescription().getTitle());
                 title = metadata.getDescription().getTitle().toString();
+                mAdapter.setSelectedMediaId(metadata.getDescription().getMediaId());
+                mAdapter.notifyDataSetChanged();
             } else {
                 Log.d(TAG, "onMetadataChanged ");
             }

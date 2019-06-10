@@ -20,6 +20,7 @@ import com.smasher.aidl.activity.remote.ui.login.LoginActivity;
 import com.smasher.draw.activity.DrawableActivity;
 import com.smasher.media.R;
 import com.smasher.widget.Alarm.AlarmActivity;
+import com.smasher.widget.Alarm.WidgetActivity;
 import com.smasher.widget.basic.BasicActivity;
 import com.smasher.zxing.activity.CaptureActivity;
 
@@ -260,7 +261,7 @@ public class DebugActivity extends AppCompatActivity {
     @OnClick(R.id.button7)
     public void onMButton7Clicked() {
         Intent intent = new Intent();
-        intent.setClass(this, BasicActivity.class);
+        intent.setClass(this, WidgetActivity.class);
         startActivity(intent);
     }
 

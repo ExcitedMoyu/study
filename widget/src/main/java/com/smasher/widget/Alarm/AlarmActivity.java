@@ -15,11 +15,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.smasher.widget.R;
 import com.smasher.widget.receiver.AlarmReceiver;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -34,7 +36,7 @@ public class AlarmActivity extends AppCompatActivity {
 
     Button alarmTest;
     TextView textView;
-
+    String mDesc = "设置闹钟";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class AlarmActivity extends AppCompatActivity {
     private void initView() {
         alarmTest = findViewById(R.id.alarm_test);
         textView = findViewById(R.id.textView);
+        alarmTest.setText(mDesc);
     }
 
 
@@ -113,17 +116,12 @@ public class AlarmActivity extends AppCompatActivity {
     }
 
 
-    String mDesc = "";
-    int mDelay = 20;
-
     View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             int i = view.getId();
             if (i == R.id.alarm_test) {
-                Intent intent12 = new Intent();
-                intent12.setAction(ALARM_EVENT);
-                sendBroadcast(intent12);
+
 
                 Intent intent = new Intent(ALARM_EVENT);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -131,13 +129,19 @@ public class AlarmActivity extends AppCompatActivity {
 
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.HOUR_OF_DAY, 21);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
-                calendar.add(Calendar.SECOND, mDelay);
+                StringBuilder desc = new StringBuilder("设置闹钟");
+                Date date = new Date(System.currentTimeMillis());
+                String pattern = "yyyy-MM-dd HH:mm:ss:SSS";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+                String dataString = simpleDateFormat.format(date);
+                desc.append("时间:").append(dataString).append("\n");
 
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                mDesc = System.currentTimeMillis() + " 设置闹钟";
-                alarmTest.setText(mDesc);
+                textView.setText(desc.toString());
             } else if (i == R.id.textView) {
                 Log.d(TAG, "textView: ");
             }

@@ -17,6 +17,5 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive: " + System.currentTimeMillis());
         Toast.makeText(context, "arrive", Toast.LENGTH_SHORT).show();
-
     }
 }
