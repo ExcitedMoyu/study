@@ -14,7 +14,7 @@ public class ActivityModule {
 
 
     @Provides
-    HelloWorld providerSellMoe() {
+    public HelloWorld providerSellMoe() {
         return new HelloWorld();
     }
 }

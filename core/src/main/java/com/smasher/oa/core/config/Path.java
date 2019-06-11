@@ -12,7 +12,7 @@ import java.io.File;
  */
 
 public class Path {
-    public static final String NAME = "XCM_OA";
+    public static final String NAME = "Default_address";
 
     static {
         AppPath.init(NAME);

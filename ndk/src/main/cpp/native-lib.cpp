@@ -1,7 +1,7 @@
 
 #include "native_lib.h"
 
-const char *PATH = "/data/data/com.smasher.media/my.sock";
+const char *PATH = "/data/data/com.smasher.rejuvenation/my.sock";
 const char *userId;
 int m_child;
 

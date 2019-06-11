@@ -34,7 +34,7 @@ dependencies {
 
     implementation "com.google.android.material:material:$material"
 
-    implementation 'androidx.media:media:1.1.0-beta01'
+    implementation 'androidx.media:media:1.1.0-beta02'
     implementation 'androidx.media2:media2-common:1.0.0-beta02'
     implementation 'androidx.media2:media2-player:1.0.0-beta02'
     implementation 'androidx.media2:media2-session:1.0.0-beta02'

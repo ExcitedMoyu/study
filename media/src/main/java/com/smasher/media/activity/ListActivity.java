@@ -2,7 +2,6 @@ package com.smasher.media.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -51,50 +50,35 @@ import com.smasher.media.annotation.PlayMode;
 import com.smasher.media.constant.Constant;
 import com.smasher.media.helper.MediaBrowserHelper;
 import com.smasher.media.service.MediaService;
+import com.smasher.oa.core.utils.StatusBarUtil;
 import com.smasher.widget.base.OnItemClickListener;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author moyu
  */
-public class ListActivity extends AppCompatActivity implements OnItemClickListener {
+public class ListActivity extends AppCompatActivity implements OnItemClickListener,
+        View.OnClickListener {
 
     private static final String TAG = "ListActivity";
 
-    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.toolbar_layout)
     CollapsingToolbarLayout mToolbarLayout;
-    @BindView(R.id.app_bar)
     AppBarLayout mAppBar;
 
-    @BindView(R.id.prepare)
     Button mPrepare;
-    @BindView(R.id.load)
     Button mLoad;
-    @BindView(R.id.stop)
     Button mStop;
-    @BindView(R.id.release)
     Button mRelease;
 
-    @BindView(R.id.previous)
     ImageButton previous;
-    @BindView(R.id.play_pause)
     ImageButton playPause;
-    @BindView(R.id.next)
     ImageButton next;
-    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @BindView(R.id.mode)
     ImageButton mMode;
-    @BindView(R.id.list)
     ImageButton mBtnList;
-    @BindView(R.id.control)
     ConstraintLayout mControl;
 
     private MediaBrowserHelper mMediaBrowserHelper;
@@ -110,10 +94,10 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        ButterKnife.bind(this);
 
-        setStatusBarTransparentColor(this);
+        StatusBarUtil.setTranslucentForCoordinatorLayout(this, 0);
         initView();
+        initState();
         initMediaBrowser();
     }
 
@@ -148,20 +132,41 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
 
 
     private void initView() {
+        mToolbar = findViewById(R.id.toolbar);
+        mToolbarLayout = findViewById(R.id.toolbar_layout);
+        mAppBar = findViewById(R.id.app_bar);
+
+        mPrepare = findViewById(R.id.prepare);
+        mLoad = findViewById(R.id.load);
+        mStop = findViewById(R.id.stop);
+        mRelease = findViewById(R.id.release);
+
+        previous = findViewById(R.id.previous);
+        playPause = findViewById(R.id.play_pause);
+        next = findViewById(R.id.next);
+        recyclerView = findViewById(R.id.recyclerView);
+        mMode = findViewById(R.id.mode);
+        mBtnList = findViewById(R.id.list);
+        mControl = findViewById(R.id.control);
+    }
+
+
+    private void initState() {
         mAdapter = new MusicListAdapter(this);
         mAdapter.setOnItemClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
 
-        Drawable ress = ContextCompat.getDrawable(this, R.drawable.space);
-        if (ress != null) {
-            ress.setAlpha(180);
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.space);
+        if (drawable != null) {
+            drawable.setAlpha(180);
         }
-        mControl.setBackground(ress);
+        mControl.setBackground(drawable);
         mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
         updatePlayState();
         updateModeState();
+
     }
 
 
@@ -355,12 +360,14 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
                 intent.setClass(this, MediaService.class);
                 startService(intent);
             } else {
-                String mediaId = mController.getMetadata().getDescription().getMediaId();
-                mList = list;
-                mAdapter.setData(mList);
-                mAdapter.setSelectedMediaId(mediaId);
-                mAdapter.notifyDataSetChanged();
-                updatePlayState();
+                if (mController != null) {
+                    String mediaId = mController.getMetadata().getDescription().getMediaId();
+                    mList = list;
+                    mAdapter.setData(mList);
+                    mAdapter.setSelectedMediaId(mediaId);
+                    mAdapter.notifyDataSetChanged();
+                    updatePlayState();
+                }
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -379,7 +386,33 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         }
     }
 
-    @OnClick(R.id.mode)
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.mode) {
+            onModeClicked();
+        } else if (id == R.id.list) {
+            onListClicked();
+        } else if (id == R.id.load) {
+            onLoadClicked();
+        } else if (id == R.id.stop) {
+            onStopClicked();
+        } else if (id == R.id.release) {
+            onReleaseClicked();
+        } else if (id == R.id.prepare) {
+            onPrepareClicked();
+        } else if (id == R.id.previous) {
+            onPreviousClicked();
+        } else if (id == R.id.play_pause) {
+            onPlayPauseClicked();
+        } else if (id == R.id.next) {
+            onNextClicked();
+        }
+
+    }
+
+
     public void onModeClicked() {
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls != null) {
@@ -410,7 +443,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         }
     }
 
-    @OnClick(R.id.list)
     public void onListClicked() {
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls != null) {
@@ -418,7 +450,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         }
     }
 
-    @OnClick(R.id.load)
     public void onLoadClicked() {
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls != null) {
@@ -426,7 +457,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         }
     }
 
-    @OnClick(R.id.stop)
     public void onStopClicked() {
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls != null) {
@@ -434,13 +464,11 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         }
     }
 
-    @OnClick(R.id.release)
     public void onReleaseClicked() {
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .create();
     }
 
-    @OnClick(R.id.prepare)
     public void onPrepareClicked() {
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls != null) {
@@ -448,7 +476,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         }
     }
 
-    @OnClick(R.id.previous)
     public void onPreviousClicked() {
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls != null) {
@@ -457,7 +484,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         playStateChangeAnimation(previous, R.drawable.music_previous);
     }
 
-    @OnClick(R.id.play_pause)
     public void onPlayPauseClicked() {
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls == null) {
@@ -478,7 +504,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         }
     }
 
-    @OnClick(R.id.next)
     public void onNextClicked() {
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls != null) {

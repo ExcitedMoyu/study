@@ -157,11 +157,15 @@ public class MediaService extends MediaBrowserServiceCompat implements
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result) {
         Log.d(TAG, "onLoadChildren: ");
         List<MediaItem> list = mLoader.getChildren();
-        List<QueueItem> queueItemList = mQueueManager.convertToQueue(list);
-        mSession.setQueue(queueItemList);
-        String queueTitle = "local_music";
-        mQueueManager.setCurrentQueue(queueTitle, queueItemList, "");
-        result.sendResult(list);
+        if (list == null) {
+            result.sendResult(null);
+        } else {
+            List<QueueItem> queueItemList = mQueueManager.convertToQueue(list);
+            mSession.setQueue(queueItemList);
+            String queueTitle = "local_music";
+            mQueueManager.setCurrentQueue(queueTitle, queueItemList, "");
+            result.sendResult(list);
+        }
     }
 
     @Override

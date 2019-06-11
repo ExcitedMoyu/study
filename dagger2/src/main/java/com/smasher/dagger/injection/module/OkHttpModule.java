@@ -1,7 +1,5 @@
 package com.smasher.dagger.injection.module;
 
-import com.smasher.dagger.entity.SellMoe;
-
 import javax.inject.Singleton;
 
 import dagger.Module;

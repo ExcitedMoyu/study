@@ -12,7 +12,7 @@ import javax.inject.Inject;
 public class HelloWorld {
 
 
-    SellMoe mSellMoe;
+    public SellMoe mSellMoe;
 
     public HelloWorld() {
     }

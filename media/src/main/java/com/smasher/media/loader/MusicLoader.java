@@ -76,6 +76,7 @@ public class MusicLoader {
     public void init(Context context) {
         Log.d(TAG, "init: ");
         mResolver = context.getContentResolver();
+        load();
     }
 
 
@@ -90,13 +91,21 @@ public class MusicLoader {
                 e.printStackTrace();
             }
         }
-        Log.d(TAG, "getLocalMusicList: " + mLocalMusicList.size());
+        if (mLocalMusicList != null) {
+            Log.d(TAG, "getLocalMusicList: " + mLocalMusicList.size());
+        }
         return mLocalMusicList;
     }
 
 
     public List<MediaItem> getChildren() {
+
         getLocalMusicList();
+
+        if (mLocalMusicList == null) {
+            return null;
+        }
+
         List<MediaItem> mediaItems = new ArrayList<>();
         for (MediaMetadataCompat item : mLocalMusicList) {
             mediaItems.add(createMediaItem(item));
@@ -112,15 +121,6 @@ public class MusicLoader {
         MediaMetadataCompat temp = new Builder(item)
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, id).build();
         return new MediaItem(temp.getDescription(), MediaItem.FLAG_PLAYABLE);
-    }
-
-
-    public void requestData() {
-        if (mResolver == null) {
-            Log.e(TAG, "has not init yet");
-            return;
-        }
-        load();
     }
 
 

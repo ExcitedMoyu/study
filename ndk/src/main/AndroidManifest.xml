@@ -3,19 +3,18 @@
     package="com.smasher.ndk">
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:label="@string/app_name">
+
         <activity
             android:name=".NDKTestActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+
         <service android:name=".PrimaryService" />
+        <!--android:permission="android.permission.BIND_JOB_SERVICE"-->
+
     </application>
 
 </manifest>
