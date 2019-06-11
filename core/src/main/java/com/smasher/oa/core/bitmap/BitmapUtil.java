@@ -23,19 +23,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
+ * BitmapUtil
+ *
  * @author moyu
  * @date 2017/4/10
  */
-
 public class BitmapUtil {
 
     /**
      * 算缩放值
      *
-     * @param options
-     * @param reqWidth
-     * @param reqHeight
-     * @return
+     * @param options   options
+     * @param reqWidth  reqWidth
+     * @param reqHeight reqHeight
+     * @return int
      */
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
@@ -55,10 +56,10 @@ public class BitmapUtil {
     /**
      * 解析大图片
      *
-     * @param filename
-     * @param reqWidth
-     * @param reqHeight
-     * @return
+     * @param filename  filename
+     * @param reqWidth  reqWidth
+     * @param reqHeight reqHeight
+     * @return Bitmap
      */
     public static Bitmap decodeSampledBitmapFromFile(String filename, int reqWidth, int reqHeight) {
         // First decode with inJustDecodeBounds=true to check dimensions
@@ -76,6 +77,7 @@ public class BitmapUtil {
 
     /**
      * 获得圆角图片的方法
+     * Bitmap
      */
     public static Bitmap getRoundCornerBitmap(Bitmap bitmap, String tag, float roundPx) {
         try {
@@ -101,8 +103,8 @@ public class BitmapUtil {
     /**
      * Drawable 转成 Bitmap
      *
-     * @param drawable
-     * @return
+     * @param drawable drawable
+     * @return Bitmap
      */
     public static Bitmap drawableToBitmap(Drawable drawable) {
         int w = drawable.getIntrinsicWidth();
@@ -124,8 +126,8 @@ public class BitmapUtil {
     /**
      * 读取图片的旋转的角度
      *
-     * @param path
-     * @return
+     * @param path path
+     * @return int
      */
     public static int getBitmapDegree(String path) {
         int degree = 0;
@@ -158,7 +160,7 @@ public class BitmapUtil {
      *
      * @param bitmap bitmap
      * @param degree degree
-     * @return
+     * @return Bitmap
      */
     public static Bitmap rotateBitmapByDegree(String tag, Bitmap bitmap, int degree) {
         Bitmap returnBm = null;
@@ -198,7 +200,7 @@ public class BitmapUtil {
         cm.setSaturation(0);
         ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
         paint.setColorFilter(f);
-        if (bmpOriginal != null && !bmpOriginal.isRecycled()) {
+        if (!bmpOriginal.isRecycled()) {
             c.drawBitmap(bmpOriginal, 0, 0, paint);
         }
         return bmpGrayScale;
@@ -207,33 +209,39 @@ public class BitmapUtil {
     /**
      * 压缩图片
      *
-     * @param
-     * @return
+     * @param width height
+     * @return Bitmap
      */
     public static Bitmap compressBitmap(String imgPath, int width, int height) {
         Bitmap srcBitmap = DeBitmapFactory.decodeFile(imgPath, width, height);
         if (srcBitmap == null || srcBitmap.isRecycled())
             return null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        srcBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        //质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        srcBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         int options = 100;
-        while (baos.toByteArray().length / 1024 > 100) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
-            baos.reset();//重置baos即清空baos
-            srcBitmap.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
-            options -= 10;//每次都减少10
+        while (baos.toByteArray().length / 1024 > 100) {
+            //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+            //重置baos即清空baos
+            baos.reset();
+            //这里压缩options%，把压缩后的数据存放到baos中
+            srcBitmap.compress(Bitmap.CompressFormat.JPEG, options, baos);
+            //每次都减少10
+            options -= 10;
         }
-        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
-        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
-        return bitmap;
+        //把压缩后的数据baos存放到ByteArrayInputStream中
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
+        //把ByteArrayInputStream数据生成图片
+        return BitmapFactory.decodeStream(isBm, null, null);
     }
 
     /**
      * 创建一个纯色的图片
      *
-     * @param w
-     * @param h
-     * @param color
-     * @return
+     * @param w w
+     * @param h h
+     * @param color color
+     * @return Bitmap
      */
     public static Bitmap createColorBitmap(int w, int h, int color) {
         int[] colors = new int[w * h];
@@ -246,9 +254,9 @@ public class BitmapUtil {
     /**
      * 创建一个带有蒙版效果的Bitmap
      *
-     * @param bmp
-     * @param color
-     * @return
+     * @param bmp bmp
+     * @param color color
+     * @return Bitmap
      */
     public static Bitmap getColorMaskedBitmap(Bitmap bmp, int color) {
         if (bmp == null) {
@@ -279,9 +287,9 @@ public class BitmapUtil {
     /**
      * 创建一个带有蒙版效果的Bitmap
      *
-     * @param bmp
-     * @param color
-     * @return
+     * @param bmp bmp
+     * @param color color
+     * @return Bitmap
      */
     public static Bitmap getMaskBitmap(Bitmap bmp, int color) {
         if (bmp == null) {
@@ -299,7 +307,8 @@ public class BitmapUtil {
             maskColorBitmap.getPixels(maskPixels, 0, w, 0, 0, w, h);
             for (int i = 0; i < picPixels.length; i++) {
                 if (picPixels[i] == 0) {
-                    maskPixels[i] = 0;//设置为透明
+                    //设置为透明
+                    maskPixels[i] = 0;
                 }
             }
             resultBmp = Bitmap.createBitmap(maskPixels, w, h, Bitmap.Config.ARGB_8888);

@@ -76,9 +76,10 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     ImageButton previous;
     ImageButton playPause;
     ImageButton next;
-    RecyclerView recyclerView;
     ImageButton mMode;
     ImageButton mBtnList;
+
+    RecyclerView recyclerView;
     ConstraintLayout mControl;
 
     private MediaBrowserHelper mMediaBrowserHelper;
@@ -97,22 +98,22 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
 
         StatusBarUtil.setTranslucentForCoordinatorLayout(this, 0);
         initView();
+        initListener();
         initState();
         initMediaBrowser();
     }
 
+    private void initListener() {
+        mPrepare.setOnClickListener(this);
+        mLoad.setOnClickListener(this);
+        mStop.setOnClickListener(this);
+        mRelease.setOnClickListener(this);
 
-    public static void setStatusBarTransparentColor(Activity activity) {
-        //设置全透明状态栏
-        Window window = activity.getWindow();
-        //半透明
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-        }
+        previous.setOnClickListener(this);
+        playPause.setOnClickListener(this);
+        next.setOnClickListener(this);
+        mMode.setOnClickListener(this);
+        mBtnList.setOnClickListener(this);
     }
 
 
@@ -322,22 +323,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: ");
         super.onDestroy();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -701,7 +686,5 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
             Log.d(TAG, "onShuffleModeChanged: ");
         }
     }
-
-
     //endregion
 }

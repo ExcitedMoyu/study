@@ -1,4 +1,4 @@
-package com.smasher.kotlin
+package com.smasher.kotlin.base
 
 import android.content.Context
 import android.util.Log
@@ -10,7 +10,7 @@ import java.util.*
  * @author moyu
  */
 abstract class BaseAdapter<T, VH : BaseViewHolder<T>>(context: Context) : RecyclerView.Adapter<VH>() {
-    private var mList: List<T>? = null
+    private var mList: MutableList<T>? = null
 
     protected var mContext: Context
 
@@ -20,7 +20,7 @@ abstract class BaseAdapter<T, VH : BaseViewHolder<T>>(context: Context) : Recycl
     }
 
 
-    open fun setData(list: List<T>?) {
+    open fun setData(list: MutableList<T>?) {
         if (list != null) {
             mList = list
         } else {

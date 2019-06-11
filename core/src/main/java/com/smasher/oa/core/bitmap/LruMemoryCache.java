@@ -133,7 +133,8 @@ public class LruMemoryCache implements MemoryCache {
 
     @Override
     public void clear() {
-        trimToSize(-1); // -1 will evict 0-sized elements
+        // -1 will evict 0-sized elements
+        trimToSize(-1);
     }
 
     /**

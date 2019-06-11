@@ -122,7 +122,10 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
         mButton7!!.setOnClickListener(this)
         mButton8!!.setOnClickListener(this)
         mDummyButton!!.setOnTouchListener(mDelayHideTouchListener)
-        mContentView!!.setOnClickListener { view -> toggle() }
+        mContentView!!.setOnClickListener { view ->
+            LogUtil.d(view.id.toString())
+            toggle()
+        }
     }
 
     override fun initView() {
@@ -195,7 +198,7 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
     }
 
 
-    fun checkCameraPermission(): Boolean {
+    private fun checkCameraPermission(): Boolean {
         return EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)
     }
 
@@ -221,31 +224,31 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
     }
 
 
-    fun onButtonClicked() {
+    private fun onButtonClicked() {
         val intent = Intent()
         intent.setClass(this, BasicActivity::class.java)
         startActivity(intent)
     }
 
-    fun onMButton2Clicked() {
+    private fun onMButton2Clicked() {
         val intent = Intent()
         intent.setClass(this, AlarmActivity::class.java)
         startActivity(intent)
     }
 
-    fun onMButton3Clicked() {
+    private fun onMButton3Clicked() {
         val intent = Intent()
         intent.setClass(this, DrawableActivity::class.java)
         startActivity(intent)
     }
 
-    fun onMButton4Clicked() {
+    private fun onMButton4Clicked() {
         val intent = Intent()
         intent.setClass(this, LocalActivity::class.java)
         startActivity(intent)
     }
 
-    fun onMButton5Clicked() {
+    private fun onMButton5Clicked() {
         val intent = Intent()
         intent.setClass(this, LoginActivity::class.java)
         startActivity(intent)
@@ -267,13 +270,13 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
 
     }
 
-    fun onMButton7Clicked() {
+    private fun onMButton7Clicked() {
         val intent = Intent()
         intent.setClass(this, WidgetActivity::class.java)
         startActivity(intent)
     }
 
-    fun onMButton8Clicked() {
+    private fun onMButton8Clicked() {
         val intent = Intent()
         intent.setClass(this, TestActivity::class.java)
         startActivity(intent)
@@ -284,21 +287,21 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
          * Whether or not the system UI should be auto-hidden after
          * [.AUTO_HIDE_DELAY_MILLIS] milliseconds.
          */
-        private val AUTO_HIDE = true
+        private const val AUTO_HIDE = true
 
         /**
          * If [.AUTO_HIDE] is set, the number of milliseconds to wait after
          * user interaction before hiding the system UI.
          */
-        private val AUTO_HIDE_DELAY_MILLIS = 3000
+        private const val AUTO_HIDE_DELAY_MILLIS = 3000
 
         /**
          * Some older devices needs a small delay between UI widget updates
          * and a change of the status and navigation bar.
          */
-        private val UI_ANIMATION_DELAY = 300
-        private val REQUEST_CODE_SCAN = 999
-        const val REQUEST_CODE_PERMISSION = 1000
+        private const val UI_ANIMATION_DELAY = 300
+        private const val REQUEST_CODE_SCAN = 999
+        private const val REQUEST_CODE_PERMISSION = 1000
     }
 
 }

@@ -43,7 +43,6 @@ public class TestActivity extends BaseActivity {
     @Override
     public View getRootView() {
 
-
         //核心代码.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();

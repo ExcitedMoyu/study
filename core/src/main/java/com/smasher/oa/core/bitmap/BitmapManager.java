@@ -29,7 +29,7 @@ public class BitmapManager {
      * Creates default implementation of {@link MemoryCache} - {@link LruMemoryCache}<br />
      * Default cache size = 1/8 of available app memory.
      */
-    public static MemoryCache createMemoryCache(Context context, int memoryCacheSize) {
+    private static MemoryCache createMemoryCache(Context context, int memoryCacheSize) {
         if (memoryCacheSize == 0) {
             ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             int memoryClass = am.getMemoryClass();
@@ -58,7 +58,7 @@ public class BitmapManager {
     /**
      * 获取bitmap大小
      *
-     * @param bitmap
+     * @param bitmap bitmap
      * @return
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -78,8 +78,8 @@ public class BitmapManager {
     /**
      * 加入内存缓存
      *
-     * @param tag
-     * @param bitmap
+     * @param tag    tag
+     * @param bitmap bitmap
      */
     public static void addBitmapToCache(final String tag, final Bitmap bitmap) {
         if (TextUtils.isEmpty(tag) || bitmap == null || bitmap.isRecycled()) {
@@ -99,8 +99,8 @@ public class BitmapManager {
     /**
      * 从缓存中获取图片
      *
-     * @param tag
-     * @return
+     * @param tag tag
+     * @return Bitmap
      */
     public static Bitmap getBitmapFromCache(final String tag) {
         Bitmap bitmap = LruMemoryCache == null ? null : LruMemoryCache.get(tag);

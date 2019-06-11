@@ -1,10 +1,9 @@
-package com.smasher.kotlin
+package com.smasher.kotlin.base
 
 import android.content.Context
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.smasher.kotlin.IntegerViewHolder.Companion.TAG
 
 
 /**
@@ -52,6 +51,10 @@ open class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     fun getString(res: Int): String {
         return mContext.getString(res)
+    }
+
+    companion object {
+        private const val TAG: String = "IntegerViewHolder"
     }
 
 }

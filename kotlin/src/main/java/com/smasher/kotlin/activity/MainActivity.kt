@@ -1,4 +1,4 @@
-package com.smasher.kotlin
+package com.smasher.kotlin.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,9 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.smasher.kotlin.adapter.Adapter
+import com.smasher.kotlin.R
+import com.smasher.kotlin.entity.DDD
 
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.*
@@ -34,7 +37,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initRecyclerView() {
-        var mList: MutableList<Int> = mutableListOf()
+        var mList: MutableList<DDD>? = mutableListOf()
         var mAdapter = Adapter(this)
         count++
         Log.d(TAG, count.toString())
@@ -44,9 +47,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         recyclerView.adapter = mAdapter
     }
 
-    private fun testFor(mList: MutableList<Int>) {
+    private fun testFor(mList: MutableList<DDD>?) {
         for (i in 0 until 100) {
-            mList.add(i)
+            var item: DDD = DDD("", 26)
+            mList!!.add(item)
         }
     }
 

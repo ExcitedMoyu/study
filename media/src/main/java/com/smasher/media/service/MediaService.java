@@ -424,13 +424,11 @@ public class MediaService extends MediaBrowserServiceCompat implements
             Log.d(TAG, "onRemoveQueueItem: ");
         }
 
-        //==========================================================================================
         @Override
         public boolean onMediaButtonEvent(@NonNull Intent mediaButtonIntent) {
             Log.d(TAG, "onMediaButtonEvent: ");
             return super.onMediaButtonEvent(mediaButtonIntent);
         }
-
 
         @Override
         public void onCustomAction(@NonNull String action, @Nullable Bundle extras) {

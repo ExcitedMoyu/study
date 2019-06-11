@@ -1,8 +1,9 @@
-package com.smasher.kotlin
+package com.smasher.kotlin.activity
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;
+import com.smasher.kotlin.R
 
 import kotlinx.android.synthetic.main.activity_sub.*
 

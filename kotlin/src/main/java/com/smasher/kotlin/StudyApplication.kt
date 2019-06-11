@@ -8,7 +8,7 @@ import android.util.Log
  * @author matao
  * @date 2019/5/23
  */
-class StudyApplication : Application() {
+class  StudyApplication : Application() {
 
     init {
         Log.d(Companion.TAG, "StudyApplication init")

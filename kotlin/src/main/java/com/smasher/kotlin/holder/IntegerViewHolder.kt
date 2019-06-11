@@ -1,14 +1,17 @@
-package com.smasher.kotlin
+package com.smasher.kotlin.holder
 
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import com.smasher.kotlin.R
+import com.smasher.kotlin.base.BaseViewHolder
+import com.smasher.kotlin.entity.DDD
 
 /**
  * @author matao
  * @date 2019/5/23
  */
-class IntegerViewHolder<Int>(itemView: View) : BaseViewHolder<Int>(itemView) {
+class IntegerViewHolder(itemView: View) : BaseViewHolder<DDD>(itemView) {
 
 
     private var mTextView: TextView
@@ -20,11 +23,11 @@ class IntegerViewHolder<Int>(itemView: View) : BaseViewHolder<Int>(itemView) {
 
     override fun bindView() {
         if (mItem != null) {
-            mTextView.text = mItem.toString()
+            mTextView.text = mItem!!.name
         }
     }
 
     companion object {
-        const val TAG: String = "IntegerViewHolder"
+        private const val TAG: String = "IntegerViewHolder"
     }
 }

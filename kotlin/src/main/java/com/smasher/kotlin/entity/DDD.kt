@@ -1,4 +1,4 @@
-package com.smasher.kotlin
+package com.smasher.kotlin.entity
 
 /**
  * @author matao
