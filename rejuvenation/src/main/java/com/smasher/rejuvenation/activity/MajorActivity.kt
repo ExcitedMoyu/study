@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import com.smasher.media.activity.InitActivity
 import com.smasher.rejuvenation.R
+import com.smasher.rxjava.RxJavaActivity
 import org.jetbrains.anko.startActivity
 
 class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -67,7 +68,7 @@ class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
             }
             R.id.nav_share -> {
-
+                gotoRxJava()
             }
             R.id.nav_send -> {
                 gotoDebug()
@@ -93,6 +94,13 @@ class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     private fun gotoMedia() {
         val intent = Intent()
         intent.setClass(this, InitActivity::class.java)
+        startActivity(intent)
+    }
+
+
+    private fun gotoRxJava() {
+        val intent = Intent()
+        intent.setClass(this, RxJavaActivity::class.java)
         startActivity(intent)
     }
 }

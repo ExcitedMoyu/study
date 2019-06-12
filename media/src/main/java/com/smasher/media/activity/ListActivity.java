@@ -48,6 +48,7 @@ import com.smasher.media.R;
 import com.smasher.media.adapter.MusicListAdapter;
 import com.smasher.media.annotation.PlayMode;
 import com.smasher.media.constant.Constant;
+import com.smasher.media.helper.AnimationHelper;
 import com.smasher.media.helper.MediaBrowserHelper;
 import com.smasher.media.service.MediaService;
 import com.smasher.oa.core.utils.StatusBarUtil;
@@ -64,28 +65,30 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
 
     private static final String TAG = "ListActivity";
 
-    Toolbar mToolbar;
-    CollapsingToolbarLayout mToolbarLayout;
-    AppBarLayout mAppBar;
+    private Toolbar mToolbar;
+    private CollapsingToolbarLayout mToolbarLayout;
+    private AppBarLayout mAppBar;
 
-    Button mPrepare;
-    Button mLoad;
-    Button mStop;
-    Button mRelease;
+    private Button mPrepare;
+    private Button mLoad;
+    private Button mStop;
+    private Button mRelease;
 
-    ImageButton previous;
-    ImageButton playPause;
-    ImageButton next;
-    ImageButton mMode;
-    ImageButton mBtnList;
+    private ImageButton previous;
+    private ImageButton playPause;
+    private ImageButton next;
+    private ImageButton mMode;
+    private ImageButton mBtnList;
 
-    RecyclerView recyclerView;
-    ConstraintLayout mControl;
+    private RecyclerView recyclerView;
+    private ConstraintLayout mControl;
 
     private MediaBrowserHelper mMediaBrowserHelper;
     private MediaControllerCompat mController;
     private MusicListAdapter mAdapter;
     private MediaBrowserCompat mMediaBrowser;
+
+    private AnimationHelper mAnimationHelper;
 
     private List<MediaSessionCompat.QueueItem> mList;
 
@@ -149,6 +152,8 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         mMode = findViewById(R.id.mode);
         mBtnList = findViewById(R.id.list);
         mControl = findViewById(R.id.control);
+
+        mAnimationHelper = new AnimationHelper();
     }
 
 
@@ -174,57 +179,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     private void updatePlayState() {
         int state = mController == null ? PlaybackStateCompat.STATE_NONE : mController.getPlaybackState().getState();
         boolean isPlaying = state == PlaybackStateCompat.STATE_PLAYING;
-        playStateChangeAnimation(playPause, isPlaying ? R.drawable.music_pause : R.drawable.music_play_small);
-    }
-
-    private void playStateChangeAnimation(ImageView target, int resource) {
-        AnimatorSet set = new AnimatorSet();
-        ObjectAnimator animatorOutAlpha = ObjectAnimator.ofFloat(target, "alpha", 1.0f, 0.2f);
-        animatorOutAlpha.setDuration(400);
-        animatorOutAlpha.setInterpolator(new AccelerateInterpolator());
-        ObjectAnimator animatorScaleY = ObjectAnimator.ofFloat(target, "scaleY", 1.0f, 0.6f);
-        animatorScaleY.setDuration(400);
-        animatorScaleY.setInterpolator(new LinearInterpolator());
-        ObjectAnimator animatorScaleX = ObjectAnimator.ofFloat(target, "scaleX", 1.0f, 0.6f);
-        animatorScaleX.setDuration(400);
-        animatorScaleX.setInterpolator(new LinearInterpolator());
-
-        ObjectAnimator animatorInScaleY = ObjectAnimator.ofFloat(target, "scaleY", 0.6f, 1.0f);
-        animatorInScaleY.setDuration(400);
-        animatorInScaleY.setStartDelay(300);
-        animatorInScaleY.setInterpolator(new LinearInterpolator());
-        ObjectAnimator animatorInScaleX = ObjectAnimator.ofFloat(target, "scaleX", 0.6f, 1.0f);
-        animatorInScaleX.setDuration(400);
-        animatorInScaleX.setStartDelay(300);
-        animatorInScaleX.setInterpolator(new LinearInterpolator());
-        ObjectAnimator animatorIn = ObjectAnimator.ofFloat(target, "alpha", 0.6f, 1.0f);
-        animatorIn.setStartDelay(300);
-        animatorIn.setDuration(400);
-        animatorIn.setInterpolator(new AccelerateInterpolator());
-        animatorIn.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                super.onAnimationCancel(animation);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-                super.onAnimationRepeat(animation);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                target.setImageResource(resource);
-            }
-        });
-        set.playTogether(animatorOutAlpha, animatorScaleX, animatorScaleY, animatorInScaleX, animatorInScaleY, animatorIn);
-        set.start();
+        mAnimationHelper.playStateChangeAnimation(playPause, isPlaying ? R.drawable.music_pause : R.drawable.music_play_small);
     }
 
 
@@ -232,61 +187,20 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         Log.d(TAG, "updateModeState: play mode:" + mPlayMode);
         switch (mPlayMode) {
             case PlayMode.PLAY_MODE_NONE:
-                modeChangeAnimation(mMode, R.drawable.play_mode_sequential);
+                mAnimationHelper.modeChangeAnimation(mMode, R.drawable.play_mode_sequential);
                 break;
             case PlayMode.PLAY_MODE_SINGLE:
-                modeChangeAnimation(mMode, R.drawable.play_mode_single);
+                mAnimationHelper.modeChangeAnimation(mMode, R.drawable.play_mode_single);
                 break;
             case PlayMode.PLAY_MODE_CIRCULATE:
-                modeChangeAnimation(mMode, R.drawable.play_mode_circle);
+                mAnimationHelper.modeChangeAnimation(mMode, R.drawable.play_mode_circle);
                 break;
             case PlayMode.PLAY_MODE_SHUFFLE:
-                modeChangeAnimation(mMode, R.drawable.play_mode_random);
+                mAnimationHelper.modeChangeAnimation(mMode, R.drawable.play_mode_random);
                 break;
             default:
                 break;
         }
-    }
-
-
-    private void modeChangeAnimation(ImageView target, int resource) {
-        AnimatorSet set = new AnimatorSet();
-        ObjectAnimator animatorOutAlpha = ObjectAnimator.ofFloat(target, "alpha", 1.0f, 0.2f);
-        animatorOutAlpha.setDuration(400);
-        animatorOutAlpha.setInterpolator(new AccelerateInterpolator());
-
-        ObjectAnimator animatorOut = ObjectAnimator.ofFloat(target, "rotation", 0.0f, 360.0f);
-        animatorOut.setDuration(400);
-        animatorOut.setInterpolator(new AccelerateInterpolator());
-
-        ObjectAnimator animatorIn = ObjectAnimator.ofFloat(target, "alpha", 0.2f, 1.0f);
-        animatorIn.setStartDelay(300);
-        animatorIn.setDuration(400);
-        animatorIn.setInterpolator(new AccelerateInterpolator());
-        animatorIn.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                super.onAnimationCancel(animation);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-                super.onAnimationRepeat(animation);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                target.setImageResource(resource);
-            }
-        });
-        set.playTogether(animatorOutAlpha, animatorOut, animatorIn);
-        set.start();
     }
 
 
@@ -346,6 +260,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
                 startService(intent);
             } else {
                 if (mController != null) {
+
                     String mediaId = mController.getMetadata().getDescription().getMediaId();
                     mList = list;
                     mAdapter.setData(mList);
@@ -353,6 +268,15 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
                     mAdapter.notifyDataSetChanged();
                     updatePlayState();
                 }
+
+            }
+
+            if (mController != null) {
+                MediaControllerCompat.PlaybackInfo playbackInfo = mController.getPlaybackInfo();
+                Log.d(TAG, "connectToSessionImp: " + playbackInfo.getPlaybackType());
+                Log.d(TAG, "connectToSessionImp: " + playbackInfo.getCurrentVolume());
+                Log.d(TAG, "connectToSessionImp: " + playbackInfo.getAudioAttributes());
+
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -432,6 +356,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls != null) {
             Log.d(TAG, "onListClicked: ");
+            transportControls.seekTo(30000);
         }
     }
 
@@ -466,7 +391,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         if (transportControls != null) {
             transportControls.skipToPrevious();
         }
-        playStateChangeAnimation(previous, R.drawable.music_previous);
+        mAnimationHelper.playStateChangeAnimation(previous, R.drawable.music_previous);
     }
 
     public void onPlayPauseClicked() {
@@ -494,7 +419,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         if (transportControls != null) {
             transportControls.skipToNext();
         }
-        playStateChangeAnimation(next, R.drawable.music_next);
+        mAnimationHelper.playStateChangeAnimation(next, R.drawable.music_next);
     }
 
     //endregion
@@ -657,6 +582,12 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         public void onExtrasChanged(@Nullable Bundle extras) {
             super.onExtrasChanged(extras);
             Log.d(TAG, "onExtrasChanged");
+            if (extras != null) {
+                String key = "duration";
+                if (extras.containsKey(key)) {
+                    Log.d(TAG, "onExtrasChanged: " + extras.getInt(key));
+                }
+            }
         }
 
         @Override

@@ -26,6 +26,7 @@ public abstract class CorePlayer extends PhoneStateListener implements
         MediaPlayer.OnCompletionListener,
         MediaPlayer.OnBufferingUpdateListener,
         MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnSeekCompleteListener,
         AudioManager.OnAudioFocusChangeListener {
 
     private static final String TAG = "CorePlayer";
@@ -79,7 +80,6 @@ public abstract class CorePlayer extends PhoneStateListener implements
 
     protected abstract boolean isPlaying();
 
-
     protected abstract long getDuration();
 
     protected abstract long getCurrTime();
@@ -93,17 +93,21 @@ public abstract class CorePlayer extends PhoneStateListener implements
     protected abstract int getBufferPercent();
 
 
+    //region imp
+
     protected abstract void onPreparedLogic(MediaPlayer mp);
 
     protected abstract void onCompletionLogic(MediaPlayer mp);
 
     protected abstract void onBufferingUpdateLogic(MediaPlayer mp, int percent);
 
-
     protected abstract void onAudioFocusChangeImp(int focusChange);
 
     protected abstract void onCallStateChangedImp(int state, String phoneNumber);
 
+    protected abstract void onSeekCompletedImp(MediaPlayer mp);
+
+    //endregion
 
     @Override
     public void onCompletion(MediaPlayer mp) {
@@ -135,11 +139,10 @@ public abstract class CorePlayer extends PhoneStateListener implements
         onPreparedLogic(mp);
     }
 
-
-    //region state
-
-    public abstract int getState();
-    //endregion
+    @Override
+    public void onSeekComplete(MediaPlayer mp) {
+        onSeekCompletedImp(mp);
+    }
 
 
     @Override
@@ -156,4 +159,11 @@ public abstract class CorePlayer extends PhoneStateListener implements
     public interface CompleteListener {
         void onComplete();
     }
+
+
+    //region state
+
+    public abstract int getState();
+    //endregion
+
 }

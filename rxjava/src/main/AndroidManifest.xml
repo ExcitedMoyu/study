@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.smasher.rxjava">
+
+    <application>
+        <activity
+            android:name=".RxJavaActivity"
+            android:label="@string/title_activity_rx_java"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+    </application>
+
+</manifest>

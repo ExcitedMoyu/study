@@ -35,8 +35,6 @@ public class MediaPlayerProxy extends CorePlayer {
     }
 
 
-
-
     @Override
     public void reset() {
         if (mPlayer != null) {
@@ -64,6 +62,7 @@ public class MediaPlayerProxy extends CorePlayer {
     public void start() {
         if (mPlayer != null) {
             mPlayer.start();
+            Log.d(TAG, "start: " + mPlayer.getDuration());
         }
     }
 
@@ -189,6 +188,11 @@ public class MediaPlayerProxy extends CorePlayer {
 
     @Override
     protected void onCallStateChangedImp(int state, String phoneNumber) {
+
+    }
+
+    @Override
+    protected void onSeekCompletedImp(MediaPlayer mp) {
 
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -25,12 +26,14 @@ public class MusicPlayer extends CorePlayer {
 
     private NotificationHelper mNotificationHelper;
     private PlaybackManager mPlaybackManager;
+    private MediaSessionCompat mSession;
 
     private MediaPlayer mPlayer;
 
     public MusicPlayer(Context context, MediaSessionCompat session) {
         super(context, session);
 
+        mSession = session;
 
         mPlaybackManager = PlaybackManager.getInstance();
         mPlaybackManager.setMediaSession(session);
@@ -42,6 +45,7 @@ public class MusicPlayer extends CorePlayer {
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnBufferingUpdateListener(this);
         mPlayer.setOnPreparedListener(this);
+        mPlayer.setOnSeekCompleteListener(this);
     }
 
     @Override
@@ -207,6 +211,11 @@ public class MusicPlayer extends CorePlayer {
     @Override
     protected void onPreparedLogic(MediaPlayer mp) {
         Log.d(TAG, "onPreparedLogic: ");
+        Bundle bundle = new Bundle();
+        int duration = mp.getDuration();
+        bundle.putInt("duration", duration);
+
+        mSession.setExtras(bundle);
 
         if (mAudioFocusHelper != null) {
             boolean result = mAudioFocusHelper.requestFocus(mContext);
@@ -230,23 +239,9 @@ public class MusicPlayer extends CorePlayer {
     }
 
 
-    private boolean prepare(String mPlayUri) {
-        boolean isInitialized = false;
-        try {
-            if (mPlayer == null) {
-                return false;
-            }
-
-            mPlayer.reset();
-            mPlayer.setDataSource(mPlayUri);
-            mPlayer.prepare();
-            isInitialized = true;
-        } catch (IOException e) {
-            isInitialized = false;
-            e.printStackTrace();
-        }
-
-        return isInitialized;
+    @Override
+    protected void onSeekCompletedImp(MediaPlayer mp) {
+        Log.d(TAG, "onSeekCompletedImp: " + mp.getCurrentPosition());
     }
 
 
@@ -341,6 +336,7 @@ public class MusicPlayer extends CorePlayer {
                 break;
         }
     }
+
 
     private void gainFocus(boolean isPlaying) {
         try {

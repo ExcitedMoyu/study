@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 
-
 android {
     compileSdkVersion 28
 
@@ -21,10 +20,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+
 }
 
 dependencies {
@@ -32,32 +28,12 @@ dependencies {
 
     implementation "com.google.android.material:material:$material"
 
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.media:media:1.1.0-beta02'
-    implementation 'androidx.media2:media2-common:1.0.0-beta02'
-    implementation 'androidx.media2:media2-player:1.0.0-beta02'
-    implementation 'androidx.media2:media2-session:1.0.0-beta02'
-
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.recyclerview:recyclerview:$recyclerview"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
 
-
-    implementation 'pub.devrel:easypermissions:3.0.0'
-
-    implementation 'com.nineoldandroids:library:2.4.0'
-
     testImplementation "junit:junit:$junit"
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
     implementation project(path: ':core')
-    implementation project(path: ':widget')
-    implementation project(path: ':aidl')
-    implementation project(path: ':zxing')
-    implementation project(path: ':draw')
-    implementation project(path: ':ndk')
-    implementation project(path: ':downloader')
-    implementation 'androidx.gridlayout:gridlayout:1.0.0'
 }

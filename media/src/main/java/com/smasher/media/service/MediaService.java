@@ -4,6 +4,7 @@ package com.smasher.media.service;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ResultReceiver;
@@ -14,6 +15,7 @@ import android.support.v4.media.RatingCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.MediaSessionCompat.QueueItem;
+import android.support.v4.media.session.MediaSessionCompat.OnActiveChangeListener;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
@@ -38,7 +40,7 @@ import java.util.List;
  * @date 2019/5/31
  */
 public class MediaService extends MediaBrowserServiceCompat implements
-        MediaSessionCompat.OnActiveChangeListener,
+        OnActiveChangeListener,
         CorePlayer.CompleteListener {
 
 
@@ -67,6 +69,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
         mSession.setCallback(mSessionCallback);
         mSession.addOnActiveChangeListener(this);
         mSession.setActive(true);
+        mSession.setPlaybackToLocal(AudioManager.STREAM_MUSIC);
 
         //设置token后会触发MediaBrowserCompat.ConnectionCallback的回调方法
         //表示MediaBrowser与MediaBrowserService连接成功
@@ -143,6 +146,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
     @Override
     public void onActiveChanged() {
         Log.d(TAG, "onActiveChanged: " + mSession.isActive());
+
     }
 
 
@@ -161,8 +165,8 @@ public class MediaService extends MediaBrowserServiceCompat implements
             result.sendResult(null);
         } else {
             List<QueueItem> queueItemList = mQueueManager.convertToQueue(list);
-            mSession.setQueue(queueItemList);
             String queueTitle = "local_music";
+            mSession.setQueue(queueItemList);
             mQueueManager.setCurrentQueue(queueTitle, queueItemList, "");
             result.sendResult(list);
         }
@@ -359,12 +363,19 @@ public class MediaService extends MediaBrowserServiceCompat implements
         public void onStop() {
             super.onStop();
             Log.d(TAG, "onStop: ");
+            if (mPlayer != null) {
+                mPlayer.stop();
+            }
         }
 
         @Override
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
             Log.d(TAG, "onSeekTo: ");
+            if (mPlayer != null) {
+                mPlayer.seek((int) pos);
+            }
+
         }
 
         @Override
@@ -393,6 +404,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
             super.onSetRepeatMode(repeatMode);
             Log.d(TAG, "onSetRepeatMode: ");
             mQueueManager.setRepeatMode(repeatMode);
+            mSession.setRepeatMode(repeatMode);
         }
 
 
@@ -401,6 +413,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
             super.onSetShuffleMode(shuffleMode);
             Log.d(TAG, "onSetShuffleMode: ");
             mQueueManager.setShuffleMode(shuffleMode);
+            mSession.setShuffleMode(shuffleMode);
         }
 
 

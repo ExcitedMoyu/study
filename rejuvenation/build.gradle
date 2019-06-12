@@ -73,4 +73,5 @@ dependencies {
     implementation project(path: ':aidl')
     implementation project(path: ':widget')
     implementation project(path: ':media')
+    implementation project(path: ':rxjava')
 }

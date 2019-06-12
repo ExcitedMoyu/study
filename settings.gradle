@@ -1,4 +1,4 @@
-include ':dagger2', ':rejuvenation',
+include ':dagger2', ':rejuvenation', ':rxjava',
         ':media',
         ':draw',
         ':music',
