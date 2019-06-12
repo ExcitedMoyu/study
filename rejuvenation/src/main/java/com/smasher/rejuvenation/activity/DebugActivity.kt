@@ -1,27 +1,14 @@
 package com.smasher.rejuvenation.activity
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
-import com.smasher.aidl.activity.local.LocalActivity
-import com.smasher.aidl.activity.remote.ui.login.LoginActivity
-import com.smasher.draw.activity.DrawableActivity
-import com.smasher.media.activity.TestActivity
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.util.LogUtil
-import com.smasher.widget.alarm.AlarmActivity
-import com.smasher.widget.alarm.WidgetActivity
 import com.smasher.widget.base.BaseActivity
-import com.smasher.widget.basic.BasicActivity
-import com.smasher.zxing.activity.CaptureActivity
-import pub.devrel.easypermissions.AfterPermissionGranted
-import pub.devrel.easypermissions.EasyPermissions
-import pub.devrel.easypermissions.PermissionRequest
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -31,14 +18,6 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
 
 
     private val mHideHandler = Handler()
-    private var mButton: Button? = null
-    private var mButton2: Button? = null
-    private var mButton3: Button? = null
-    private var mButton4: Button? = null
-    private var mButton5: Button? = null
-    private var mButton6: Button? = null
-    private var mButton7: Button? = null
-    private var mButton8: Button? = null
     private var mDummyButton: Button? = null
 
     private var mContentView: View? = null
@@ -87,7 +66,6 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         initView()
         initListener()
         initStatus()
@@ -106,21 +84,12 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
 
     }
 
-
     private fun initStatus() {
         mVisible = true
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initListener() {
-        mButton!!.setOnClickListener(this)
-        mButton2!!.setOnClickListener(this)
-        mButton3!!.setOnClickListener(this)
-        mButton4!!.setOnClickListener(this)
-        mButton5!!.setOnClickListener(this)
-        mButton6!!.setOnClickListener(this)
-        mButton7!!.setOnClickListener(this)
-        mButton8!!.setOnClickListener(this)
         mDummyButton!!.setOnTouchListener(mDelayHideTouchListener)
         mContentView!!.setOnClickListener { view ->
             LogUtil.d(view.id.toString())
@@ -129,14 +98,6 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun initView() {
-        mButton = findViewById(R.id.button)
-        mButton2 = findViewById(R.id.button2)
-        mButton3 = findViewById(R.id.button3)
-        mButton4 = findViewById(R.id.button4)
-        mButton5 = findViewById(R.id.button5)
-        mButton6 = findViewById(R.id.button6)
-        mButton7 = findViewById(R.id.button7)
-        mButton8 = findViewById(R.id.button8)
         mContentView = findViewById(R.id.fullscreen_content)
         mControlsView = findViewById(R.id.fullscreen_content_controls)
         mDummyButton = findViewById(R.id.dummy_button)
@@ -192,95 +153,10 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
     }
 
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-
-    private fun checkCameraPermission(): Boolean {
-        return EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)
-    }
-
     override fun onClick(v: View) {
         val id = v.id
-        if (id == R.id.button) {
-            onButtonClicked()
-        } else if (id == R.id.button2) {
-            onMButton2Clicked()
-        } else if (id == R.id.button3) {
-            onMButton3Clicked()
-        } else if (id == R.id.button4) {
-            onMButton4Clicked()
-        } else if (id == R.id.button5) {
-            onMButton5Clicked()
-        } else if (id == R.id.button6) {
-            onMButton6Clicked()
-        } else if (id == R.id.button7) {
-            onMButton7Clicked()
-        } else if (id == R.id.button8) {
-            onMButton8Clicked()
-        }
     }
 
-
-    private fun onButtonClicked() {
-        val intent = Intent()
-        intent.setClass(this, BasicActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun onMButton2Clicked() {
-        val intent = Intent()
-        intent.setClass(this, AlarmActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun onMButton3Clicked() {
-        val intent = Intent()
-        intent.setClass(this, DrawableActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun onMButton4Clicked() {
-        val intent = Intent()
-        intent.setClass(this, LocalActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun onMButton5Clicked() {
-        val intent = Intent()
-        intent.setClass(this, LoginActivity::class.java)
-        startActivity(intent)
-    }
-
-    @AfterPermissionGranted(REQUEST_CODE_PERMISSION)
-    fun onMButton6Clicked() {
-        val hasPermission = checkCameraPermission()
-        if (hasPermission) {
-            val intent = Intent()
-            intent.setClass(this, CaptureActivity::class.java)
-            startActivityForResult(intent, REQUEST_CODE_PERMISSION)
-        } else {
-            val builder = PermissionRequest.Builder(this, REQUEST_CODE_PERMISSION, Manifest.permission.CAMERA)
-            val request = builder.build()
-            EasyPermissions.requestPermissions(request)
-        }
-
-
-    }
-
-    private fun onMButton7Clicked() {
-        val intent = Intent()
-        intent.setClass(this, WidgetActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun onMButton8Clicked() {
-        val intent = Intent()
-        intent.setClass(this, TestActivity::class.java)
-        startActivity(intent)
-    }
 
     companion object {
         /**
@@ -300,8 +176,6 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
          * and a change of the status and navigation bar.
          */
         private const val UI_ANIMATION_DELAY = 300
-        private const val REQUEST_CODE_SCAN = 999
-        private const val REQUEST_CODE_PERMISSION = 1000
     }
 
 }

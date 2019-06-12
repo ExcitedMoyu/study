@@ -111,7 +111,7 @@ public class MediaPlayerProxy extends CorePlayer {
     @Override
     public long getDuration() {
         if (mPlayer != null) {
-            long duration = mPlayer.getDuration();
+            return mPlayer.getDuration();
         }
         return 0;
     }

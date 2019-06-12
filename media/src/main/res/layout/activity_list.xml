@@ -103,7 +103,7 @@
     <include
         layout="@layout/layout_play_control"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/length_80"
+        android:layout_height="@dimen/length_140"
         android:layout_gravity="bottom" />
 
 

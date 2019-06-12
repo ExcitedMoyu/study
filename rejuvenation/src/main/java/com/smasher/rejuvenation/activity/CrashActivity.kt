@@ -5,7 +5,7 @@ import android.view.View
 import com.smasher.rejuvenation.R
 import com.smasher.widget.base.BaseActivity
 
-class CrashHandleActivity : BaseActivity() {
+class CrashActivity : BaseActivity() {
     override fun setFunctionsForFragment(tag: String?) {
 
     }

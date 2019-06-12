@@ -12,11 +12,9 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.smasher.oa.core.utils.StatusBarUtil;
@@ -45,8 +43,6 @@ public class BasicActivity extends AppCompatActivity {
     private static final String TAG = "BasicActivity";
     Toolbar toolbar;
     FloatingActionButton fab;
-    AppBarLayout appBarLayout;
-    CoordinatorLayout coordinatorLayout;
     MagicIndicator magicIndicator;
     ViewPager viewPager;
 
@@ -58,7 +54,7 @@ public class BasicActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_basic);
+        setContentView(R.layout.activity_basic_widget);
         StatusBarUtil.setTranslucent(this, 200);
 
         Log.d(TAG, "onCreate: ");
@@ -74,12 +70,14 @@ public class BasicActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        toolbar = findViewById(R.id.toolbar);
-        fab = findViewById(R.id.fab);
-        appBarLayout = findViewById(R.id.appBarLayout);
-        coordinatorLayout = findViewById(R.id.coordinatorLayout);
-        magicIndicator = findViewById(R.id.magicIndicator);
-        viewPager = findViewById(R.id.viewPager);
+        try {
+            toolbar = findViewById(R.id.toolbar);
+            fab = findViewById(R.id.fab);
+            magicIndicator = findViewById(R.id.magicIndicator);
+            viewPager = findViewById(R.id.viewPager);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         setSupportActionBar(toolbar);
         mFragmentManager = getSupportFragmentManager();
     }

@@ -70,9 +70,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetStatu
     public abstract void initData();
 
 
-
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -118,7 +115,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetStatu
 
     @Override
     public void onNetChange(boolean netStatus) {
-        Toast.makeText(BaseActivity.this, "NetworkStatus changed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "NetworkStatus changed", Toast.LENGTH_SHORT).show();
     }
 
 }

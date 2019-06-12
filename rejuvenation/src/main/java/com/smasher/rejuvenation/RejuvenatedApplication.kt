@@ -6,7 +6,7 @@ import androidx.multidex.MultiDexApplication
 import com.smasher.oa.core.crash.CrashHandler
 import com.smasher.oa.core.crash.CrashManager
 import com.smasher.oa.core.other.ApplicationContext
-import com.smasher.rejuvenation.activity.CrashHandleActivity
+import com.smasher.rejuvenation.activity.CrashActivity
 import com.smasher.rejuvenation.activity.SplashActivity
 import com.smasher.rejuvenation.injection.component.DaggerOkHttpComponent
 import com.smasher.rejuvenation.injection.component.OkHttpComponent
@@ -42,7 +42,7 @@ class RejuvenatedApplication : MultiDexApplication() {
         if (isDebug) {
             CrashHandler.getInstance().init(sContext)
         } else {
-            CrashManager.setErrorActivityClass(CrashHandleActivity::class.java)
+            CrashManager.setErrorActivityClass(CrashActivity::class.java)
             CrashManager.setRestartActivityClass(SplashActivity::class.java)
             CrashManager.install(sContext, isDebug)
         }

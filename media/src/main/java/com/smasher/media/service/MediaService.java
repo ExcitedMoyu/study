@@ -34,6 +34,9 @@ import com.smasher.media.receiver.MediaButtonIntentReceiver;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author matao
@@ -45,6 +48,10 @@ public class MediaService extends MediaBrowserServiceCompat implements
 
 
     private static final String TAG = "MediaService";
+
+    public static final String TAG_DURATION = "duration";
+    public static final String TAG_CURRENT = "current";
+
 
     private MediaSessionCompat mSession;
     private MediaSessionCallback mSessionCallback;
@@ -82,7 +89,21 @@ public class MediaService extends MediaBrowserServiceCompat implements
         mPlayer.setNotificationHelper(mNotificationHelper);
         mPlayer.setCompleteListener(this);
 
+
+        ScheduledExecutorService schedule = Executors.newScheduledThreadPool(3);
+        schedule.scheduleAtFixedRate(() -> {
+            if (mPlayer != null && mPlayer.isPlaying()) {
+                long duration = mPlayer.getDuration();
+                long currentTime = mPlayer.getCurrTime();
+
+                Bundle bundle = new Bundle();
+                bundle.putLong(TAG_CURRENT, currentTime);
+                bundle.putLong(TAG_DURATION, duration);
+                mSession.setExtras(bundle);
+            }
+        }, 0, 300, TimeUnit.MILLISECONDS);
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -103,6 +124,10 @@ public class MediaService extends MediaBrowserServiceCompat implements
      * @param transportControls transportControls
      */
     private void handleAction(Intent intent, MediaControllerCompat.TransportControls transportControls) {
+        if (intent == null) {
+            return;
+        }
+
         String action = intent.getAction();
         if (action != null) {
             switch (action) {
@@ -146,20 +171,17 @@ public class MediaService extends MediaBrowserServiceCompat implements
     @Override
     public void onActiveChanged() {
         Log.d(TAG, "onActiveChanged: " + mSession.isActive());
-
     }
 
 
     @Nullable
     @Override
     public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid, @Nullable Bundle rootHints) {
-        Log.d(TAG, "onGetRoot: ");
         return new BrowserRoot(Constant.MEDIA_ID_ROOT, null);
     }
 
     @Override
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaItem>> result) {
-        Log.d(TAG, "onLoadChildren: ");
         List<MediaItem> list = mLoader.getChildren();
         if (list == null) {
             result.sendResult(null);
@@ -228,7 +250,6 @@ public class MediaService extends MediaBrowserServiceCompat implements
                 return;
             }
 
-            Log.d(TAG, "onPlay: ");
             int state = mPlayer.getState();
             switch (state) {
                 case PlaybackStateCompat.STATE_PAUSED:
@@ -273,7 +294,6 @@ public class MediaService extends MediaBrowserServiceCompat implements
                 return;
             }
 
-            Log.d(TAG, "onPlayFromMediaId: ");
             mQueueManager.skipQueuePositionByMediaId(mediaId);
 
             QueueItem currentMusic = mQueueManager.getCurrentMusic();
@@ -314,7 +334,6 @@ public class MediaService extends MediaBrowserServiceCompat implements
             }
 
             if (mPlayer.getState() == PlaybackStateCompat.STATE_PLAYING) {
-                Log.d(TAG, "onPause: ");
                 mPlayer.pause();
             }
         }
@@ -323,27 +342,22 @@ public class MediaService extends MediaBrowserServiceCompat implements
         @Override
         public void onSkipToNext() {
             super.onSkipToNext();
-
             if (mPlayer == null) {
                 Log.e(TAG, "onPlay: player is not init yet");
                 return;
             }
 
-            Log.d(TAG, "onSkipToNext: ");
             changeMusic(ActionType.ACTION_NEXT);
         }
 
         @Override
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
-            Log.d(TAG, "onSkipToPrevious: ");
-
             if (mPlayer == null) {
                 Log.e(TAG, "onPlay: player is not init yet");
                 return;
             }
 
-            Log.d(TAG, "onSkipToPrevious: ");
             changeMusic(ActionType.ACTION_PREVIOUS);
         }
 
@@ -362,7 +376,6 @@ public class MediaService extends MediaBrowserServiceCompat implements
         @Override
         public void onStop() {
             super.onStop();
-            Log.d(TAG, "onStop: ");
             if (mPlayer != null) {
                 mPlayer.stop();
             }
@@ -371,7 +384,6 @@ public class MediaService extends MediaBrowserServiceCompat implements
         @Override
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
-            Log.d(TAG, "onSeekTo: ");
             if (mPlayer != null) {
                 mPlayer.seek((int) pos);
             }
@@ -402,7 +414,6 @@ public class MediaService extends MediaBrowserServiceCompat implements
         @Override
         public void onSetRepeatMode(int repeatMode) {
             super.onSetRepeatMode(repeatMode);
-            Log.d(TAG, "onSetRepeatMode: ");
             mQueueManager.setRepeatMode(repeatMode);
             mSession.setRepeatMode(repeatMode);
         }
@@ -411,7 +422,6 @@ public class MediaService extends MediaBrowserServiceCompat implements
         @Override
         public void onSetShuffleMode(int shuffleMode) {
             super.onSetShuffleMode(shuffleMode);
-            Log.d(TAG, "onSetShuffleMode: ");
             mQueueManager.setShuffleMode(shuffleMode);
             mSession.setShuffleMode(shuffleMode);
         }

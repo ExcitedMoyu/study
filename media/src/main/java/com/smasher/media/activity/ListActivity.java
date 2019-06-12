@@ -1,10 +1,7 @@
 package com.smasher.media.activity;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.media.MediaBrowserCompat;
@@ -16,16 +13,11 @@ import android.support.v4.media.session.MediaControllerCompat.TransportControls;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,10 +32,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.animation.AnimatorSet;
-import com.nineoldandroids.animation.ObjectAnimator;
 import com.smasher.media.R;
 import com.smasher.media.adapter.MusicListAdapter;
 import com.smasher.media.annotation.PlayMode;
@@ -54,7 +42,11 @@ import com.smasher.media.service.MediaService;
 import com.smasher.oa.core.utils.StatusBarUtil;
 import com.smasher.widget.base.OnItemClickListener;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -64,6 +56,9 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         View.OnClickListener {
 
     private static final String TAG = "ListActivity";
+
+    public static final String TAG_DURATION = "duration";
+    public static final String TAG_CURRENT = "current";
 
     private Toolbar mToolbar;
     private CollapsingToolbarLayout mToolbarLayout;
@@ -79,6 +74,9 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     private ImageButton next;
     private ImageButton mMode;
     private ImageButton mBtnList;
+    private SeekBar mSeekBar;
+    private TextView mDuration;
+    private TextView mCurrent;
 
     private RecyclerView recyclerView;
     private ConstraintLayout mControl;
@@ -117,7 +115,32 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         next.setOnClickListener(this);
         mMode.setOnClickListener(this);
         mBtnList.setOnClickListener(this);
+        mSeekBar.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
     }
+
+
+    private SeekBar.OnSeekBarChangeListener mOnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (fromUser) {
+                Log.d(TAG, "onProgressChanged: ");
+                if (mController != null) {
+                    TransportControls mControls = mController.getTransportControls();
+                    mControls.seekTo(progress);
+                }
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            Log.d(TAG, "onStartTrackingTouch: ");
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            Log.d(TAG, "onStopTrackingTouch: ");
+        }
+    };
 
 
     private void initMediaBrowser() {
@@ -152,7 +175,9 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         mMode = findViewById(R.id.mode);
         mBtnList = findViewById(R.id.list);
         mControl = findViewById(R.id.control);
-
+        mSeekBar = findViewById(R.id.seekBar);
+        mDuration = findViewById(R.id.durationTime);
+        mCurrent = findViewById(R.id.currentTime);
         mAnimationHelper = new AnimationHelper();
     }
 
@@ -170,6 +195,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         mControl.setBackground(drawable);
         mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
+
         updatePlayState();
         updateModeState();
 
@@ -273,10 +299,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
 
             if (mController != null) {
                 MediaControllerCompat.PlaybackInfo playbackInfo = mController.getPlaybackInfo();
-                Log.d(TAG, "connectToSessionImp: " + playbackInfo.getPlaybackType());
-                Log.d(TAG, "connectToSessionImp: " + playbackInfo.getCurrentVolume());
-                Log.d(TAG, "connectToSessionImp: " + playbackInfo.getAudioAttributes());
-
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -355,8 +377,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     public void onListClicked() {
         TransportControls transportControls = mController.getTransportControls();
         if (transportControls != null) {
-            Log.d(TAG, "onListClicked: ");
-            transportControls.seekTo(30000);
+
         }
     }
 
@@ -537,7 +558,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         public void onPlaybackStateChanged(@Nullable PlaybackStateCompat state) {
             super.onPlaybackStateChanged(state);
             String value = state != null ? String.valueOf(state.getState()) : "";
-            Log.d(TAG, "onPlaybackStateChanged " + value);
             updatePlayState();
         }
 
@@ -547,7 +567,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
 
             String title = "";
             if (metadata != null) {
-                Log.d(TAG, "onMetadataChanged: " + metadata.getDescription().getTitle());
                 title = metadata.getDescription().getTitle().toString();
                 mAdapter.setSelectedMediaId(metadata.getDescription().getMediaId());
                 mAdapter.notifyDataSetChanged();
@@ -561,9 +580,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         public void onQueueChanged(@Nullable List<MediaSessionCompat.QueueItem> queue) {
             super.onQueueChanged(queue);
             if (queue != null) {
-                Log.d(TAG, "onQueueChanged: " + queue.size());
-
-
                 mList = queue;
                 mAdapter.setData(mList);
                 mAdapter.notifyDataSetChanged();
@@ -581,14 +597,28 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         @Override
         public void onExtrasChanged(@Nullable Bundle extras) {
             super.onExtrasChanged(extras);
-            Log.d(TAG, "onExtrasChanged");
+            updateProgress(extras);
+        }
+
+
+        private void updateProgress(Bundle extras) {
             if (extras != null) {
-                String key = "duration";
-                if (extras.containsKey(key)) {
-                    Log.d(TAG, "onExtrasChanged: " + extras.getInt(key));
+                long duration = extras.getLong(TAG_DURATION, 0L);
+                long current = extras.getLong(TAG_CURRENT, 0L);
+                BigDecimal durationBigDecimal = new BigDecimal(Long.toString(duration));
+                BigDecimal currentBigDecimal = new BigDecimal(Long.toString(current));
+                if (mSeekBar != null) {
+                    mSeekBar.setMax(durationBigDecimal.intValue());
+                    mSeekBar.setProgress(currentBigDecimal.intValue());
                 }
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss", Locale.CHINA);
+                String durationTimeS = simpleDateFormat.format(new Date(duration));
+                String currentTimeS = simpleDateFormat.format(new Date(current));
+                mDuration.setText(durationTimeS);
+                mCurrent.setText(currentTimeS);
             }
         }
+
 
         @Override
         public void onAudioInfoChanged(MediaControllerCompat.PlaybackInfo info) {

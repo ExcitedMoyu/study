@@ -1,5 +1,6 @@
 package com.smasher.rejuvenation.activity
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -15,7 +16,11 @@ import android.view.Menu
 import com.smasher.media.activity.InitActivity
 import com.smasher.rejuvenation.R
 import com.smasher.rxjava.RxJavaActivity
+import com.smasher.zxing.activity.CaptureActivity
 import org.jetbrains.anko.startActivity
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.EasyPermissions
+import pub.devrel.easypermissions.PermissionRequest
 
 class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -56,16 +61,16 @@ class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         when (item.itemId) {
             R.id.nav_home -> {
                 // Handle the camera action
-                gotoMedia()
+                gotoScan()
             }
             R.id.nav_gallery -> {
                 gotoDagger()
             }
             R.id.nav_slideshow -> {
-
+                gotoBasic()
             }
             R.id.nav_tools -> {
-
+                gotoMedia()
             }
             R.id.nav_share -> {
                 gotoRxJava()
@@ -78,6 +83,33 @@ class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+
+    private fun checkCameraPermission(): Boolean {
+        return EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)
+    }
+
+
+    @AfterPermissionGranted(REQUEST_CODE_PERMISSION)
+    fun gotoScan() {
+        val hasPermission = checkCameraPermission()
+        if (hasPermission) {
+            val intent = Intent()
+            intent.setClass(this, CaptureActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE_SCAN)
+        } else {
+            val builder = PermissionRequest.Builder(this, REQUEST_CODE_PERMISSION, Manifest.permission.CAMERA)
+            val request = builder.build()
+            EasyPermissions.requestPermissions(request)
+        }
+    }
+
 
     private fun gotoDebug() {
         val intent = Intent()
@@ -102,5 +134,16 @@ class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         val intent = Intent()
         intent.setClass(this, RxJavaActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun gotoBasic() {
+        val intent = Intent()
+        intent.setClass(this, BasicActivity::class.java)
+        startActivity(intent)
+    }
+
+    companion object {
+        private const val REQUEST_CODE_SCAN = 999
+        private const val REQUEST_CODE_PERMISSION = 1000
     }
 }

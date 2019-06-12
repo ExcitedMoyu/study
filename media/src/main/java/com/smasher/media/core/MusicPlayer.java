@@ -26,15 +26,11 @@ public class MusicPlayer extends CorePlayer {
 
     private NotificationHelper mNotificationHelper;
     private PlaybackManager mPlaybackManager;
-    private MediaSessionCompat mSession;
 
     private MediaPlayer mPlayer;
 
     public MusicPlayer(Context context, MediaSessionCompat session) {
         super(context, session);
-
-        mSession = session;
-
         mPlaybackManager = PlaybackManager.getInstance();
         mPlaybackManager.setMediaSession(session);
         mPlaybackManager.setState(PlaybackStateCompat.STATE_NONE);
@@ -211,12 +207,6 @@ public class MusicPlayer extends CorePlayer {
     @Override
     protected void onPreparedLogic(MediaPlayer mp) {
         Log.d(TAG, "onPreparedLogic: ");
-        Bundle bundle = new Bundle();
-        int duration = mp.getDuration();
-        bundle.putInt("duration", duration);
-
-        mSession.setExtras(bundle);
-
         if (mAudioFocusHelper != null) {
             boolean result = mAudioFocusHelper.requestFocus(mContext);
             Log.d(TAG, "start: focus:" + result);
