@@ -1,4 +1,4 @@
-package com.smasher.widget.alarm;
+package com.smasher.widget.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

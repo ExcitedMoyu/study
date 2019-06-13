@@ -6,12 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.smasher.widget.R;
 import com.smasher.widget.base.BaseRecyclerViewAdapter;
+import com.smasher.widget.base.IOperationData;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -24,7 +23,6 @@ public class MoveAdapter extends BaseRecyclerViewAdapter<Integer, MoveViewHolder
     public MoveAdapter(Context context) {
         super(context);
     }
-
 
 
     @Override
@@ -46,13 +44,4 @@ public class MoveAdapter extends BaseRecyclerViewAdapter<Integer, MoveViewHolder
         notifyItemRemoved(position);
     }
 
-    @Override
-    public boolean onItemRemove(int position) {
-        return false;
-    }
-
-    @Override
-    public void onSaveItemStatus(RecyclerView.ViewHolder viewHolder) {
-
-    }
 }

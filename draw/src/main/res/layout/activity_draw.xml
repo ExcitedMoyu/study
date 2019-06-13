@@ -1,77 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.DrawableActivity">
+    android:layout_height="match_parent">
 
-    <com.smasher.draw.BlurMaskFilterView
-        android:id="@+id/blurMask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:blur_color="@android:color/holo_red_light"
-        app:blur_enable_state="true"
-        app:blur_normal_color="@android:color/black"
-        app:blur_pressed_color="@color/color_227FFB"
-        app:blur_text="测试一下"
-        app:blur_text_color="@android:color/black"
-        app:blur_text_paddingLeft="@dimen/length_20"
-        app:blur_text_paddingRight="@dimen/length_20"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <com.smasher.draw.BlurMaskFilterView
-        android:id="@+id/blurMask1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:blur_color="@android:color/holo_red_light"
-        app:blur_enable_state="true"
-        app:blur_normal_color="@android:color/holo_red_light"
-        app:blur_pressed_color="@color/color_227FFB"
-        app:blur_text="测试一下"
-        app:blur_text_color="@android:color/white"
-        app:blur_text_paddingLeft="@dimen/length_80"
-        app:blur_text_paddingRight="@dimen/length_36"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blurMask" />
-
-    <TextView
-        android:id="@+id/test"
-        android:layout_width="@dimen/length_150"
-        android:layout_height="@dimen/length_32"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blurMask1" />
-
-
-    <com.smasher.draw.CanvasView
-        android:id="@+id/canvasView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test" />
+        android:layout_height="match_parent"
+        tools:context=".activity.DrawableActivity">
+
+        <com.smasher.draw.view.BlurMaskFilterView
+            android:id="@+id/blurMask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:blur_color="@android:color/holo_red_light"
+            app:blur_enable_state="true"
+            app:blur_normal_color="@android:color/holo_blue_light"
+            app:blur_pressed_color="@color/color_227FFB"
+            app:blur_text="测试一下"
+            app:blur_text_color="@android:color/white"
+            app:blur_text_paddingLeft="@dimen/length_20"
+            app:blur_text_paddingRight="@dimen/length_20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-    <com.smasher.draw.AliPaySuccessView
-        android:id="@+id/success"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/length_200"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/canvasView" />
+        <com.smasher.draw.view.BlurMaskFilterView
+            android:id="@+id/blurMask1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:blur_color="@android:color/holo_red_light"
+            app:blur_enable_state="true"
+            app:blur_normal_color="@android:color/holo_red_light"
+            app:blur_pressed_color="@color/color_227FFB"
+            app:blur_text="测试一下"
+            app:blur_text_color="@android:color/white"
+            app:blur_text_paddingLeft="@dimen/length_80"
+            app:blur_text_paddingRight="@dimen/length_36"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/blurMask" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <com.smasher.draw.view.SuccessView
+            android:id="@+id/success"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/length_80"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/blurMask1" />
+
+
+        <com.smasher.draw.view.RhythmView
+            android:id="@+id/rhythmView"
+            android:layout_width="@dimen/length_200"
+            android:layout_height="@dimen/length_90"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="@dimen/length_90"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/success" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
+

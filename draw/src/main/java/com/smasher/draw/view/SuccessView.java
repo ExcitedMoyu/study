@@ -1,23 +1,25 @@
-package com.smasher.draw;
+package com.smasher.draw.view;
 
-import android.animation.AnimatorSet;
-import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
+
 import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ValueAnimator;
 
 /**
  * @author matao
  * @date 2019/5/9
  */
-public class AliPaySuccessView extends View {
+public class SuccessView extends View {
 
     private static final String TAG = "AliPaySuccessView";
     private Paint mPaint;
@@ -30,24 +32,17 @@ public class AliPaySuccessView extends View {
     private float mSuccessValue;
 
 
-    public AliPaySuccessView(Context context) {
-        super(context);
+    public SuccessView(Context context) {
+        this(context, null);
+    }
+
+    public SuccessView(Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
         init(context);
     }
 
-    public AliPaySuccessView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
-
-    public AliPaySuccessView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SuccessView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
-    }
-
-    @TargetApi(21)
-    public AliPaySuccessView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }
 
@@ -68,23 +63,17 @@ public class AliPaySuccessView extends View {
 
         clear();
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCurAnimValue = (float) animation.getAnimatedValue();
-                invalidate();
-            }
+        animator.addUpdateListener(animation -> {
+            mCurAnimValue = (float) animation.getAnimatedValue();
+            invalidate();
         });
         animator.setDuration(1000);
 
 
         ValueAnimator animator1 = ValueAnimator.ofFloat(0, 1);
-        animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mSuccessValue = (float) animation.getAnimatedValue();
-                invalidate();
-            }
+        animator1.addUpdateListener(animation -> {
+            mSuccessValue = (float) animation.getAnimatedValue();
+            invalidate();
         });
         animator1.setDuration(500);
 

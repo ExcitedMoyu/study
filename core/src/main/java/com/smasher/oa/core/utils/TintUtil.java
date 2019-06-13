@@ -1,4 +1,4 @@
-package com.smasher.draw.util;
+package com.smasher.oa.core.utils;
 
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;

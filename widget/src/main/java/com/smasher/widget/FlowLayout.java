@@ -1,4 +1,4 @@
-package com.smasher.draw;
+package com.smasher.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;

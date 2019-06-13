@@ -198,9 +198,6 @@ public class IHCallback extends ItemTouchHelper.Callback {
         } else if (viewHolder.itemView.getScrollX() < 0) {
             viewHolder.itemView.scrollTo(0, 0);
         }
-        mMoveAdapter.onSaveItemStatus(viewHolder);
-//        mItemTouchStatus.onSaveItemStatus(viewHolder);
-//        mItemTouchStatus.onSaveItemStatus(viewHolder);
     }
 
     @Override

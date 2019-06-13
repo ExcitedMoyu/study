@@ -21,8 +21,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * Author: wuzhendong
  * Date: 2018-07-11
+ *
+ * @author matao
  */
 public class ThemeTransformHelper {
     public static final int TYPE_DAY_NIGHT = 1;
@@ -95,10 +96,10 @@ public class ThemeTransformHelper {
      * @param type {@link #TYPE_DAY_NIGHT} {@link #TYPE_NIGHT_DAY}
      */
     @Nullable
-    public static AnimationDrawable2 loadDayNightAnimationDrawable(Context context, int type, long duration) {
+    public static AnimationExDrawable loadDayNightAnimationDrawable(Context context, int type, long duration) {
         try {
             BitmapFactory.Options options = null;
-            if(context.getResources().getDisplayMetrics().density < 2){
+            if (context.getResources().getDisplayMetrics().density < 2) {
                 //图片是按二倍图给的，屏幕过小需要设置采样
                 float sampleSize = 2f / context.getResources().getDisplayMetrics().density;
                 options = new BitmapFactory.Options();
@@ -118,7 +119,7 @@ public class ThemeTransformHelper {
             }
             Arrays.sort(fileNames, sStringComparator);
             int frameDuration = (int) (duration / fileNames.length);
-            AnimationDrawable2 animationDrawable = new AnimationDrawable2();
+            AnimationExDrawable animationDrawable = new AnimationExDrawable();
             for (String fileName : fileNames) {
                 InputStream stream = assetManager.open(dir + File.separator + fileName);
                 try {

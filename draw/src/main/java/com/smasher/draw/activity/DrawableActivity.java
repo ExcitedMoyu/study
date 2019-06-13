@@ -17,17 +17,16 @@ import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.smasher.draw.AliPaySuccessView;
-import com.smasher.draw.BlurMaskFilterView;
-import com.smasher.draw.CanvasView;
 import com.smasher.draw.R;
-import com.smasher.draw.util.DensityUtil;
-import com.smasher.draw.util.TintUtil;
+import com.smasher.draw.view.BlurMaskFilterView;
+import com.smasher.draw.view.RhythmView;
+import com.smasher.draw.view.SuccessView;
+import com.smasher.oa.core.utils.DensityUtil;
+import com.smasher.oa.core.utils.TintUtil;
 
 
 /**
@@ -37,9 +36,8 @@ public class DrawableActivity extends AppCompatActivity {
 
     private BlurMaskFilterView mBlurMask;
     private BlurMaskFilterView mBlurMask1;
-    private TextView mTest;
-    private CanvasView mCanvasView;
-    private AliPaySuccessView mSuccess;
+    private SuccessView mSuccess;
+    private RhythmView mRhythmView;
 
 
     @Override
@@ -52,11 +50,8 @@ public class DrawableActivity extends AppCompatActivity {
     }
 
     private void initListener() {
-        mBlurMask.setOnClickListener(mOnClickListener);
-        mBlurMask1.setOnClickListener(mOnClickListener);
-        mTest.setOnClickListener(v -> {
-
-        });
+        mBlurMask.setOnClickListener(mblurMaskListener1);
+        mBlurMask1.setOnClickListener(mblurMaskListener2);
     }
 
     private void initState() {
@@ -74,6 +69,10 @@ public class DrawableActivity extends AppCompatActivity {
 
         mBlurMask1.setCompoundDrawablePadding(DensityUtil.dip2px(this, 40));
         mBlurMask1.setCompoundDrawables(null, null, arrow, null);
+        StateListDrawable listDrawable = getStateListDrawable();
+    }
+
+    private StateListDrawable getStateListDrawable() {
         float[] radiusArray = new float[8];
         for (int i = 0; i < 8; i++) {
             radiusArray[i] = DensityUtil.dip2px(this, 20);
@@ -88,8 +87,7 @@ public class DrawableActivity extends AppCompatActivity {
         normalDrawable.setPadding(mTextPaddingLeft, mTextPaddingLeft, mTextPaddingLeft, mTextPaddingLeft);
         int[] stateSet2 = new int[]{};
         listDrawable.addState(stateSet2, normalDrawable);
-        mTest.setBackground(listDrawable);
-        mTest.setText("测试一下");
+        return listDrawable;
     }
 
     private void initView() {
@@ -97,80 +95,86 @@ public class DrawableActivity extends AppCompatActivity {
         try {
             mBlurMask = findViewById(R.id.blurMask);
             mBlurMask1 = findViewById(R.id.blurMask1);
-            mTest = findViewById(R.id.test);
-            mCanvasView = findViewById(R.id.canvasView);
             mSuccess = findViewById(R.id.success);
+            mRhythmView = findViewById(R.id.rhythmView);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    View.OnClickListener mOnClickListener = new View.OnClickListener() {
+    View.OnClickListener mblurMaskListener1 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            mSuccess.showAnimation();
-            Animation transAnimation = new TranslateAnimation(
-                    Animation.RELATIVE_TO_SELF,
-                    0f,
-                    Animation.RELATIVE_TO_SELF,
-                    1f,
-                    Animation.RELATIVE_TO_SELF,
-                    0f,
-                    Animation.RELATIVE_TO_SELF,
-                    1f
-            );
-            transAnimation.setRepeatMode(Animation.REVERSE);
-            transAnimation.setRepeatCount(5);
-
-
-            Animation alpha = new AlphaAnimation(0.5f, 1f);
-            alpha.setRepeatMode(Animation.REVERSE);
-            alpha.setRepeatCount(5);
-
-
-            Animation rotate = new RotateAnimation(
-                    0f,
-                    360f,
-                    Animation.RELATIVE_TO_SELF, 0.5f,
-                    Animation.RELATIVE_TO_SELF, 0.5f
-
-            );
-            rotate.setRepeatMode(Animation.REVERSE);
-            rotate.setRepeatCount(5);
-
-
-            AnimationSet set = new AnimationSet(true);
-            set.setInterpolator(new DecelerateInterpolator());
-            set.setDuration(500);
-            set.setFillEnabled(true);
-            set.setFillAfter(true);
-//        set.addAnimation(transAnimation);
-            set.addAnimation(alpha);
-            set.addAnimation(rotate);
-//        mBlurMask.startAnimation(set);
-
-            AnimatorSet set1 = new AnimatorSet();
-            ObjectAnimator trans = ObjectAnimator.ofFloat(
-                    mBlurMask,
-                    "translationX",
-                    mBlurMask.getTranslationX(), 500f, mBlurMask.getTranslationX());
-            trans.setRepeatMode(ObjectAnimator.REVERSE);
-            trans.setRepeatCount(ObjectAnimator.INFINITE);
-
-            ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(
-                    mBlurMask,
-                    "rotation",
-                    mBlurMask.getRotation(), 180, mBlurMask.getRotation()
-            );
-            rotateAnimator.setRepeatMode(ObjectAnimator.REVERSE);
-            rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-
-            set1.playTogether(trans, rotateAnimator);
-            set1.setDuration(2000);
-            set1.start();
+            mRhythmView.showAnimation();
         }
     };
+
+
+    View.OnClickListener mblurMaskListener2 = v -> doActions();
+
+
+    private void doActions() {
+        mSuccess.showAnimation();
+
+        Animation transAnimation = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF,
+                0f,
+                Animation.RELATIVE_TO_SELF,
+                1f,
+                Animation.RELATIVE_TO_SELF,
+                0f,
+                Animation.RELATIVE_TO_SELF,
+                1f
+        );
+        transAnimation.setRepeatMode(Animation.REVERSE);
+        transAnimation.setRepeatCount(5);
+
+
+        Animation alpha = new AlphaAnimation(0.5f, 1f);
+        alpha.setRepeatMode(Animation.REVERSE);
+        alpha.setRepeatCount(5);
+
+
+        Animation rotate = new RotateAnimation(
+                0f,
+                360f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f
+
+        );
+        rotate.setRepeatMode(Animation.REVERSE);
+        rotate.setRepeatCount(5);
+
+
+        AnimationSet set = new AnimationSet(true);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.setDuration(500);
+        set.setFillEnabled(true);
+        set.setFillAfter(true);
+        set.addAnimation(alpha);
+        set.addAnimation(rotate);
+
+        AnimatorSet set1 = new AnimatorSet();
+        ObjectAnimator trans = ObjectAnimator.ofFloat(
+                mBlurMask,
+                "translationX",
+                mBlurMask.getTranslationX(), 500f, mBlurMask.getTranslationX());
+        trans.setRepeatMode(ObjectAnimator.REVERSE);
+        trans.setRepeatCount(ObjectAnimator.INFINITE);
+
+        ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(
+                mBlurMask,
+                "rotation",
+                mBlurMask.getRotation(), 180, mBlurMask.getRotation()
+        );
+        rotateAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+        rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+
+        set1.playTogether(trans, rotateAnimator);
+        set1.setDuration(2000);
+        set1.start();
+    }
 
 
     @Override

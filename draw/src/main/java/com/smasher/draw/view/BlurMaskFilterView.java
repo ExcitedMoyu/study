@@ -1,4 +1,4 @@
-package com.smasher.draw;
+package com.smasher.draw.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -14,13 +14,17 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.smasher.draw.R;
 
 
 /**
@@ -53,13 +57,11 @@ public class BlurMaskFilterView extends ViewGroup {
 
 
     public BlurMaskFilterView(Context context) {
-        super(context);
-        init(context, null);
+        this(context, null);
     }
 
     public BlurMaskFilterView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
+        this(context, attrs, 0);
     }
 
     public BlurMaskFilterView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -67,12 +69,6 @@ public class BlurMaskFilterView extends ViewGroup {
         init(context, attrs);
     }
 
-
-    @TargetApi(21)
-    public BlurMaskFilterView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs);
-    }
 
     private void init(Context context, AttributeSet attrs) {
 

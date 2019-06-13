@@ -13,8 +13,8 @@ import com.smasher.draw.activity.DrawableActivity
 import com.smasher.media.activity.TestActivity
 import com.smasher.oa.core.utils.StatusBarUtil
 import com.smasher.rejuvenation.R
-import com.smasher.widget.alarm.AlarmActivity
-import com.smasher.widget.alarm.WidgetActivity
+import com.smasher.widget.activity.AlarmActivity
+import com.smasher.widget.activity.WidgetActivity
 
 import kotlinx.android.synthetic.main.activity_basics.*
 

@@ -1,4 +1,4 @@
-package com.smasher.widget.alarm;
+package com.smasher.widget.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.smasher.oa.core.utils.StatusBarUtil;
 import com.smasher.widget.R;
 import com.smasher.widget.behavior.BehaviorActivity;
-import com.smasher.widget.helper.AnimationDrawable2;
+import com.smasher.widget.helper.AnimationExDrawable;
 import com.smasher.widget.helper.ThemeTransformHelper;
 
 
@@ -54,7 +54,7 @@ public class WidgetActivity extends AppCompatActivity {
             try {
                 boolean isDay = count % 2 > 0;
                 int type = isDay ? ThemeTransformHelper.TYPE_DAY_NIGHT : ThemeTransformHelper.TYPE_NIGHT_DAY;
-                AnimationDrawable2 drawable2 = ThemeTransformHelper.loadDayNightAnimationDrawable(this, type, 2000);
+                AnimationExDrawable drawable2 = ThemeTransformHelper.loadDayNightAnimationDrawable(this, type, 2000);
                 if (drawable2 != null) {
                     drawable2.setOneShot(true);
                     drawable2.setAnimationFinishListener(() ->

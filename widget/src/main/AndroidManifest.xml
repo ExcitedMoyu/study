@@ -14,8 +14,8 @@
             android:name=".basic.BasicActivity"
             android:label="@string/title_activity_basic"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".alarm.WidgetActivity" />
-        <activity android:name=".alarm.AlarmActivity" />
+        <activity android:name=".activity.WidgetActivity" />
+        <activity android:name=".activity.AlarmActivity" />
         <activity android:name=".behavior.BehaviorActivity" />
 
         <receiver android:name=".receiver.AlarmReceiver">

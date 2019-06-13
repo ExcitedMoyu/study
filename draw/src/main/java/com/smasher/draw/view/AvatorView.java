@@ -1,4 +1,4 @@
-package com.smasher.draw;
+package com.smasher.draw.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -9,9 +9,13 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Shader;
+
 import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.smasher.draw.R;
 
 
 public class AvatorView extends View {
@@ -23,13 +27,11 @@ public class AvatorView extends View {
 
 
     public AvatorView(Context context) {
-        super(context);
-        init(context, null);
+        this(context, null);
     }
 
     public AvatorView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
+        this(context, attrs, 0);
     }
 
     public AvatorView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -37,11 +39,6 @@ public class AvatorView extends View {
         init(context, attrs);
     }
 
-    @TargetApi(21)
-    public AvatorView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs);
-    }
 
     private void init(Context context, AttributeSet attrs) {
         mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.timg);

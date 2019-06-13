@@ -1,4 +1,4 @@
-package com.smasher.draw;
+package com.smasher.draw.view;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
@@ -9,7 +9,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
+
 import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -31,14 +33,12 @@ public class CanvasView extends View {
     private float mSuccessValue;
 
     public CanvasView(Context context) {
-        super(context);
-        init(context);
+        this(context, null);
     }
 
 
     public CanvasView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+        this(context, attrs, 0);
     }
 
     public CanvasView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -46,11 +46,6 @@ public class CanvasView extends View {
         init(context);
     }
 
-    @TargetApi(21)
-    public CanvasView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context);
-    }
 
     private void init(Context context) {
 

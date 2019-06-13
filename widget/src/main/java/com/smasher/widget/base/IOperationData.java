@@ -1,6 +1,4 @@
-package com.smasher.widget.basic;
-
-import androidx.recyclerview.widget.RecyclerView;
+package com.smasher.widget.base;
 
 /**
  * @author matao
@@ -23,8 +21,4 @@ public interface IOperationData {
      */
     void onItemDismiss(int position);
 
-
-    boolean onItemRemove(int position);
-
-    void onSaveItemStatus(RecyclerView.ViewHolder viewHolder);
 }

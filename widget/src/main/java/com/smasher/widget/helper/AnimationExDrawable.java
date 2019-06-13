@@ -3,10 +3,11 @@ package com.smasher.widget.helper;
 import android.graphics.drawable.AnimationDrawable;
 
 /**
- * Author: wuzhendong
  * Date: 2018-07-11
+ *
+ * @author matao
  */
-public class AnimationDrawable2 extends AnimationDrawable {
+public class AnimationExDrawable extends AnimationDrawable {
     public interface IAnimationFinishListener {
         /**
          * onAnimationFinished
