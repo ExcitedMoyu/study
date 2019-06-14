@@ -13,5 +13,15 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!--title-activity-->
     <string name="title_activity_basic">BasicActivity</string>
+    <string name="title_activity_debug">DebugActivity</string>
+
+    <!--activity-description-->
+    <string name="activity_description_debug">测试</string>
+    <string name="activity_description_dagger">Dagger</string>
 </resources>

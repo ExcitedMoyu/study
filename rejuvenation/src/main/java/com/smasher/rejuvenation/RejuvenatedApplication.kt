@@ -8,6 +8,7 @@ import com.smasher.oa.core.crash.CrashManager
 import com.smasher.oa.core.other.ApplicationContext
 import com.smasher.rejuvenation.activity.CrashActivity
 import com.smasher.rejuvenation.activity.SplashActivity
+import com.smasher.rejuvenation.helper.NotificationChannelHelper
 import com.smasher.rejuvenation.injection.component.DaggerOkHttpComponent
 import com.smasher.rejuvenation.injection.component.OkHttpComponent
 import com.smasher.zxing.activity.ZXingLibrary
@@ -32,10 +33,23 @@ class RejuvenatedApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         sContext = applicationContext
+        //Dagger
         mOkHttpComponent = DaggerOkHttpComponent.create()
         mOkHttpComponent.inject(this)
+
+        //Scanner
         ZXingLibrary.initDisplayOpinion(this)
+
+        //Crash
         initCrash(false)
+
+        //NotificationChannel
+        initNotificationChannel()
+    }
+
+    private fun initNotificationChannel() {
+        val channelHelper: NotificationChannelHelper = NotificationChannelHelper(this)
+        channelHelper.createChannels()
     }
 
     private fun initCrash(isDebug: Boolean) {

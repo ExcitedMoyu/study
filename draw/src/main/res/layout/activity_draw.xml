@@ -50,12 +50,10 @@
             app:layout_constraintTop_toBottomOf="@+id/blurMask" />
 
 
-
-
         <com.smasher.draw.view.SuccessView
             android:id="@+id/success"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/length_80"
+            android:layout_height="@dimen/length_100"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

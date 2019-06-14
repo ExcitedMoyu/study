@@ -3,6 +3,8 @@ package com.smasher.rejuvenation.activity
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import androidx.core.view.GravityCompat
@@ -10,40 +12,88 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import android.view.Menu
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.smasher.media.activity.InitActivity
+import com.smasher.rejuvenation.MajorData
 import com.smasher.rejuvenation.R
+import com.smasher.rejuvenation.adapter.MajorAdapter
 import com.smasher.rxjava.RxJavaActivity
+import com.smasher.widget.base.BaseActivity
 import com.smasher.zxing.activity.CaptureActivity
-import org.jetbrains.anko.startActivity
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import pub.devrel.easypermissions.PermissionRequest
 
-class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MajorActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
+
+
+    private var mList: MutableList<MajorData>? = null
+    private var mAdapter: MajorAdapter? = null
+    private var mRecyclerView: RecyclerView? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_major)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        initListener()
+        initDrawer()
+    }
 
+    private fun initListener() {
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
+    }
+
+    override fun initView() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        mRecyclerView = findViewById(R.id.recyclerView)
+        mAdapter = MajorAdapter(this)
+        mRecyclerView!!.adapter = mAdapter
+        mRecyclerView!!.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun initDrawer() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-
         navView.setNavigationItemSelectedListener(this)
+    }
+
+    override fun setFunctionsForFragment(tag: String?) {
+
+    }
+
+    override fun getRootView(): View {
+        return LayoutInflater.from(this).inflate(R.layout.activity_major, null)
+    }
+
+    override fun initData() {
+        buildList()
+    }
+
+    private fun buildList() {
+        mList = mutableListOf()
+        for (index in 1..30) {
+            val item = MajorData(index)
+            mList!!.add(item)
+        }
+        mAdapter!!.setData(mList)
+        mAdapter!!.notifyDataSetChanged()
+        Log.d(TAG, "buildList")
     }
 
     override fun onBackPressed() {
@@ -54,7 +104,6 @@ class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             super.onBackPressed()
         }
     }
-
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
@@ -87,7 +136,7 @@ class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
 
@@ -105,9 +154,27 @@ class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
             startActivityForResult(intent, REQUEST_CODE_SCAN)
         } else {
             val builder = PermissionRequest.Builder(this, REQUEST_CODE_PERMISSION, Manifest.permission.CAMERA)
+            builder.setNegativeButtonText("cancel")
+            builder.setPositiveButtonText("ok")
+            builder.setRationale("need permission")
             val request = builder.build()
             EasyPermissions.requestPermissions(request)
         }
+    }
+
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        Log.d(TAG, "onPermissionsDenied")
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        Log.d(TAG, "onPermissionsGranted")
+    }
+
+
+    override fun shouldShowRequestPermissionRationale(permission: String): Boolean {
+        Log.d(TAG, "shouldShowRequestPermissionRationale")
+        return super.shouldShowRequestPermissionRationale(permission)
     }
 
 
@@ -145,5 +212,6 @@ class MajorActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
     companion object {
         private const val REQUEST_CODE_SCAN = 999
         private const val REQUEST_CODE_PERMISSION = 1000
+        private const val TAG = "MajorActivity"
     }
 }

@@ -58,6 +58,9 @@ class DaggerActivity : BaseActivity(), View.OnClickListener {
     override fun initView() {
         hello = findViewById(R.id.hello)
         (hello as Button).setOnClickListener(this)
+
+        val actionBar = supportActionBar
+        actionBar!!.setTitle(R.string.activity_description_dagger)
     }
 
 

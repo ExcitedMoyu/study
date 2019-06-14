@@ -34,10 +34,11 @@ public class AlarmActivity extends AppCompatActivity {
 
     private static final String TAG = "AlarmActivity";
     private static final String ALARM_EVENT = "com.smasher.study.AlarmEvent";
-
+    Button alarmIntent;
     Button alarmTest;
     TextView textView;
     String mDesc = "设置闹钟";
+    String mTestButton = "发送意图";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +52,18 @@ public class AlarmActivity extends AppCompatActivity {
     }
 
     private void initListener() {
+        alarmIntent.setOnClickListener(mOnClickListener);
         alarmTest.setOnClickListener(mOnClickListener);
         textView.setOnClickListener(mOnClickListener);
     }
 
     private void initView() {
         alarmTest = findViewById(R.id.alarm_test);
+        alarmIntent = findViewById(R.id.alarm_intent);
         textView = findViewById(R.id.textView);
+
         alarmTest.setText(mDesc);
+        alarmIntent.setText(mTestButton);
     }
 
 
@@ -68,9 +73,8 @@ public class AlarmActivity extends AppCompatActivity {
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ALARM_EVENT);
-
         registerReceiver(mAlarmReceiver, intentFilter);
-        registerReceiver(receiver, intentFilter);
+//        registerReceiver(receiver, intentFilter);
 
 
     }
@@ -106,7 +110,7 @@ public class AlarmActivity extends AppCompatActivity {
     protected void onStop() {
         Log.d(TAG, "onStop: ");
         super.onStop();
-        unregisterReceiver(receiver);
+//        unregisterReceiver(receiver);
 
 
     }
@@ -125,17 +129,17 @@ public class AlarmActivity extends AppCompatActivity {
             int i = view.getId();
             if (i == R.id.alarm_test) {
 
-
                 Intent intent = new Intent(ALARM_EVENT);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
                         AlarmActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, 21);
-                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.HOUR_OF_DAY, 16);
+                calendar.set(Calendar.MINUTE, 30);
                 calendar.set(Calendar.SECOND, 0);
-                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                long INTERVAL = 1000 * 60 * 2L;
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), INTERVAL, pendingIntent);
 
                 StringBuilder desc = new StringBuilder("设置闹钟");
                 Date date = new Date(System.currentTimeMillis());
@@ -145,6 +149,10 @@ public class AlarmActivity extends AppCompatActivity {
                 desc.append("时间:  ").append(dataString).append("\n");
 
                 textView.setText(desc.toString());
+            } else if (i == R.id.alarm_intent) {
+                Intent intent = new Intent(ALARM_EVENT);
+                sendBroadcast(intent);
+                Log.d(TAG, "send intent: ");
             } else if (i == R.id.textView) {
                 Log.d(TAG, "textView: ");
             }

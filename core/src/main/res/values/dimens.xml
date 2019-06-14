@@ -7,46 +7,46 @@
 
 
     <!-- 通用字体大小 -->
-    <dimen name="qd_fontsize_66">66sp</dimen>
-    <dimen name="qd_fontsize_64">64sp</dimen>
-    <dimen name="qd_fontsize_60">60sp</dimen>
-    <dimen name="qd_fontsize_48">48sp</dimen>
-    <dimen name="qd_fontsize_44">44sp</dimen>
-    <dimen name="qd_fontsize_36">36sp</dimen>
-    <dimen name="qd_fontsize_30">30sp</dimen>
-    <dimen name="qd_fontsize_29">29sp</dimen>
-    <dimen name="qd_fontsize_28">28sp</dimen>
-    <dimen name="qd_fontsize_27">27sp</dimen>
-    <dimen name="qd_fontsize_26">26sp</dimen>
-    <dimen name="qd_fontsize_25">25sp</dimen>
-    <dimen name="qd_fontsize_24">24sp</dimen>
-    <dimen name="qd_fontsize_23">23sp</dimen>
-    <dimen name="qd_fontsize_22">22sp</dimen>
-    <dimen name="qd_fontsize_21">21sp</dimen>
-    <dimen name="qd_fontsize_20">20sp</dimen>
-    <dimen name="qd_fontsize_19">19sp</dimen>
-    <dimen name="qd_fontsize_18">18sp</dimen>
-    <dimen name="qd_fontsize_17">17sp</dimen>
+    <dimen name="font_size_66">66sp</dimen>
+    <dimen name="font_size_64">64sp</dimen>
+    <dimen name="font_size_60">60sp</dimen>
+    <dimen name="font_size_48">48sp</dimen>
+    <dimen name="font_size_44">44sp</dimen>
+    <dimen name="font_size_36">36sp</dimen>
+    <dimen name="font_size_30">30sp</dimen>
+    <dimen name="font_size_29">29sp</dimen>
+    <dimen name="font_size_28">28sp</dimen>
+    <dimen name="font_size_27">27sp</dimen>
+    <dimen name="font_size_26">26sp</dimen>
+    <dimen name="font_size_25">25sp</dimen>
+    <dimen name="font_size_24">24sp</dimen>
+    <dimen name="font_size_23">23sp</dimen>
+    <dimen name="font_size_22">22sp</dimen>
+    <dimen name="font_size_21">21sp</dimen>
+    <dimen name="font_size_20">20sp</dimen>
+    <dimen name="font_size_19">19sp</dimen>
+    <dimen name="font_size_18">18sp</dimen>
+    <dimen name="font_size_17">17sp</dimen>
 
     <!-- 常规界面头、导航、标签字号 -->
-    <dimen name="qd_fontsize_16">16sp</dimen>
-    <dimen name="qd_fontsize_15">15sp</dimen>
+    <dimen name="font_size_16">16sp</dimen>
+    <dimen name="font_size_15">15sp</dimen>
 
     <!-- 按钮、弹出菜单、头部菜单 -->
-    <dimen name="qd_fontsize_14">14sp</dimen>
-    <dimen name="qd_fontsize_13">13sp</dimen>
+    <dimen name="font_size_14">14sp</dimen>
+    <dimen name="font_size_13">13sp</dimen>
 
     <!-- 常规界面作者、简介、底部导航字号 -->
-    <dimen name="qd_fontsize_12">12sp</dimen>
-    <dimen name="qd_fontsize_11">11sp</dimen>
+    <dimen name="font_size_12">12sp</dimen>
+    <dimen name="font_size_11">11sp</dimen>
 
     <!-- 常规小标识内动态文字在小，例更新时间、本地书格式 -->
-    <dimen name="qd_fontsize_10">10sp</dimen>
-    <dimen name="qd_fontsize_9">9sp</dimen>
-    <dimen name="qd_fontsize_8">8sp</dimen>
-    <dimen name="qd_fontsize_7">7sp</dimen>
-    <dimen name="qd_fontsize_6">6sp</dimen>
-    <dimen name="qd_fontsize_5">5sp</dimen>
+    <dimen name="font_size_10">10sp</dimen>
+    <dimen name="font_size_9">9sp</dimen>
+    <dimen name="font_size_8">8sp</dimen>
+    <dimen name="font_size_7">7sp</dimen>
+    <dimen name="font_size_6">6sp</dimen>
+    <dimen name="font_size_5">5sp</dimen>
 
     <!-- 长度 -->
     <dimen name="length_1px">1px</dimen>

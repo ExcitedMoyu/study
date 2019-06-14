@@ -2,7 +2,6 @@ package com.smasher.media.helper;
 
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -16,10 +15,8 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.MediaSessionCompat.Token;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.text.TextUtils;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat.Action;
 import androidx.core.app.NotificationCompat.Builder;
 import androidx.media.app.NotificationCompat.MediaStyle;
@@ -55,7 +52,7 @@ public class NotificationHelper {
         mMediaStyle = new MediaStyle();
         mMediaStyle.setMediaSession(mToken);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationUtil.createNotifyChannel(mContext, Constant.CHANNEL_ID, Constant.CHANNEL_NAME);
+            NotificationUtil.createMediaChannel(mContext);
         }
     }
 

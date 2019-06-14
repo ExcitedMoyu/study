@@ -1,7 +1,5 @@
 package com.smasher.draw.activity;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
 import android.graphics.MaskFilter;
@@ -21,6 +19,8 @@ import android.view.animation.TranslateAnimation;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 import com.smasher.draw.R;
 import com.smasher.draw.view.BlurMaskFilterView;
 import com.smasher.draw.view.RhythmView;
@@ -161,15 +161,15 @@ public class DrawableActivity extends AppCompatActivity {
                 "translationX",
                 mBlurMask.getTranslationX(), 500f, mBlurMask.getTranslationX());
         trans.setRepeatMode(ObjectAnimator.REVERSE);
-        trans.setRepeatCount(ObjectAnimator.INFINITE);
+        trans.setRepeatCount(0);
 
         ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(
                 mBlurMask,
                 "rotation",
-                mBlurMask.getRotation(), 180, mBlurMask.getRotation()
+                mBlurMask.getRotation(), 720, mBlurMask.getRotation()
         );
         rotateAnimator.setRepeatMode(ObjectAnimator.REVERSE);
-        rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        rotateAnimator.setRepeatCount(0);
 
         set1.playTogether(trans, rotateAnimator);
         set1.setDuration(2000);

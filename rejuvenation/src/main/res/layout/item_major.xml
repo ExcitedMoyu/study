@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/length_120"
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:id="@+id/book_cover"
+        android:layout_width="@dimen/length_54"
+        android:layout_height="@dimen/length_72"
+        android:layout_marginStart="@dimen/length_16"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/design_default_color_secondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/book_name"
+        android:layout_width="@dimen/length_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/length_12"
+        android:layout_marginEnd="@dimen/length_16"
+        android:paddingTop="@dimen/length_3"
+        android:paddingBottom="@dimen/length_3"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/color_3B3F47"
+        android:textSize="@dimen/font_size_14"
+        app:layout_constraintBottom_toTopOf="@+id/include"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/book_cover"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="圣墟" />
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/widget_base_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/length_12"
+        android:layout_marginEnd="@dimen/length_16"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/book_cover"
+        app:layout_constraintTop_toBottomOf="@+id/book_name" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

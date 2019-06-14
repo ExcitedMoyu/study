@@ -6,6 +6,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.widget.Toolbar
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.util.LogUtil
 import com.smasher.widget.base.BaseActivity
@@ -66,7 +68,6 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
         initListener()
         initStatus()
     }
@@ -90,6 +91,8 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initListener() {
+        val actionBar = supportActionBar
+        actionBar!!.setTitle(R.string.activity_description_debug)
         mDummyButton!!.setOnTouchListener(mDelayHideTouchListener)
         mContentView!!.setOnClickListener { view ->
             LogUtil.d(view.id.toString())
@@ -154,7 +157,6 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
 
 
     override fun onClick(v: View) {
-        val id = v.id
     }
 
 

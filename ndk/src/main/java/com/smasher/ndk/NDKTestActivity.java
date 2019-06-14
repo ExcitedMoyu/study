@@ -3,6 +3,7 @@ package com.smasher.ndk;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,9 +15,13 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.smasher.widget.base.BaseActivity;
 
 
-public class NDKTestActivity extends AppCompatActivity {
+/**
+ * @author matao
+ */
+public class NDKTestActivity extends BaseActivity {
 
     private static final String TAG = "";
     Toolbar toolbar;
@@ -27,11 +32,28 @@ public class NDKTestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ndk_test);
-
-        initView();
         initListener();
         initService();
     }
+
+    @Override
+    public void setFunctionsForFragment(String tag) {
+
+    }
+
+    @Override
+    public View getRootView() {
+        return LayoutInflater.from(this).inflate(R.layout.activity_ndk_test, null);
+    }
+
+    @Override
+    public void initView() {
+        toolbar = findViewById(R.id.toolbar);
+        fab = findViewById(R.id.fab);
+        helloWorld = findViewById(R.id.hello_world);
+        setSupportActionBar(toolbar);
+    }
+
 
     private void initListener() {
         fab.setOnClickListener(mOnClickListener);
@@ -44,11 +66,10 @@ public class NDKTestActivity extends AppCompatActivity {
         startService(intent);
     }
 
-    private void initView() {
-        toolbar = findViewById(R.id.toolbar);
-        fab = findViewById(R.id.fab);
-        helloWorld = findViewById(R.id.hello_world);
-        setSupportActionBar(toolbar);
+
+    @Override
+    public void initData() {
+
     }
 
 

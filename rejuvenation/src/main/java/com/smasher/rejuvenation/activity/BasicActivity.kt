@@ -35,6 +35,7 @@ class BasicActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_basics)
         StatusBarUtil.setTranslucent(this)
+        toolbar.title = "BasicActivity"
         setSupportActionBar(toolbar)
         initView()
         initListener()

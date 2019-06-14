@@ -40,8 +40,6 @@ public class LocalActivity extends AppCompatActivity {
     private boolean isBind = false;
 
 
-    private AppBarLayout mAppBar;
-    private CollapsingToolbarLayout mToolbarLayout;
     private Toolbar mToolbar;
     private Button mBind;
     private Button mUnBind;
@@ -60,8 +58,6 @@ public class LocalActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        mAppBar = findViewById(R.id.app_bar);
-        mToolbarLayout = findViewById(R.id.toolbar_layout);
         mToolbar = findViewById(R.id.toolbar);
         mBind = findViewById(R.id.bind);
         mUnBind = findViewById(R.id.unBind);

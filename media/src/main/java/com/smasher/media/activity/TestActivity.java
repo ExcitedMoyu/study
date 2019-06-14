@@ -17,13 +17,12 @@ import com.smasher.widget.base.BaseActivity;
  */
 public class TestActivity extends BaseActivity {
 
+    FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StatusBarUtil.setTranslucent(this);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
         if (fab != null) {
             fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show());
@@ -37,12 +36,14 @@ public class TestActivity extends BaseActivity {
 
     @Override
     public View getRootView() {
-        return LayoutInflater.from(this).inflate(R.layout.activity_medias, null);
+        return LayoutInflater.from(this).inflate(R.layout.activity_media_test, null);
     }
 
     @Override
     public void initView() {
-
+        fab = findViewById(R.id.fab);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     @Override

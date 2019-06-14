@@ -31,6 +31,8 @@ public class SuccessView extends View {
     private float mCurAnimValue;
     private float mSuccessValue;
 
+    private int mRadius;
+
 
     public SuccessView(Context context) {
         this(context, null);
@@ -46,11 +48,16 @@ public class SuccessView extends View {
         init(context);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+    }
 
     private void init(Context context) {
         setLayerType(LAYER_TYPE_SOFTWARE, null);
 
-
+        mRadius = 50;
         mPaint = new Paint();
         mPathMeasure = new PathMeasure();
         mCirclePath = new Path();
@@ -96,12 +103,14 @@ public class SuccessView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        int dx = getMeasuredWidth() / 2;
+        int dy = getMeasuredHeight() / 2;
 
         mPaint.setColor(Color.BLACK);
         mPaint.setStrokeWidth(8);
         mPaint.setStyle(Paint.Style.STROKE);
 
-        mCirclePath.addCircle(300, 300, 50, Path.Direction.CW);
+        mCirclePath.addCircle(dx, dy, mRadius, Path.Direction.CW);
         mPathMeasure.setPath(mCirclePath, true);
 
         mDstPath.reset();
@@ -109,10 +118,15 @@ public class SuccessView extends View {
         mPathMeasure.getSegment(0, stop, mDstPath, true);
         canvas.drawPath(mDstPath, mPaint);
 
+        int distanceLeftOffset = -2 * mRadius / 5;
+        int distanceRightOffset = 2 * mRadius / 5;
+        int distanceTopOffset = -2 * mRadius / 5;
+        int distanceBottomOffset = 2 * mRadius / 5;
+        int distanceGapOffset = mRadius / 15;
 
-        mSuccessPath.moveTo(300 - 20, 300 - 3);
-        mSuccessPath.lineTo(300 - 3, 300 + 15);
-        mSuccessPath.lineTo(300 + 20, 300 - 15);
+        mSuccessPath.moveTo(dx + distanceLeftOffset, dy - distanceGapOffset);
+        mSuccessPath.lineTo(dx - distanceGapOffset, dy + distanceBottomOffset);
+        mSuccessPath.lineTo(dx + distanceRightOffset, dy + distanceTopOffset);
 
         mDstPath.reset();
         mPathMeasure.nextContour();

@@ -8,8 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -67,7 +65,7 @@ public class InitActivity extends BaseActivity implements Handler.Callback,
 
     @Override
     public View getRootView() {
-        return LayoutInflater.from(this).inflate(R.layout.activity_init, null);
+        return LayoutInflater.from(this).inflate(R.layout.activity_media_init, null);
     }
 
     private void initListener() {
@@ -90,6 +88,7 @@ public class InitActivity extends BaseActivity implements Handler.Callback,
         mHandler = new Handler(this);
         mTestHelper = new TestHelper();
         mToolbar.setTitleTextColor(ContextCompat.getColor(this, android.R.color.white));
+        mToolbar.setTitle(R.string.activity_description_media_init);
         setSupportActionBar(mToolbar);
     }
 

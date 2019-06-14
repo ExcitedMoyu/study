@@ -91,8 +91,16 @@
     </string>
     <string name="action_settings">Settings</string>
 
-    <string name="title_activity_debug">DebugActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!--title-activity-->
+    <string name="title_activity_init">InitActivity</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_list">ListActivity</string>
+
+    <!--activity-description-->
+    <string name="activity_description_media_init">MEDIA初始化</string>
+    <string name="activity_description_test">Test</string>
+    <string name="activity_description_media_list">音乐列表</string>
+
+
 </resources>

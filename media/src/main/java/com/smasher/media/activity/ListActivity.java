@@ -13,6 +13,7 @@ import android.support.v4.media.session.MediaControllerCompat.TransportControls;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,15 +24,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.smasher.media.R;
 import com.smasher.media.adapter.MusicListAdapter;
 import com.smasher.media.annotation.PlayMode;
@@ -40,6 +38,7 @@ import com.smasher.media.helper.AnimationHelper;
 import com.smasher.media.helper.MediaBrowserHelper;
 import com.smasher.media.service.MediaService;
 import com.smasher.oa.core.utils.StatusBarUtil;
+import com.smasher.widget.base.BaseActivity;
 import com.smasher.widget.base.OnItemClickListener;
 
 import java.math.BigDecimal;
@@ -52,7 +51,7 @@ import java.util.Locale;
 /**
  * @author moyu
  */
-public class ListActivity extends AppCompatActivity implements OnItemClickListener,
+public class ListActivity extends BaseActivity implements OnItemClickListener,
         View.OnClickListener {
 
     private static final String TAG = "ListActivity";
@@ -61,8 +60,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     public static final String TAG_CURRENT = "current";
 
     private Toolbar mToolbar;
-    private CollapsingToolbarLayout mToolbarLayout;
-    private AppBarLayout mAppBar;
 
     private Button mPrepare;
     private Button mLoad;
@@ -85,7 +82,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     private MediaControllerCompat mController;
     private MusicListAdapter mAdapter;
     private MediaBrowserCompat mMediaBrowser;
-
     private AnimationHelper mAnimationHelper;
 
     private List<MediaSessionCompat.QueueItem> mList;
@@ -95,13 +91,20 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
-
         StatusBarUtil.setTranslucentForCoordinatorLayout(this, 0);
-        initView();
         initListener();
         initState();
         initMediaBrowser();
+    }
+
+    @Override
+    public void setFunctionsForFragment(String tag) {
+
+    }
+
+    @Override
+    public View getRootView() {
+        return LayoutInflater.from(this).inflate(R.layout.activity_media_list, null);
     }
 
     private void initListener() {
@@ -116,6 +119,40 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         mMode.setOnClickListener(this);
         mBtnList.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
+    }
+
+
+    @Override
+    public void initView() {
+
+
+        mPrepare = findViewById(R.id.prepare);
+        mLoad = findViewById(R.id.load);
+        mStop = findViewById(R.id.stop);
+        mRelease = findViewById(R.id.release);
+
+        previous = findViewById(R.id.previous);
+        playPause = findViewById(R.id.play_pause);
+        next = findViewById(R.id.next);
+        recyclerView = findViewById(R.id.recyclerView);
+        mMode = findViewById(R.id.mode);
+        mBtnList = findViewById(R.id.list);
+        mControl = findViewById(R.id.control);
+        mSeekBar = findViewById(R.id.seekBar);
+        mDuration = findViewById(R.id.durationTime);
+        mCurrent = findViewById(R.id.currentTime);
+        mAnimationHelper = new AnimationHelper();
+
+        mToolbar = findViewById(R.id.toolbar);
+        mToolbar.setTitleTextColor(ContextCompat.getColor(this, android.R.color.white));
+        mToolbar.setTitle(R.string.activity_description_media_list);
+        setSupportActionBar(mToolbar);
+    }
+
+
+    @Override
+    public void initData() {
+
     }
 
 
@@ -158,30 +195,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     }
 
 
-    private void initView() {
-        mToolbar = findViewById(R.id.toolbar);
-        mToolbarLayout = findViewById(R.id.toolbar_layout);
-        mAppBar = findViewById(R.id.app_bar);
-
-        mPrepare = findViewById(R.id.prepare);
-        mLoad = findViewById(R.id.load);
-        mStop = findViewById(R.id.stop);
-        mRelease = findViewById(R.id.release);
-
-        previous = findViewById(R.id.previous);
-        playPause = findViewById(R.id.play_pause);
-        next = findViewById(R.id.next);
-        recyclerView = findViewById(R.id.recyclerView);
-        mMode = findViewById(R.id.mode);
-        mBtnList = findViewById(R.id.list);
-        mControl = findViewById(R.id.control);
-        mSeekBar = findViewById(R.id.seekBar);
-        mDuration = findViewById(R.id.durationTime);
-        mCurrent = findViewById(R.id.currentTime);
-        mAnimationHelper = new AnimationHelper();
-    }
-
-
     private void initState() {
         mAdapter = new MusicListAdapter(this);
         mAdapter.setOnItemClickListener(this);
@@ -193,8 +206,6 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
             drawable.setAlpha(180);
         }
         mControl.setBackground(drawable);
-        mToolbar.setTitle("");
-        setSupportActionBar(mToolbar);
 
         updatePlayState();
         updateModeState();

@@ -9,7 +9,7 @@
     tools:context=".activity.ListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+        android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -17,17 +17,15 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+            android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="@android:color/transparent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
-
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
-                android:id="@+id/toolbar_bg"
+                android:id="@+id/image_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:scaleType="fitXY"
@@ -40,15 +38,16 @@
                 app:contentInsetLeft="@dimen/length_0"
                 app:contentInsetRight="@dimen/length_0"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="@string/activity_description_media_list">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="@string/app_name"
+                    android:text="@string/activity_description_media_list"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/qd_fontsize_20" />
+                    android:textSize="@dimen/font_size_20" />
 
             </androidx.appcompat.widget.Toolbar>
 
@@ -98,7 +97,7 @@
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_list" />
+    <include layout="@layout/content_media_list" />
 
     <include
         layout="@layout/layout_play_control"
