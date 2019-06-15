@@ -9,7 +9,7 @@ import com.smasher.oa.core.utils.NotificationUtil
  * @author matao
  * @date 2019/6/14
  */
-class NotificationChannelHelper(internal var mContext: Context) {
+class NotificationChannelHelper(private var mContext: Context) {
 
 
     fun createChannels() {

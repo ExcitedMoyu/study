@@ -20,16 +20,6 @@ import javax.inject.Inject
  * @author matao
  */
 class DaggerActivity : BaseActivity(), View.OnClickListener {
-    override fun setFunctionsForFragment(tag: String?) {
-
-    }
-
-    override fun getRootView(): View {
-        return LayoutInflater.from(this).inflate(R.layout.activity_dagger, null)
-    }
-
-    override fun initData() {
-    }
 
     private var hello: Button? = null
 
@@ -55,12 +45,24 @@ class DaggerActivity : BaseActivity(), View.OnClickListener {
 
     }
 
+    override fun setFunctionsForFragment(tag: String?) {
+
+    }
+
+    override fun getRootView(): View {
+        return LayoutInflater.from(this).inflate(R.layout.activity_dagger, null)
+    }
+
+    override fun initData() {
+    }
+
+
     override fun initView() {
         hello = findViewById(R.id.hello)
-        (hello as Button).setOnClickListener(this)
+        hello?.setOnClickListener(this)
 
         val actionBar = supportActionBar
-        actionBar!!.setTitle(R.string.activity_description_dagger)
+        actionBar?.setTitle(R.string.activity_description_dagger)
     }
 
 
@@ -69,7 +71,7 @@ class DaggerActivity : BaseActivity(), View.OnClickListener {
 
         try {
             Log.d(TAG, "onResume: " + mProduct!!.name);
-            Log.d(TAG, "onResume: mHelloWorld:" + mHelloWorld!!.getSellMoe().getName())
+            Log.d(TAG, "onResume: mHelloWorld:" + mHelloWorld!!.sellMoe.name)
         } catch (e: Exception) {
             e.printStackTrace()
         }

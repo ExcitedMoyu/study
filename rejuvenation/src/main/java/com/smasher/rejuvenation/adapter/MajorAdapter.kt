@@ -3,7 +3,7 @@ package com.smasher.rejuvenation.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.smasher.rejuvenation.MajorData
+import com.smasher.rejuvenation.entity.MajorData
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.holder.MajorViewHolder
 import com.smasher.widget.base.BaseRecyclerViewAdapter

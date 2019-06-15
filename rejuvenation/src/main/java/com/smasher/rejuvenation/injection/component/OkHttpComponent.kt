@@ -1,6 +1,5 @@
 package com.smasher.rejuvenation.injection.component
 
-import com.smasher.rejuvenation.injection.component.ActivityComponent
 import com.smasher.dagger.injection.module.OkHttpModule
 import com.smasher.rejuvenation.RejuvenatedApplication
 import dagger.Component

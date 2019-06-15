@@ -48,7 +48,7 @@ class RejuvenatedApplication : MultiDexApplication() {
     }
 
     private fun initNotificationChannel() {
-        val channelHelper: NotificationChannelHelper = NotificationChannelHelper(this)
+        val channelHelper = NotificationChannelHelper(this)
         channelHelper.createChannels()
     }
 

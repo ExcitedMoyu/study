@@ -3,10 +3,10 @@ package com.smasher.rejuvenation.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity;
 import com.smasher.aidl.activity.local.LocalActivity
 import com.smasher.aidl.activity.remote.ui.login.LoginActivity
 import com.smasher.draw.activity.DrawableActivity
@@ -15,10 +15,10 @@ import com.smasher.oa.core.utils.StatusBarUtil
 import com.smasher.rejuvenation.R
 import com.smasher.widget.activity.AlarmActivity
 import com.smasher.widget.activity.WidgetActivity
-
+import com.smasher.widget.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_basics.*
 
-class BasicActivity : AppCompatActivity(), View.OnClickListener {
+class BasicActivity : BaseActivity(), View.OnClickListener {
 
 
     private var mButton1: Button? = null
@@ -33,15 +33,18 @@ class BasicActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_basics)
         StatusBarUtil.setTranslucent(this)
         toolbar.title = "BasicActivity"
         setSupportActionBar(toolbar)
-        initView()
         initListener()
     }
 
-    private fun initView() {
+
+    override fun getRootView(): View {
+        return LayoutInflater.from(this).inflate(R.layout.activity_basics, null)
+    }
+
+    override fun initView() {
         mButton1 = findViewById(R.id.button1)
         mButton2 = findViewById(R.id.button2)
         mButton3 = findViewById(R.id.button3)
@@ -51,6 +54,16 @@ class BasicActivity : AppCompatActivity(), View.OnClickListener {
         mButton7 = findViewById(R.id.button7)
         mButton8 = findViewById(R.id.button8)
     }
+
+
+    override fun setFunctionsForFragment(tag: String?) {
+
+    }
+
+    override fun initData() {
+
+    }
+
 
     private fun initListener() {
         mButton1!!.setOnClickListener(this)
@@ -69,23 +82,16 @@ class BasicActivity : AppCompatActivity(), View.OnClickListener {
 
 
     override fun onClick(v: View?) {
-        val id = v!!.id
-        if (id == R.id.button1) {
-            gotoLogin()
-        } else if (id == R.id.button2) {
-            gotoAlarm()
-        } else if (id == R.id.button3) {
-            gotoDrawable()
-        } else if (id == R.id.button4) {
-            gotoLocal()
-        } else if (id == R.id.button5) {
-            gotoWidget()
-        } else if (id == R.id.button6) {
-            gotoTest()
-        } else if (id == R.id.button7) {
-            Log.d("TAG", "button")
-        } else if (id == R.id.button8) {
-            Log.d("TAG", "button")
+        when (v!!.id) {
+            R.id.button1 -> gotoLogin()
+            R.id.button2 -> gotoAlarm()
+            R.id.button3 -> gotoDrawable()
+            R.id.button4 -> gotoLocal()
+            R.id.button5 -> gotoWidget()
+            R.id.button6 -> gotoTest()
+            R.id.button7 -> Log.d("TAG", "button")
+            R.id.button8 -> Log.d("TAG", "button")
+            else -> Log.d("TAG", "button")
         }
     }
 

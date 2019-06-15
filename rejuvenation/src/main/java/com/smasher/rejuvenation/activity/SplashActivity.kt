@@ -8,18 +8,20 @@ import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import com.smasher.ndk.PrimaryService
-import com.smasher.rejuvenation.util.LogUtil
 import com.smasher.rejuvenation.R
+import com.smasher.rejuvenation.util.LogUtil
 import com.smasher.widget.base.BaseActivity
 
 /**
  * @author matao
  * @date 2019/6/11
  */
-class SplashActivity : BaseActivity() {
+class SplashActivity :  BaseActivity(), Handler.Callback{
 
-    lateinit var handler: Handler
+
     var a = 0
+    private var mHandler: Handler? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -42,13 +44,7 @@ class SplashActivity : BaseActivity() {
 
 
         LogUtil.d("onCreate:")
-        handler = Handler(Handler.Callback { msg: Message? ->
-            when (msg!!.what) {
-                1 -> a = 1
-                else -> a = -1
-            }
-            false
-        })
+        mHandler = Handler(this)
     }
 
     override fun setFunctionsForFragment(tag: String?) {
@@ -67,7 +63,7 @@ class SplashActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        handler.postDelayed({
+        mHandler!!.postDelayed({
             next()
             finish()
         }, 3000)
@@ -85,6 +81,18 @@ class SplashActivity : BaseActivity() {
         val intent = Intent()
         intent.setClass(this, PrimaryService::class.java)
         startService(intent)
+    }
+
+
+    override fun handleMessage(msg: Message?): Boolean {
+        val id: Int = msg!!.what
+        a = when (id) {
+            0 -> 0
+            1 -> 1
+            2 -> 3
+            else -> -1
+        }
+        return false
     }
 
 }

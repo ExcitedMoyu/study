@@ -16,6 +16,9 @@ import com.smasher.widget.helper.AnimationExDrawable;
 import com.smasher.widget.helper.ThemeTransformHelper;
 
 
+/**
+ * @author matao
+ */
 public class WidgetActivity extends AppCompatActivity {
 
     private static final String TAG = "WidgetActivity";

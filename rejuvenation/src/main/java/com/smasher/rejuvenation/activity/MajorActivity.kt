@@ -17,7 +17,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smasher.media.activity.InitActivity
-import com.smasher.rejuvenation.MajorData
+import com.smasher.rejuvenation.entity.MajorData
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.adapter.MajorAdapter
 import com.smasher.rxjava.RxJavaActivity

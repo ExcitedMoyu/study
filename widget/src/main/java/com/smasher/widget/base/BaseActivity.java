@@ -46,13 +46,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetStatu
 
 
     /**
-     * 为fragment 绑定通信接口
-     *
-     * @param tag fragment tag
-     */
-    public abstract void setFunctionsForFragment(String tag);
-
-    /**
      * 进行获取根部的View
      *
      * @return RootView
@@ -63,6 +56,14 @@ public abstract class BaseActivity extends AppCompatActivity implements NetStatu
      * 进行初始化相关的View
      */
     public abstract void initView();
+
+
+    /**
+     * 为fragment 绑定通信接口
+     *
+     * @param tag fragment tag
+     */
+    public abstract void setFunctionsForFragment(String tag);
 
     /**
      * 进行初始化相关的数据

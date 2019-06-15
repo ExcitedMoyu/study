@@ -6,8 +6,6 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.widget.Toolbar
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.util.LogUtil
 import com.smasher.widget.base.BaseActivity

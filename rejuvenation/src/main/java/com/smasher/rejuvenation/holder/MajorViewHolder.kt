@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.smasher.rejuvenation.MajorData
+import com.smasher.rejuvenation.entity.MajorData
 import com.smasher.rejuvenation.R
 import com.smasher.widget.base.BaseRecyclerViewHolder
 
@@ -14,19 +14,11 @@ import com.smasher.widget.base.BaseRecyclerViewHolder
  * @date 2019/6/14
  */
 class MajorViewHolder(itemView: View) : BaseRecyclerViewHolder<MajorData>(itemView) {
-    var cover = itemView.findViewById<ImageView>(R.id.book_cover)
-    var name = itemView.findViewById<TextView>(R.id.book_name)
-    var author = itemView.findViewById<TextView>(R.id.author)
-    var info = itemView.findViewById<TextView>(R.id.info)
-    var description = itemView.findViewById<TextView>(R.id.description)
-
-    init {
-//        val title = itemView.findViewById<ImageView>(R.id.book_cover)
-//        val name = itemView.findViewById<TextView>(R.id.book_name)
-//        val author = itemView.findViewById<TextView>(R.id.author)
-//        val info = itemView.findViewById<TextView>(R.id.info)
-//        val description = itemView.findViewById<TextView>(R.id.description)
-    }
+    private var cover = itemView.findViewById<ImageView>(R.id.book_cover)
+    private var name = itemView.findViewById<TextView>(R.id.book_name)
+    private var author = itemView.findViewById<TextView>(R.id.author)
+    private var info = itemView.findViewById<TextView>(R.id.info)
+    private var description = itemView.findViewById<TextView>(R.id.description)
 
     override fun bindView() {
         super.bindView()
