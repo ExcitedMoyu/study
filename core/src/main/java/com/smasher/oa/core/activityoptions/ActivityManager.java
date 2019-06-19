@@ -1,12 +1,16 @@
 package com.smasher.oa.core.activityoptions;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+
+import androidx.annotation.RequiresPermission;
 
 import java.util.Stack;
 
 /**
  * 应用程序Activity管理类：用于Activity管理和应用程序退出
+ *
  * @author moyu
  */
 public class ActivityManager {
@@ -95,11 +99,12 @@ public class ActivityManager {
     /**
      * 退出应用程序
      */
+    @RequiresPermission(Manifest.permission.KILL_BACKGROUND_PROCESSES)
     public void appexit(Context context) {
         try {
             finishAllActivity();
             android.app.ActivityManager activityMgr = (android.app.ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-            activityMgr.restartPackage(context.getPackageName());
+            activityMgr.killBackgroundProcesses(context.getPackageName());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -33,7 +33,8 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
 
     testImplementation "junit:junit:$junit"
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation "androidx.test:runner:$test_runner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
+
     implementation project(path: ':core')
 }

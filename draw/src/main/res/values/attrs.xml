@@ -2,7 +2,6 @@
 <resources>
     <declare-styleable name="BlurMaskFilterView">
         <attr name="blur_text" format="string" />
-        <attr name="blur_text_padding" format="dimension" />
         <attr name="blur_text_paddingLeft" format="dimension" />
         <attr name="blur_text_paddingRight" format="dimension" />
         <attr name="blur_text_paddingTop" format="dimension" />

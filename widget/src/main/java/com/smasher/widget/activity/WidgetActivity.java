@@ -22,9 +22,9 @@ import com.smasher.widget.helper.ThemeTransformHelper;
 public class WidgetActivity extends AppCompatActivity {
 
     private static final String TAG = "WidgetActivity";
-    Button start;
-    Button behavior;
-    ImageView mImageView;
+    private Button start;
+    private Button behavior;
+    private ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,7 @@ public class WidgetActivity extends AppCompatActivity {
                     drawable2.start();
                 }
                 mImageView.setImageDrawable(drawable2);
+                mImageView.requestLayout();
                 count++;
             } catch (Exception e) {
                 e.printStackTrace();

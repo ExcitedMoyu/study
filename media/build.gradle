@@ -32,13 +32,14 @@ dependencies {
 
     implementation "com.google.android.material:material:$material"
 
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.media:media:1.1.0-beta02'
-    implementation 'androidx.media2:media2-common:1.0.0-beta02'
-    implementation 'androidx.media2:media2-player:1.0.0-beta02'
-    implementation 'androidx.media2:media2-session:1.0.0-beta02'
+    implementation 'androidx.media:media:1.1.0-rc01'
+    implementation 'androidx.media2:media2-common:1.0.0-rc01'
+    implementation 'androidx.media2:media2-player:1.0.0-rc01'
+    implementation 'androidx.media2:media2-session:1.0.0-rc01'
 
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.multidex:multidex:$multidex"
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.recyclerview:recyclerview:$recyclerview"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
@@ -49,8 +50,8 @@ dependencies {
     implementation 'com.nineoldandroids:library:2.4.0'
 
     testImplementation "junit:junit:$junit"
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation "androidx.test:runner:$test_runner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
 
     implementation project(path: ':core')
     implementation project(path: ':widget')
@@ -59,5 +60,4 @@ dependencies {
     implementation project(path: ':draw')
     implementation project(path: ':ndk')
     implementation project(path: ':downloader')
-    implementation 'androidx.gridlayout:gridlayout:1.0.0'
 }

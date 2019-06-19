@@ -1,6 +1,5 @@
 package com.smasher.draw.view;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -14,15 +13,14 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
-
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.smasher.draw.R;
 
@@ -37,20 +35,18 @@ public class BlurMaskFilterView extends ViewGroup {
     private Paint mPaint;
     private RectF rectF;
     private int mColor;
-    private int mTextColor;
-
+    private MaskFilter mMaskFilter;
     private int invented;
     private int radius;
 
-    private MaskFilter mMaskFilter;
+
     private AppCompatTextView mTextView;
-    private int mTextPadding;
+    private String mText;
+    private int mTextColor;
     private int mTextPaddingLeft;
     private int mTextPaddingRight;
     private int mTextPaddingTop;
     private int mTextPaddingBottom;
-
-    private String mText;
 
     private int mPressedColor;
     private int mNormalColor;
@@ -82,24 +78,23 @@ public class BlurMaskFilterView extends ViewGroup {
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.BlurMaskFilterView);
 
-        mTextPadding = array.getDimensionPixelSize(R.styleable.BlurMaskFilterView_blur_text_padding, defaultPadding);
+        invented = array.getDimensionPixelSize(R.styleable.BlurMaskFilterView_blur_width, defaultInvented);
+        radius = array.getDimensionPixelSize(R.styleable.BlurMaskFilterView_blur_radius, defaultInvented);
+        mColor = array.getColor(R.styleable.BlurMaskFilterView_blur_color, defaultColor);
+
         mTextPaddingLeft = array.getDimensionPixelSize(R.styleable.BlurMaskFilterView_blur_text_paddingLeft, defaultPadding);
         mTextPaddingRight = array.getDimensionPixelSize(R.styleable.BlurMaskFilterView_blur_text_paddingRight, defaultPadding);
         mTextPaddingTop = array.getDimensionPixelSize(R.styleable.BlurMaskFilterView_blur_text_paddingTop, defaultPadding);
         mTextPaddingBottom = array.getDimensionPixelSize(R.styleable.BlurMaskFilterView_blur_text_paddingBottom, defaultPadding);
 
-        mColor = array.getColor(R.styleable.BlurMaskFilterView_blur_color, defaultColor);
-        mTextColor = array.getColor(R.styleable.BlurMaskFilterView_blur_text_color, defaultColor);
         mPressedColor = array.getColor(R.styleable.BlurMaskFilterView_blur_pressed_color, defaultColor);
         mNormalColor = array.getColor(R.styleable.BlurMaskFilterView_blur_normal_color, defaultColor);
 
-        invented = array.getDimensionPixelSize(R.styleable.BlurMaskFilterView_blur_width, defaultInvented);
-        radius = array.getDimensionPixelSize(R.styleable.BlurMaskFilterView_blur_radius, defaultInvented);
+        mTextColor = array.getColor(R.styleable.BlurMaskFilterView_blur_text_color, defaultColor);
         mText = array.getString(R.styleable.BlurMaskFilterView_blur_text);
         boolean enable = array.getBoolean(R.styleable.BlurMaskFilterView_blur_enable_state, false);
 
         array.recycle();
-
 
         mTextView = new AppCompatTextView(context);
         mTextView.setGravity(Gravity.CENTER);
@@ -112,22 +107,31 @@ public class BlurMaskFilterView extends ViewGroup {
         mTextView.setText(mText);
         addView(mTextView);
 
-
         mPaint = new Paint();
+
+
         rectF = new RectF();
-        mMaskFilter = new BlurMaskFilter(invented, BlurMaskFilter.Blur.OUTER);
+
+        float with = calculateBlurWidth();
+        mMaskFilter = new BlurMaskFilter(with, BlurMaskFilter.Blur.OUTER);
+    }
 
 
+    private float calculateBlurWidth() {
+        float blur = 0;
+        float target = 9 / 10f;
+        blur = target * invented;
+
+        if (blur > 2) {
+            blur = invented - 2;
+        }
+        return blur;
     }
 
 
     public StateListDrawable createDrawable() {
-        float[] radiusArray = new float[8];
-        for (int i = 0; i < 8; i++) {
-            radiusArray[i] = radius;
-        }
-
         StateListDrawable listDrawable = new StateListDrawable();
+        float[] radiusArray = {radius, radius, radius, radius, radius, radius, radius, radius};
 
         RoundRectShape pressedShape = new RoundRectShape(radiusArray, null, null);
         ShapeDrawable pressedDrawable = new ShapeDrawable(pressedShape);
@@ -175,13 +179,13 @@ public class BlurMaskFilterView extends ViewGroup {
     }
 
 
-//    public void setText(CharSequence text) {
-//        mText = text.toString();
-//        if (mTextView != null) {
-//            mTextView.setText(mText);
-//            invalidate();
-//        }
-//    }
+    public void setText(CharSequence text) {
+        mText = text.toString();
+        if (mTextView != null) {
+            mTextView.setText(mText);
+            invalidate();
+        }
+    }
 
 
     @Override
@@ -268,19 +272,13 @@ public class BlurMaskFilterView extends ViewGroup {
     protected void onDraw(Canvas canvas) {
         Log.d(TAG, "onDraw: ");
 
-        int childWidth = mTextView.getMeasuredWidth();
-        int childHeight = mTextView.getMeasuredHeight();
-//        Log.d(TAG, "onDraw: " + childWidth + "--" + childHeight);
-
         int childLeft = invented;
         int childRight = getMeasuredWidth() - invented;
         int childTop = invented;
         int childBottom = getMeasuredHeight() - invented;
-
-//        Log.d(TAG, "onDraw: " + childLeft + "--" + childTop
-//                + "--" + childRight + "--" + childBottom);
         rectF.set(childLeft, childTop, childRight, childBottom);
 
+        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaint.setColor(mColor);
         mPaint.setMaskFilter(mMaskFilter);
         canvas.drawRoundRect(rectF, radius, radius, mPaint);

@@ -50,8 +50,8 @@ public class DrawableActivity extends AppCompatActivity {
     }
 
     private void initListener() {
-        mBlurMask.setOnClickListener(mblurMaskListener1);
-        mBlurMask1.setOnClickListener(mblurMaskListener2);
+        mBlurMask.setOnClickListener(mBlurMaskListener1);
+        mBlurMask1.setOnClickListener(mBlurMaskListener2);
     }
 
     private void initState() {
@@ -73,10 +73,9 @@ public class DrawableActivity extends AppCompatActivity {
     }
 
     private StateListDrawable getStateListDrawable() {
-        float[] radiusArray = new float[8];
-        for (int i = 0; i < 8; i++) {
-            radiusArray[i] = DensityUtil.dip2px(this, 20);
-        }
+        float radius = DensityUtil.dip2px(this, 20);
+        float[] radiusArray = {radius, radius, radius, radius, radius, radius, radius, radius};
+
         int mTextPaddingLeft = DensityUtil.dip2px(this, 15);
         StateListDrawable listDrawable = new StateListDrawable();
         RoundRectShape normalShape = new RoundRectShape(radiusArray, null, null);
@@ -103,7 +102,7 @@ public class DrawableActivity extends AppCompatActivity {
     }
 
 
-    View.OnClickListener mblurMaskListener1 = new View.OnClickListener() {
+    View.OnClickListener mBlurMaskListener1 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             mRhythmView.showAnimation();
@@ -111,7 +110,7 @@ public class DrawableActivity extends AppCompatActivity {
     };
 
 
-    View.OnClickListener mblurMaskListener2 = v -> doActions();
+    View.OnClickListener mBlurMaskListener2 = v -> doActions();
 
 
     private void doActions() {
