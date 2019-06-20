@@ -11,10 +11,6 @@ data class MajorData(var mPosition: Int) {
         private const val TAG: String = "MajorData"
     }
 
-    init {
-        Log.d(TAG, "init")
-    }
-
     /**
      * 次构造函数
      */
@@ -26,6 +22,7 @@ data class MajorData(var mPosition: Int) {
     var image: String? = null
 
     init {
+        Log.d(TAG, "init")
         image = "http://bookcover.yuewen.com/qdbimg/349573/$mPosition/150"
         Log.d("MajorData TAG", mPosition.toString())
     }

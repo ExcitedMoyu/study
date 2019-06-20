@@ -12,6 +12,7 @@ import com.smasher.rejuvenation.helper.NotificationChannelHelper
 import com.smasher.rejuvenation.injection.component.DaggerOkHttpComponent
 import com.smasher.rejuvenation.injection.component.OkHttpComponent
 import com.smasher.zxing.activity.ZXingLibrary
+import com.squareup.leakcanary.LeakCanary
 
 /**
  * @author matao
@@ -45,6 +46,12 @@ class RejuvenatedApplication : MultiDexApplication() {
 
         //NotificationChannel
         initNotificationChannel()
+
+        //LeakCanary
+        if (LeakCanary.isInAnalyzerProcess(this)){
+            return
+        }
+        LeakCanary.install(this)
     }
 
     private fun initNotificationChannel() {

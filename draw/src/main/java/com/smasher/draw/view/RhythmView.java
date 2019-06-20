@@ -24,13 +24,13 @@ import java.util.ArrayList;
  */
 public class RhythmView extends View {
 
-
     private static final String TAG = "RhythmView";
-    int count;
-    int singleWidth;
-    Paint mPaint;
-    ArrayList<Rect> mRects;
-    ArrayList<Integer> mVaryingHeights;
+    private int count;
+    private int singleWidth;
+    private Paint mPaint;
+    private ArrayList<Rect> mRects;
+    private ArrayList<Integer> mVaryingHeights;
+    private AnimatorSet animatorSet;
 
     public RhythmView(Context context) {
         this(context, null);
@@ -63,9 +63,12 @@ public class RhythmView extends View {
             Integer item = 0;
             mVaryingHeights.add(item);
         }
-
     }
 
+
+    public void cancelAnimation() {
+        animatorSet.cancel();
+    }
 
     public void showAnimation() {
         int height = getMeasuredHeight();
@@ -75,7 +78,7 @@ public class RhythmView extends View {
 
         Log.d(TAG, "showAnimation: " + min + "-" + max);
 
-        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet = new AnimatorSet();
 
         ValueAnimator animatorP2 = ValueAnimator.ofInt(min, max);
         animatorP2.addUpdateListener(mUpdateListenerP2);

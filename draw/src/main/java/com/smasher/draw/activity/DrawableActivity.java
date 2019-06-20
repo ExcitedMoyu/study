@@ -39,6 +39,8 @@ public class DrawableActivity extends AppCompatActivity {
     private SuccessView mSuccess;
     private RhythmView mRhythmView;
 
+    AnimatorSet set1;
+    AnimationSet set;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,8 +147,7 @@ public class DrawableActivity extends AppCompatActivity {
         rotate.setRepeatMode(Animation.REVERSE);
         rotate.setRepeatCount(5);
 
-
-        AnimationSet set = new AnimationSet(true);
+        set = new AnimationSet(true);
         set.setInterpolator(new DecelerateInterpolator());
         set.setDuration(500);
         set.setFillEnabled(true);
@@ -154,7 +155,7 @@ public class DrawableActivity extends AppCompatActivity {
         set.addAnimation(alpha);
         set.addAnimation(rotate);
 
-        AnimatorSet set1 = new AnimatorSet();
+
         ObjectAnimator trans = ObjectAnimator.ofFloat(
                 mBlurMask,
                 "translationX",
@@ -169,12 +170,27 @@ public class DrawableActivity extends AppCompatActivity {
         );
         rotateAnimator.setRepeatMode(ObjectAnimator.REVERSE);
         rotateAnimator.setRepeatCount(0);
-
+        set1 = new AnimatorSet();
         set1.playTogether(trans, rotateAnimator);
         set1.setDuration(2000);
         set1.start();
     }
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mRhythmView != null) {
+            mRhythmView.cancelAnimation();
+        }
+        if (set != null) {
+            set.cancel();
+        }
+        if (set1 != null) {
+            set1.cancel();
+        }
+
+    }
 
     @Override
     protected void onDestroy() {
