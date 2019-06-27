@@ -1,5 +1,7 @@
 package com.smasher.draw.activity;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
 import android.graphics.MaskFilter;
@@ -19,8 +21,8 @@ import android.view.animation.TranslateAnimation;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.nineoldandroids.animation.AnimatorSet;
-import com.nineoldandroids.animation.ObjectAnimator;
+//import com.nineoldandroids.animation.AnimatorSet;
+//import com.nineoldandroids.animation.ObjectAnimator;
 import com.smasher.draw.R;
 import com.smasher.draw.view.BlurMaskFilterView;
 import com.smasher.draw.view.RhythmView;
