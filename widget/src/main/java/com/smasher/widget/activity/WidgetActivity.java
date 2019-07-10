@@ -73,7 +73,7 @@ public class WidgetActivity extends AppCompatActivity {
             }
         } else if (id == R.id.behavior) {
             Intent intent = new Intent();
-            //intent.setClass(this, BasicActivity.class);
+            //intent.setClass(this, IndicatorActivity.class);
             intent.setClass(this, BehaviorActivity.class);
             startActivity(intent);
         }

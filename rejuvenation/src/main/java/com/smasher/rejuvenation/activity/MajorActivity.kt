@@ -205,7 +205,7 @@ class MajorActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLis
 
     private fun gotoBasic() {
         val intent = Intent()
-        intent.setClass(this, BasicActivity::class.java)
+        intent.setClass(this, PractiseActivity::class.java)
         startActivity(intent)
     }
 

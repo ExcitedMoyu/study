@@ -9,6 +9,7 @@ import com.smasher.widget.R;
 /**
  * @author matao
  */
+@Deprecated
 public class BehaviorActivity extends AppCompatActivity {
 
     @Override

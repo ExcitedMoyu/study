@@ -67,7 +67,9 @@ public class RhythmView extends View {
 
 
     public void cancelAnimation() {
-        animatorSet.cancel();
+        if (animatorSet != null) {
+            animatorSet.cancel();
+        }
     }
 
     public void showAnimation() {

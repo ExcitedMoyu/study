@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/length_50"
+    android:layout_marginBottom="1dp"
+    android:clipChildren="false">
+
+    <RelativeLayout
+        android:id="@+id/slide_itemView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:tag="slide_flag">
+
+        <TextView
+            android:id="@+id/item_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:gravity="center"
+            android:text="item"
+            android:textSize="@dimen/font_size_16" />
+
+        <LinearLayout
+            android:id="@+id/slide"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/item_text"
+            android:clipChildren="false"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/zhiding"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:background="#C8C7CD"
+                android:gravity="center"
+                android:text="置顶"
+                android:textColor="#ed424b" />
+
+            <TextView
+                android:id="@+id/yidu"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:background="#FF9D00"
+                android:gravity="center"
+                android:text="设为已读"
+                android:textColor="#ed424b" />
+
+            <TextView
+                android:id="@+id/shanchu"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:background="#FE3C31"
+                android:gravity="center"
+                android:text="删除"
+                android:textColor="#ffffff" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

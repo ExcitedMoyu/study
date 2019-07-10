@@ -38,9 +38,9 @@ import java.util.ArrayList;
  *
  * @author matao
  */
-public class BasicActivity extends AppCompatActivity {
+public class IndicatorActivity extends AppCompatActivity {
 
-    private static final String TAG = "BasicActivity";
+    private static final String TAG = "IndicatorActivity";
     Toolbar toolbar;
     FloatingActionButton fab;
     MagicIndicator magicIndicator;
@@ -136,7 +136,7 @@ public class BasicActivity extends AppCompatActivity {
 
             @Override
             public int getIntrinsicWidth() {
-                return UIUtil.dip2px(BasicActivity.this, 25);
+                return UIUtil.dip2px(IndicatorActivity.this, 25);
             }
         });
 

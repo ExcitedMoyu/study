@@ -16,9 +16,11 @@ import com.smasher.rejuvenation.R
 import com.smasher.widget.activity.AlarmActivity
 import com.smasher.widget.activity.WidgetActivity
 import com.smasher.widget.base.BaseActivity
+import com.smasher.widget.basic.IndicatorActivity
+import com.smasher.widget.slideswaphelper.test.SlideMenuActivity
 import kotlinx.android.synthetic.main.activity_basics.*
 
-class BasicActivity : BaseActivity(), View.OnClickListener {
+class PractiseActivity : BaseActivity(), View.OnClickListener {
 
 
     private var mButton1: Button? = null
@@ -34,7 +36,7 @@ class BasicActivity : BaseActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         StatusBarUtil.setTranslucent(this)
-        toolbar.title = "BasicActivity"
+        toolbar.title = "PractiseActivity"
         setSupportActionBar(toolbar)
         initListener()
     }
@@ -89,10 +91,16 @@ class BasicActivity : BaseActivity(), View.OnClickListener {
             R.id.button4 -> gotoLocal()
             R.id.button5 -> gotoWidget()
             R.id.button6 -> gotoTest()
-            R.id.button7 -> Log.d("TAG", "button")
-            R.id.button8 -> Log.d("TAG", "button")
+            R.id.button7 -> gotoIndicator()
+            R.id.button8 -> gotoSlide()
             else -> Log.d("TAG", "button")
         }
+    }
+
+    private fun gotoIndicator() {
+        val intent = Intent()
+        intent.setClass(this, IndicatorActivity::class.java)
+        startActivity(intent)
     }
 
     private fun gotoLogin() {
@@ -130,5 +138,13 @@ class BasicActivity : BaseActivity(), View.OnClickListener {
         intent.setClass(this, TestActivity::class.java)
         startActivity(intent)
     }
+
+    private fun gotoSlide() {
+        val intent = Intent()
+        intent.setClass(this, SlideMenuActivity::class.java)
+        startActivity(intent)
+    }
+
+
 
 }

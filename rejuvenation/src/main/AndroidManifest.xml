@@ -39,14 +39,16 @@
         </activity>
 
         <activity
-            android:name=".activity.BasicActivity"
+            android:name=".activity.PractiseActivity"
             android:label="@string/title_activity_basic"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name=".activity.DaggerActivity" />
+        <activity android:name=".activity.DaggerActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".activity.CrashActivity" />
+        <activity android:name=".activity.CrashActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
 
         <activity

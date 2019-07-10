@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.smasher.oa.core.utils.NotificationUtil;
@@ -162,7 +163,7 @@ public class AlarmNotification extends BaseNotificationImp {
     /**
      * Cancels any notifications of this type previously shown using
      */
-    @TargetApi(Build.VERSION_CODES.ECLAIR)
+    @RequiresApi(Build.VERSION_CODES.ECLAIR)
     public void cancel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
             mManager.cancel(NOTIFICATION_TAG, 0);

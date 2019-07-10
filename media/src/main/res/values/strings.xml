@@ -89,7 +89,6 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
-    <string name="action_settings">Settings</string>
 
 
     <!--title-activity-->
@@ -99,7 +98,6 @@
 
     <!--activity-description-->
     <string name="activity_description_media_init">MEDIA初始化</string>
-    <string name="activity_description_test">Test</string>
     <string name="activity_description_media_list">音乐列表</string>
 
 
