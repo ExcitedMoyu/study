@@ -18,7 +18,7 @@ import com.smasher.widget.activity.WidgetActivity
 import com.smasher.widget.base.BaseActivity
 import com.smasher.widget.basic.IndicatorActivity
 import com.smasher.widget.slideswaphelper.test.SlideMenuActivity
-import kotlinx.android.synthetic.main.activity_basics.*
+import kotlinx.android.synthetic.main.activity_practise.*
 
 class PractiseActivity : BaseActivity(), View.OnClickListener {
 
@@ -43,7 +43,7 @@ class PractiseActivity : BaseActivity(), View.OnClickListener {
 
 
     override fun getRootView(): View {
-        return LayoutInflater.from(this).inflate(R.layout.activity_basics, null)
+        return LayoutInflater.from(this).inflate(R.layout.activity_practise, null)
     }
 
     override fun initView() {

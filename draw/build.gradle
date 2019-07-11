@@ -42,4 +42,5 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
 
     implementation project(path: ':core')
+    implementation project(path: ':widget')
 }

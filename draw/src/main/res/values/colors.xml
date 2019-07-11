@@ -7,4 +7,8 @@
 
     <color name="color_ED424B">#ED424B</color>
     <color name="color_227FFB">#227FFB</color>
+
+
+    <color name="circle_start">#227FFB</color>
+    <color name="circle_end">#227FFB</color>
 </resources>

@@ -116,7 +116,7 @@ class MajorActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLis
                 gotoDagger()
             }
             R.id.nav_slideshow -> {
-                gotoBasic()
+                gotoPractise()
             }
             R.id.nav_tools -> {
                 gotoMedia()
@@ -203,7 +203,7 @@ class MajorActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLis
         startActivity(intent)
     }
 
-    private fun gotoBasic() {
+    private fun gotoPractise() {
         val intent = Intent()
         intent.setClass(this, PractiseActivity::class.java)
         startActivity(intent)

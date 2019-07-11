@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent">
@@ -10,5 +12,28 @@
         android:layout_height="match_parent"
         android:background="@color/transparent"
         android:scaleType="fitXY" />
+
+
+    <com.smasher.draw.view.BubbleView
+        android:id="@+id/bubble"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <TextView
+        android:id="@+id/skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/rectangle_radius_8"
+        android:paddingStart="@dimen/length_10"
+        android:paddingTop="@dimen/length_5"
+        android:paddingEnd="@dimen/length_10"
+        android:paddingBottom="@dimen/length_5"
+        android:textColor="@color/color_FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="跳过(3)" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

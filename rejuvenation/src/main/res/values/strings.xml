@@ -7,12 +7,12 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="menu_home">二维码扫描</string>
+    <string name="menu_gallery">Dagger测试</string>
+    <string name="menu_slideshow">Widget</string>
+    <string name="menu_tools">Media组件</string>
+    <string name="menu_share">RxJava &#038; RxAndroid</string>
+    <string name="menu_send">FullScreen</string>
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -24,4 +24,7 @@
     <!--activity-description-->
     <string name="activity_description_debug">测试</string>
     <string name="activity_description_dagger">Dagger</string>
+
+
+    <string name="splash_skip">跳过(%1$s)</string>
 </resources>

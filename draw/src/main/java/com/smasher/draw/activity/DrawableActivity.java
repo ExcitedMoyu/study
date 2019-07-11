@@ -2,6 +2,7 @@ package com.smasher.draw.activity;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
 import android.graphics.MaskFilter;
@@ -10,6 +11,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -17,6 +19,8 @@ import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -28,7 +32,10 @@ import com.smasher.draw.view.BlurMaskFilterView;
 import com.smasher.draw.view.RhythmView;
 import com.smasher.draw.view.SuccessView;
 import com.smasher.oa.core.utils.DensityUtil;
+import com.smasher.oa.core.utils.StatusBarUtil;
 import com.smasher.oa.core.utils.TintUtil;
+import com.smasher.widget.helper.AnimationExDrawable;
+import com.smasher.widget.helper.ThemeTransformHelper;
 
 
 /**
@@ -36,10 +43,13 @@ import com.smasher.oa.core.utils.TintUtil;
  */
 public class DrawableActivity extends AppCompatActivity {
 
+    private static final String TAG = "DrawableActivity";
     private BlurMaskFilterView mBlurMask;
     private BlurMaskFilterView mBlurMask1;
     private SuccessView mSuccess;
     private RhythmView mRhythmView;
+    private ImageView mImageView;
+    private TextView mTextContent;
 
     AnimatorSet set1;
     AnimationSet set;
@@ -48,6 +58,7 @@ public class DrawableActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draw);
+        //StatusBarUtil.setTranslucent(this);
         initView();
         initState();
         initListener();
@@ -56,6 +67,7 @@ public class DrawableActivity extends AppCompatActivity {
     private void initListener() {
         mBlurMask.setOnClickListener(mBlurMaskListener1);
         mBlurMask1.setOnClickListener(mBlurMaskListener2);
+        mTextContent.setOnClickListener(mOnClickListener);
     }
 
     private void initState() {
@@ -69,10 +81,10 @@ public class DrawableActivity extends AppCompatActivity {
             int height = DensityUtil.dip2px(this, 8);
             arrow.setBounds(0, 0, width, height);
         }
-        Drawable background = ContextCompat.getDrawable(this, R.drawable.selector_blurmask_button);
-
         mBlurMask1.setCompoundDrawablePadding(DensityUtil.dip2px(this, 40));
         mBlurMask1.setCompoundDrawables(null, null, arrow, null);
+
+        Drawable background = ContextCompat.getDrawable(this, R.drawable.selector_blurmask_button);
         StateListDrawable listDrawable = getStateListDrawable();
     }
 
@@ -96,10 +108,12 @@ public class DrawableActivity extends AppCompatActivity {
     private void initView() {
 
         try {
+            mTextContent = findViewById(R.id.text_content);
             mBlurMask = findViewById(R.id.blurMask);
             mBlurMask1 = findViewById(R.id.blurMask1);
             mSuccess = findViewById(R.id.success);
             mRhythmView = findViewById(R.id.rhythmView);
+            mImageView = findViewById(R.id.day_and_night);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,6 +129,29 @@ public class DrawableActivity extends AppCompatActivity {
 
 
     View.OnClickListener mBlurMaskListener2 = v -> doActions();
+
+
+    int count = 0;
+    View.OnClickListener mOnClickListener = v -> {
+        int id = v.getId();
+        try {
+            boolean isDay = count % 2 > 0;
+            int type = isDay ? ThemeTransformHelper.TYPE_DAY_NIGHT : ThemeTransformHelper.TYPE_NIGHT_DAY;
+            AnimationExDrawable drawable2 = ThemeTransformHelper.loadDayNightAnimationDrawable(this, type, 2000);
+            if (drawable2 != null) {
+                drawable2.setOneShot(true);
+                drawable2.setAnimationFinishListener(() ->
+                        Log.d(TAG, "drawable2 animation finished: ")
+                );
+                drawable2.start();
+            }
+            mImageView.setImageDrawable(drawable2);
+            mImageView.requestLayout();
+            count++;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    };
 
 
     private void doActions() {

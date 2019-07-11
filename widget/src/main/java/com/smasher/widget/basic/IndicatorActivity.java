@@ -56,7 +56,6 @@ public class IndicatorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_widget);
         StatusBarUtil.setTranslucent(this, 200);
-
         Log.d(TAG, "onCreate: ");
         initView();
         initListener();
@@ -75,16 +74,15 @@ public class IndicatorActivity extends AppCompatActivity {
             fab = findViewById(R.id.fab);
             magicIndicator = findViewById(R.id.magicIndicator);
             viewPager = findViewById(R.id.viewPager);
+            setSupportActionBar(toolbar);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        setSupportActionBar(toolbar);
         mFragmentManager = getSupportFragmentManager();
     }
 
 
     private void initViewPager() {
-
         try {
             mFragmentStateAdapter = new FragmentStateAdapter(getSupportFragmentManager(), mArrayList);
             viewPager.setAdapter(mFragmentStateAdapter);
@@ -139,8 +137,6 @@ public class IndicatorActivity extends AppCompatActivity {
                 return UIUtil.dip2px(IndicatorActivity.this, 25);
             }
         });
-
-
         ViewPagerHelper.bind(magicIndicator, viewPager);
     }
 
