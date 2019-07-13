@@ -4,12 +4,16 @@ import android.os.Handler
 import android.os.Message
 import android.util.Log
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import com.smasher.draw.view.LeadingPointView
+import com.smasher.oa.core.utils.DensityUtil
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.adapter.MajorPagerAdapter
 
-class MajorPagerViewHolder(itemView: View) : BaseMajorViewHolder(itemView), Handler.Callback {
+
+class MajorPagerExViewHolder(itemView: View) : BaseMajorViewHolder(itemView), Handler.Callback {
+
     private val mViewPager: ViewPager = itemView.findViewById(R.id.viewPager)
     private val mIndicator: LeadingPointView = itemView.findViewById(R.id.indicator)
     private var mAdapter: MajorPagerAdapter? = null
@@ -25,19 +29,23 @@ class MajorPagerViewHolder(itemView: View) : BaseMajorViewHolder(itemView), Hand
         )
         mAdapter = MajorPagerAdapter(itemView.context)
         mAdapter!!.setData(address)
+
+        val currentParam: ConstraintLayout.LayoutParams =
+                mViewPager.layoutParams as ConstraintLayout.LayoutParams
+        val margin = DensityUtil.dip2px(mContext, 24f)
+        currentParam.setMargins(margin, margin, margin, margin)
         mIndicator.init(0, 6)
         mIndicator.setColorResourceId(R.color.color_838A96, R.color.color_ED424B)
     }
 
     override fun bindView() {
         super.bindView()
-        mViewPager.pageMargin = mContext.resources.getDimensionPixelSize(R.dimen.length_0)
+        mViewPager.pageMargin = mContext.resources.getDimensionPixelSize(R.dimen.length_12)
         mViewPager.offscreenPageLimit = 3
         mViewPager.adapter = mAdapter
         mViewPager.addOnPageChangeListener(onPageChangeListener)
         play()
     }
-
 
     private val runnable = Runnable {
         currentIndex++

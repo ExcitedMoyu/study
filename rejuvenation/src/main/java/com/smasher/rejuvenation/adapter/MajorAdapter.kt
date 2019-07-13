@@ -8,6 +8,7 @@ import com.smasher.rejuvenation.entity.MajorData
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.holder.BaseMajorViewHolder
 import com.smasher.rejuvenation.holder.MajorCommonViewHolder
+import com.smasher.rejuvenation.holder.MajorPagerExViewHolder
 import com.smasher.rejuvenation.holder.MajorPagerViewHolder
 import com.smasher.widget.base.BaseRecyclerViewAdapter
 
@@ -29,6 +30,10 @@ class MajorAdapter(context: Context) : BaseRecyclerViewAdapter<MajorData, BaseMa
                 val view = LayoutInflater.from(mContext).inflate(R.layout.item_major_pager, viewGroup, false)
                 viewHolder = MajorPagerViewHolder(view)
             }
+            2 -> {
+                val view = LayoutInflater.from(mContext).inflate(R.layout.item_major_pager, viewGroup, false)
+                viewHolder = MajorPagerExViewHolder(view)
+            }
         }
         return viewHolder
     }
@@ -38,6 +43,7 @@ class MajorAdapter(context: Context) : BaseRecyclerViewAdapter<MajorData, BaseMa
         //return super.getItemViewType(position)
         return when (position) {
             0 -> 1
+            6 -> 2
             else -> 0
         }
     }
