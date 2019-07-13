@@ -1,7 +1,8 @@
 package com.smasher.draw.view;
 
-import android.animation.AnimatorSet;
-import android.animation.ValueAnimator;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ValueAnimator;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -66,23 +67,17 @@ public class CanvasView extends View {
 
 
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCurAnimValue = (float) animation.getAnimatedValue();
-                invalidate();
-            }
+        animator.addUpdateListener(animation -> {
+            mCurAnimValue = (float) animation.getAnimatedValue();
+            invalidate();
         });
         animator.setDuration(1000);
 
 
         ValueAnimator animator1 = ValueAnimator.ofFloat(0, 1);
-        animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mSuccessValue = (float) animation.getAnimatedValue();
-                invalidate();
-            }
+        animator1.addUpdateListener(animation -> {
+            mSuccessValue = (float) animation.getAnimatedValue();
+            invalidate();
         });
         animator1.setDuration(500);
 

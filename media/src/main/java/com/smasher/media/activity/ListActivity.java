@@ -7,11 +7,13 @@ import android.os.RemoteException;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback;
+import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaControllerCompat.TransportControls;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -297,21 +299,28 @@ public class ListActivity extends BaseActivity implements OnItemClickListener,
                 startService(intent);
             } else {
                 if (mController != null) {
-
-                    String mediaId = mController.getMetadata().getDescription().getMediaId();
+                    String mediaId = "";
+                    MediaMetadataCompat metadata = mController.getMetadata();
+                    if (metadata != null) {
+                        MediaDescriptionCompat description = metadata.getDescription();
+                        if (description != null) {
+                            mediaId = description.getMediaId();
+                        }
+                    }
                     mList = list;
                     mAdapter.setData(mList);
-                    mAdapter.setSelectedMediaId(mediaId);
+                    if (!TextUtils.isEmpty(mediaId)) {
+                        mAdapter.setSelectedMediaId(mediaId);
+                    }
                     mAdapter.notifyDataSetChanged();
                     updatePlayState();
                 }
 
             }
 
-            if (mController != null) {
-                MediaControllerCompat.PlaybackInfo playbackInfo = mController.getPlaybackInfo();
-            }
         } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
