@@ -68,6 +68,9 @@ dependencies {
 
 
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation 'com.github.bumptech.glide:annotations:4.9.0'
+
     implementation 'pub.devrel:easypermissions:3.0.0'
 
     implementation 'com.google.dagger:dagger:2.23.2'
