@@ -11,7 +11,7 @@ class CrashActivity : BaseActivity() {
     }
 
     override fun getRootView(): View {
-        return LayoutInflater.from(this).inflate(R.layout.activity_dagger, null)
+        return LayoutInflater.from(this).inflate(R.layout.activity_crash, null)
     }
 
     override fun initView() {

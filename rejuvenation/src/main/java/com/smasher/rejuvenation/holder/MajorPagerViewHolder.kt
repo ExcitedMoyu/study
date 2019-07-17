@@ -5,13 +5,13 @@ import android.os.Message
 import android.util.Log
 import android.view.View
 import androidx.viewpager.widget.ViewPager
-import com.smasher.draw.view.LeadingPointView
+import com.smasher.draw.view.IndicatorView
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.adapter.MajorPagerAdapter
 
 class MajorPagerViewHolder(itemView: View) : BaseMajorViewHolder(itemView), Handler.Callback {
     private val mViewPager: ViewPager = itemView.findViewById(R.id.viewPager)
-    private val mIndicator: LeadingPointView = itemView.findViewById(R.id.indicator)
+    private val mIndicator: IndicatorView = itemView.findViewById(R.id.indicator)
     private var mAdapter: MajorPagerAdapter? = null
     private var currentIndex = 1 //当前位置
     private val mHandler: Handler = Handler(this)
@@ -46,6 +46,9 @@ class MajorPagerViewHolder(itemView: View) : BaseMajorViewHolder(itemView), Hand
         }
         mViewPager.currentItem = currentIndex
     }
+
+
+
 
     override fun handleMessage(msg: Message?): Boolean {
         play()

@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
-import com.smasher.draw.view.LeadingPointView
+import com.smasher.draw.view.IndicatorView
 import com.smasher.oa.core.utils.DensityUtil
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.adapter.MajorPagerAdapter
@@ -15,7 +15,7 @@ import com.smasher.rejuvenation.adapter.MajorPagerAdapter
 class MajorPagerExViewHolder(itemView: View) : BaseMajorViewHolder(itemView), Handler.Callback {
 
     private val mViewPager: ViewPager = itemView.findViewById(R.id.viewPager)
-    private val mIndicator: LeadingPointView = itemView.findViewById(R.id.indicator)
+    private val mIndicator: IndicatorView = itemView.findViewById(R.id.indicator)
     private var mAdapter: MajorPagerAdapter? = null
     private var currentIndex = 1 //当前位置
     private val mHandler: Handler = Handler(this)
@@ -33,7 +33,7 @@ class MajorPagerExViewHolder(itemView: View) : BaseMajorViewHolder(itemView), Ha
         val currentParam: ConstraintLayout.LayoutParams =
                 mViewPager.layoutParams as ConstraintLayout.LayoutParams
         val margin = DensityUtil.dip2px(mContext, 24f)
-        currentParam.setMargins(margin, margin, margin, margin)
+        currentParam.setMargins(margin, 0, margin, margin)
         mIndicator.init(0, 6)
         mIndicator.setColorResourceId(R.color.color_838A96, R.color.color_ED424B)
     }

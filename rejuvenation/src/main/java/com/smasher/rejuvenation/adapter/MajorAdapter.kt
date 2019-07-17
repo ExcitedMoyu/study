@@ -31,7 +31,7 @@ class MajorAdapter(context: Context) : BaseRecyclerViewAdapter<MajorData, BaseMa
                 viewHolder = MajorPagerViewHolder(view)
             }
             2 -> {
-                val view = LayoutInflater.from(mContext).inflate(R.layout.item_major_pager, viewGroup, false)
+                val view = LayoutInflater.from(mContext).inflate(R.layout.item_major_pager_ex, viewGroup, false)
                 viewHolder = MajorPagerExViewHolder(view)
             }
         }

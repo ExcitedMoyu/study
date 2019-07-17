@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="crash"
+        android:minHeight="@dimen/length_300" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="@dimen/length_120"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/length_16"
+            android:padding="@dimen/length_16"
+            android:text="submit" />
+
+        <Button
+            android:layout_width="@dimen/length_120"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/length_16"
+            android:padding="@dimen/length_16"
+            android:text="transform" />
+    </LinearLayout>
+
+
+</LinearLayout>
