@@ -30,6 +30,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import androidx.core.content.ContextCompat;
+
 import com.google.zxing.ResultPoint;
 import com.smasher.zxing.DisplayUtil;
 import com.smasher.zxing.R;
@@ -68,9 +70,9 @@ public final class ViewfinderView extends View {
         super(context, attrs, defStyleAttr);
         paint = new Paint();
         Resources resources = getResources();
-        maskColor = resources.getColor(R.color.viewfinder_mask);
-        resultColor = resources.getColor(R.color.result_view);
-        resultPointColor = resources.getColor(R.color.possible_result_points);
+        maskColor = ContextCompat.getColor(context,R.color.viewfinder_mask);
+        resultColor = ContextCompat.getColor(context,R.color.result_view);
+        resultPointColor = ContextCompat.getColor(context,R.color.possible_result_points);
         possibleResultPoints = new HashSet<>(5);
 
         scanLight = BitmapFactory.decodeResource(resources,

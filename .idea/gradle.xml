@@ -8,7 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/aidl" />
+            <option value="$PROJECT_DIR$/caidlclient" />
+            <option value="$PROJECT_DIR$/caidlserver" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/dagger2" />
             <option value="$PROJECT_DIR$/downloader" />
@@ -24,6 +25,7 @@
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
+        <option name="testRunner" value="PLATFORM" />
       </GradleProjectSettings>
     </option>
   </component>

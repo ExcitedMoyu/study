@@ -199,7 +199,6 @@ public class CodeUtils {
         if (captureFragment == null || layoutId == -1) {
             return;
         }
-
         Bundle bundle = new Bundle();
         bundle.putInt(LAYOUT_ID, layoutId);
         captureFragment.setArguments(bundle);

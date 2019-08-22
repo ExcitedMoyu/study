@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * @author warrior
+ */
 public class SlideMenuActivity extends BaseActivity {
 
 
@@ -28,7 +31,7 @@ public class SlideMenuActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StatusBarUtil.setTranslucent(this);
+        //StatusBarUtil.setTranslucent(this, 1);
     }
 
     @Override

@@ -41,9 +41,9 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerview"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
 
-    implementation 'pub.devrel:easypermissions:3.0.0'
+    implementation "pub.devrel:easypermissions:$easypermissions"
 
-    implementation 'androidx.viewpager2:viewpager2:1.0.0-alpha05'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0-beta03'
 
     //ButterKnife
     implementation 'com.jakewharton:butterknife:10.1.0'

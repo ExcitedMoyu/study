@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -31,13 +32,14 @@ import com.smasher.zxing.view.ViewfinderView;
 import java.io.IOException;
 import java.util.Vector;
 
+
 /**
  * 自定义实现的扫描Fragment
  *
  * @author matao
  */
 public class CaptureFragment extends Fragment implements SurfaceHolder.Callback {
-
+    public static final String TAG = "CaptureFragment";
     private CaptureActivityHandler handler;
     private ViewfinderView viewfinderView;
     private boolean hasSurface;
@@ -56,7 +58,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
 
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
     }
@@ -64,10 +66,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         CameraManager.init(getActivity().getApplication());
-
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this.getActivity());
     }
@@ -75,7 +74,6 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         Bundle bundle = getArguments();
         View view = null;
         if (bundle != null) {
@@ -89,10 +87,9 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
             view = inflater.inflate(R.layout.fragment_capture, null);
         }
 
-        viewfinderView = (ViewfinderView) view.findViewById(R.id.viewfinder_view);
-        surfaceView = (SurfaceView) view.findViewById(R.id.preview_view);
+        viewfinderView = view.findViewById(R.id.viewfinder_view);
+        surfaceView = view.findViewById(R.id.preview_view);
         surfaceHolder = surfaceView.getHolder();
-
         return view;
     }
 
@@ -107,7 +104,6 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
         }
         decodeFormats = null;
         characterSet = null;
-
         playBeep = true;
         AudioManager audioService = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
@@ -174,22 +170,22 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,
-                               int height) {
-
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Log.d(TAG, "surfaceChanged: ");
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        Log.d(TAG, "surfaceCreated: hasSurface:  " + hasSurface);
         if (!hasSurface) {
             hasSurface = true;
             initCamera(holder);
         }
-
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.d(TAG, "surfaceDestroyed: " + hasSurface);
         hasSurface = false;
         if (camera != null) {
             if (camera != null && CameraManager.get().isPreviewing()) {
@@ -209,8 +205,8 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
     }
 
     public void drawViewfinder() {
+        Log.d(TAG, "drawViewfinder: ");
         viewfinderView.drawViewfinder();
-
     }
 
     private void initBeepSound() {
@@ -252,12 +248,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
     /**
      * When the beep has finished playing, rewind to queue up another one.
      */
-    private final MediaPlayer.OnCompletionListener beepListener = new MediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mediaPlayer) {
-            mediaPlayer.seekTo(0);
-        }
-    };
+    private final MediaPlayer.OnCompletionListener beepListener = mediaPlayer -> mediaPlayer.seekTo(0);
 
     public CodeUtils.AnalyzeCallback getAnalyzeCallback() {
         return analyzeCallback;
@@ -285,6 +276,4 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
          */
         void callBack(Exception e);
     }
-
-
 }

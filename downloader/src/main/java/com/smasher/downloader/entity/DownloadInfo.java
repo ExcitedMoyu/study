@@ -26,7 +26,6 @@ public class DownloadInfo implements Parcelable {
      */
     private String name;
 
-
     /**
      * 文件名-全名带后缀
      */
@@ -41,7 +40,6 @@ public class DownloadInfo implements Parcelable {
      * 通知栏icon的下载地址
      */
     private String iconUrl;
-
 
     /**
      * 通知栏点击跳转地址url
@@ -123,7 +121,6 @@ public class DownloadInfo implements Parcelable {
         this.id = id;
     }
 
-
     public String getUrl() {
         return url;
     }
@@ -131,7 +128,6 @@ public class DownloadInfo implements Parcelable {
     public void setUrl(String url) {
         this.url = url;
     }
-
 
     public String getFullName() {
         return fullName;
@@ -141,7 +137,6 @@ public class DownloadInfo implements Parcelable {
         this.fullName = fullName;
     }
 
-
     public long getTotal() {
         return total;
     }
@@ -149,7 +144,6 @@ public class DownloadInfo implements Parcelable {
     public void setTotal(long total) {
         this.total = total;
     }
-
 
     public long getProgress() {
         return progress;
@@ -159,7 +153,6 @@ public class DownloadInfo implements Parcelable {
         this.progress = progress;
     }
 
-
     public String getName() {
         return name;
     }
@@ -168,16 +161,13 @@ public class DownloadInfo implements Parcelable {
         this.name = name;
     }
 
-
     public String getIconUrl() {
         return iconUrl;
     }
 
-
     public String getUniqueKey() {
         return uniqueKey;
     }
-
 
     /**
      * 若为下载apk  这里传入包名
@@ -187,7 +177,6 @@ public class DownloadInfo implements Parcelable {
     public void setUniqueKey(String uniqueKey) {
         this.uniqueKey = uniqueKey;
     }
-
 
     public String getActionUrl() {
         return actionUrl;
@@ -201,16 +190,13 @@ public class DownloadInfo implements Parcelable {
         this.targetPath = targetPath;
     }
 
-
     public int getStatus() {
         return status;
     }
 
-
     public void setStatus(int status) {
         this.status = status;
     }
-
 
     public int getDownLoadType() {
         return downLoadType;
@@ -219,7 +205,6 @@ public class DownloadInfo implements Parcelable {
     public void setDownLoadType(int downLoadType) {
         this.downLoadType = downLoadType;
     }
-
 
     @Override
     public int describeContents() {

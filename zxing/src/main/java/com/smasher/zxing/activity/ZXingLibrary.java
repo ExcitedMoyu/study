@@ -19,7 +19,7 @@ public class ZXingLibrary {
         DisplayUtil.density = dm.density;
         DisplayUtil.densityDPI = dm.densityDpi;
         DisplayUtil.screenWidthPx = dm.widthPixels;
-        DisplayUtil.screenhightPx = dm.heightPixels;
+        DisplayUtil.screenHightPx = dm.heightPixels;
         DisplayUtil.screenWidthDip = DisplayUtil.px2dip(context, dm.widthPixels);
         DisplayUtil.screenHightDip = DisplayUtil.px2dip(context, dm.heightPixels);
     }

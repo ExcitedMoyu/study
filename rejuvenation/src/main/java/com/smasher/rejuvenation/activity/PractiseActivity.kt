@@ -5,10 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
 import com.google.android.material.snackbar.Snackbar
-import com.smasher.aidl.activity.local.LocalActivity
-import com.smasher.aidl.activity.remote.ui.login.LoginActivity
+//import com.smasher.aidl.activity.local.LocalActivity
+//import com.smasher.aidl.activity.remote.ui.login.LoginActivity
 import com.smasher.draw.activity.DrawableActivity
 import com.smasher.media.activity.TestActivity
 import com.smasher.oa.core.utils.StatusBarUtil
@@ -19,18 +18,9 @@ import com.smasher.widget.base.BaseActivity
 import com.smasher.widget.basic.IndicatorActivity
 import com.smasher.widget.slideswaphelper.test.SlideMenuActivity
 import kotlinx.android.synthetic.main.activity_practise.*
+import kotlinx.android.synthetic.main.content_basic.*
 
 class PractiseActivity : BaseActivity(), View.OnClickListener {
-
-
-    private var mButton1: Button? = null
-    private var mButton2: Button? = null
-    private var mButton3: Button? = null
-    private var mButton4: Button? = null
-    private var mButton5: Button? = null
-    private var mButton6: Button? = null
-    private var mButton7: Button? = null
-    private var mButton8: Button? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,16 +37,8 @@ class PractiseActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun initView() {
-        mButton1 = findViewById(R.id.button1)
-        mButton2 = findViewById(R.id.button2)
-        mButton3 = findViewById(R.id.button3)
-        mButton4 = findViewById(R.id.button4)
-        mButton5 = findViewById(R.id.button5)
-        mButton6 = findViewById(R.id.button6)
-        mButton7 = findViewById(R.id.button7)
-        mButton8 = findViewById(R.id.button8)
-    }
 
+    }
 
     override fun setFunctionsForFragment(tag: String?) {
 
@@ -68,14 +50,14 @@ class PractiseActivity : BaseActivity(), View.OnClickListener {
 
 
     private fun initListener() {
-        mButton1!!.setOnClickListener(this)
-        mButton2!!.setOnClickListener(this)
-        mButton3!!.setOnClickListener(this)
-        mButton4!!.setOnClickListener(this)
-        mButton5!!.setOnClickListener(this)
-        mButton6!!.setOnClickListener(this)
-        mButton7!!.setOnClickListener(this)
-        mButton8!!.setOnClickListener(this)
+        button1.setOnClickListener(this)
+        button2.setOnClickListener(this)
+        button3.setOnClickListener(this)
+        button4.setOnClickListener(this)
+        button5.setOnClickListener(this)
+        button6.setOnClickListener(this)
+        button7.setOnClickListener(this)
+        button8.setOnClickListener(this)
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
@@ -104,9 +86,9 @@ class PractiseActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun gotoLogin() {
-        val intent = Intent()
-        intent.setClass(this, LoginActivity::class.java)
-        startActivity(intent)
+//        val intent = Intent()
+//        intent.setClass(this, LoginActivity::class.java)
+//        startActivity(intent)
     }
 
     private fun gotoAlarm() {
@@ -122,9 +104,9 @@ class PractiseActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun gotoLocal() {
-        val intent = Intent()
-        intent.setClass(this, LocalActivity::class.java)
-        startActivity(intent)
+//        val intent = Intent()
+//        intent.setClass(this, LocalActivity::class.java)
+//        startActivity(intent)
     }
 
     private fun gotoWidget() {
@@ -144,7 +126,4 @@ class PractiseActivity : BaseActivity(), View.OnClickListener {
         intent.setClass(this, SlideMenuActivity::class.java)
         startActivity(intent)
     }
-
-
-
 }

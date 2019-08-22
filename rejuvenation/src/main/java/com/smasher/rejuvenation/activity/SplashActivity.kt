@@ -12,16 +12,14 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
-import android.widget.ImageView
-import android.widget.TextView
 import com.smasher.downloader.handler.WeakReferenceHandler
 import com.smasher.draw.bean.CircleBean
-import com.smasher.draw.view.BubbleView
 import com.smasher.ndk.PrimaryService
 import com.smasher.oa.core.utils.DensityUtil
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.util.LogUtil
 import com.smasher.widget.base.BaseActivity
+import kotlinx.android.synthetic.main.activity_splash.*
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
@@ -36,9 +34,6 @@ class SplashActivity : BaseActivity(), Handler.Callback {
 
     var a = 0
     private var mHandler: WeakReferenceHandler? = null
-    private var mSkip: TextView? = null
-    private var mImage: ImageView? = null
-    private var mBubble: BubbleView? = null
     private val circleBeanList = ArrayList<CircleBean>()
     private lateinit var future: ScheduledFuture<*>
 
@@ -72,12 +67,9 @@ class SplashActivity : BaseActivity(), Handler.Callback {
     }
 
     override fun initView() {
-        mSkip = findViewById(R.id.skip)
-        mImage = findViewById(R.id.image)
-        mImage!!.setImageResource(R.drawable.back_space)
-        mBubble = findViewById(R.id.bubble)
-        mSkip!!.text = getString(R.string.splash_skip, "3")
-        mSkip!!.setOnClickListener {
+        image.setImageResource(R.drawable.back_space)
+        skip.text = getString(R.string.splash_skip, "3")
+        skip.setOnClickListener {
             if (!future.isCancelled) {
                 future.cancel(true)
             }
@@ -89,7 +81,7 @@ class SplashActivity : BaseActivity(), Handler.Callback {
     override fun initData() {
         startPrimaryService()
         initPoint()
-        mBubble!!.circleBeen = circleBeanList
+        bubble!!.circleBeen = circleBeanList
     }
 
     override fun onResume() {
@@ -99,11 +91,11 @@ class SplashActivity : BaseActivity(), Handler.Callback {
         scaleAnimation.fillAfter = true
         scaleAnimation.interpolator = AccelerateDecelerateInterpolator()
         scaleAnimation.duration = 3000
-        mImage!!.startAnimation(scaleAnimation)
+        image!!.startAnimation(scaleAnimation)
 
 
         mHandler!!.postDelayed({
-            mBubble!!.openAnimation()
+            bubble.openAnimation()
         }, 200)
 
 
@@ -142,7 +134,7 @@ class SplashActivity : BaseActivity(), Handler.Callback {
     override fun handleMessage(msg: Message): Boolean {
         val id: Int = msg.what
         val time: Int = msg.arg1
-        mSkip!!.text = getString(R.string.splash_skip, time.toString())
+        skip!!.text = getString(R.string.splash_skip, time.toString())
         when (id) {
             0 -> {
                 Log.d(TAG, "$time")
