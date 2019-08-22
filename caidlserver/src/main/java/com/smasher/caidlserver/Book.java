@@ -41,6 +41,10 @@ public class Book implements Parcelable {
         dest.writeString(this.name);
     }
 
+    public void readFromParcel(Parcel dest) {
+        name = dest.readString();
+    }
+
     protected Book(Parcel in) {
         this.name = in.readString();
     }
