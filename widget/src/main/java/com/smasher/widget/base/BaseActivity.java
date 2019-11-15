@@ -10,8 +10,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.smasher.oa.core.activityoptions.ActivityManager;
-import com.smasher.oa.core.other.BusProvider;
+import com.smasher.core.activityoptions.ActivityManager;
+import com.smasher.core.other.BusProvider;
 import com.smasher.widget.receiver.NetworkReceiver;
 import com.smasher.widget.receiver.NetworkReceiver.NetStatusMonitor;
 

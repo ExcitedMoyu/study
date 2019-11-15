@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.smasher.oa.core.utils.DensityUtil;
+import com.smasher.core.utils.DensityUtil;
 import com.smasher.widget.R;
 import com.smasher.widget.base.BaseFragment;
 

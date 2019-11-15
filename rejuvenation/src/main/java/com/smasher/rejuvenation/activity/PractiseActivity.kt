@@ -10,7 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 //import com.smasher.aidl.activity.remote.ui.login.LoginActivity
 import com.smasher.draw.activity.DrawableActivity
 import com.smasher.media.activity.TestActivity
-import com.smasher.oa.core.utils.StatusBarUtil
+import com.smasher.core.utils.StatusBarUtil
 import com.smasher.rejuvenation.R
 import com.smasher.widget.activity.AlarmActivity
 import com.smasher.widget.activity.WidgetActivity

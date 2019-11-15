@@ -13,7 +13,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.smasher.oa.core.utils.NotificationUtil;
+import com.smasher.core.utils.NotificationUtil;
 import com.smasher.widget.R;
 
 /**

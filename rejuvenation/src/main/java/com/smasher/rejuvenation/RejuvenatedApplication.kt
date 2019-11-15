@@ -3,9 +3,9 @@ package com.smasher.rejuvenation
 import android.content.Context
 import android.content.res.Configuration
 import androidx.multidex.MultiDexApplication
-import com.smasher.oa.core.crash.CrashHandler
-import com.smasher.oa.core.crash.CrashManager
-import com.smasher.oa.core.other.ApplicationContext
+import com.smasher.core.crash.CrashHandler
+import com.smasher.core.crash.CrashManager
+import com.smasher.core.other.ApplicationContext
 import com.smasher.rejuvenation.activity.CrashActivity
 import com.smasher.rejuvenation.activity.SplashActivity
 import com.smasher.rejuvenation.helper.NotificationChannelHelper

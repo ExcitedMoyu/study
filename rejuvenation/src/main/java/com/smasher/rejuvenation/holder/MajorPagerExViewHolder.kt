@@ -7,7 +7,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import com.smasher.draw.view.IndicatorView
-import com.smasher.oa.core.utils.DensityUtil
+import com.smasher.core.utils.DensityUtil
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.adapter.MajorPagerAdapter
 

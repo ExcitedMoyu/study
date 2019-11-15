@@ -4,8 +4,8 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.smasher.oa.core.thread.ThreadPool;
-import com.smasher.oa.core.utils.StatusBarUtil;
+import com.smasher.core.thread.ThreadPool;
+import com.smasher.core.utils.StatusBarUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,13 +20,10 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
-import io.reactivex.functions.Cancellable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.internal.schedulers.NewThreadScheduler;
 import io.reactivex.schedulers.Schedulers;
 
 public class RxJavaActivity extends AppCompatActivity {

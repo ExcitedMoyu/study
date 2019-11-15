@@ -11,8 +11,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.smasher.oa.core.other.WeakReferenceHandler;
-import com.smasher.oa.core.thread.ThreadPool;
+import com.smasher.core.other.WeakReferenceHandler;
+import com.smasher.core.thread.ThreadPool;
 import com.smasher.widget.helper.AlarmHelper;
 import com.smasher.widget.receiver.AlarmReceiver;
 

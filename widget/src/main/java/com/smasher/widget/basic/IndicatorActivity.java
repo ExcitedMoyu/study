@@ -17,7 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.smasher.oa.core.utils.StatusBarUtil;
+import com.smasher.core.utils.StatusBarUtil;
 import com.smasher.widget.R;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;

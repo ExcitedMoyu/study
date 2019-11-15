@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ValueAnimator;
-import com.smasher.oa.core.utils.DensityUtil;
+import com.smasher.core.utils.DensityUtil;
 
 import java.util.ArrayList;
 

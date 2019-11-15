@@ -21,7 +21,7 @@ import com.smasher.media.R;
 import com.smasher.media.constant.Constant;
 import com.smasher.media.helper.TestHelper;
 import com.smasher.media.service.MediaService;
-import com.smasher.oa.core.utils.StatusBarUtil;
+import com.smasher.core.utils.StatusBarUtil;
 import com.smasher.widget.base.BaseActivity;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;

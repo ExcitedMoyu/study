@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.smasher.oa.core.other.BusProvider;
+import com.smasher.core.other.BusProvider;
 import com.smasher.widget.struct.FunctionManager;
 
 

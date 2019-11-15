@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.smasher.oa.core.utils.DensityUtil;
+import com.smasher.core.utils.DensityUtil;
 import com.smasher.widget.R;
 import com.smasher.widget.base.BaseRecyclerViewHolder;
 import com.smasher.widget.slideswaphelper.SlideSwapAction;

@@ -1,4 +1,7 @@
-include ':dagger2', ':caidlserver', ':caidlclient',
+include ':dagger2',
+        ':encrypt',
+        ':caidlserver',
+        ':caidlclient',
         ':rejuvenation',
         ':rxjava',
         ':media',
@@ -10,3 +13,4 @@ include ':dagger2', ':caidlserver', ':caidlclient',
         ':zxing',
         ':core',
         ':downloader'
+

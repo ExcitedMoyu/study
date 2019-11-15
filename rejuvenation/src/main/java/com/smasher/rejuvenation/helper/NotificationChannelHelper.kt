@@ -3,7 +3,7 @@ package com.smasher.rejuvenation.helper
 import android.content.Context
 import android.os.Build
 
-import com.smasher.oa.core.utils.NotificationUtil
+import com.smasher.core.utils.NotificationUtil
 
 /**
  * @author matao

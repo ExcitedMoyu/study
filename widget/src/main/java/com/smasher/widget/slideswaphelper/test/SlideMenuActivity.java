@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.smasher.oa.core.utils.StatusBarUtil;
 import com.smasher.widget.R;
 import com.smasher.widget.base.BaseActivity;
 import com.smasher.widget.slideswaphelper.PlusItemSlideCallback;

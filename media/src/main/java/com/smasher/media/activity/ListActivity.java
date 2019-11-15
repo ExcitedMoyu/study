@@ -39,7 +39,7 @@ import com.smasher.media.constant.Constant;
 import com.smasher.media.helper.AnimationHelper;
 import com.smasher.media.helper.MediaBrowserHelper;
 import com.smasher.media.service.MediaService;
-import com.smasher.oa.core.utils.StatusBarUtil;
+import com.smasher.core.utils.StatusBarUtil;
 import com.smasher.widget.base.BaseActivity;
 import com.smasher.widget.base.OnItemClickListener;
 
@@ -318,8 +318,6 @@ public class ListActivity extends BaseActivity implements OnItemClickListener,
 
             }
 
-        } catch (RemoteException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

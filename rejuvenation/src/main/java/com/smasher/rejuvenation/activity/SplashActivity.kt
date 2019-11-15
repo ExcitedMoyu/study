@@ -15,7 +15,7 @@ import android.view.animation.ScaleAnimation
 import com.smasher.downloader.handler.WeakReferenceHandler
 import com.smasher.draw.bean.CircleBean
 import com.smasher.ndk.PrimaryService
-import com.smasher.oa.core.utils.DensityUtil
+import com.smasher.core.utils.DensityUtil
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.util.LogUtil
 import com.smasher.widget.base.BaseActivity

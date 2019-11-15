@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.smasher.media.R;
-import com.smasher.oa.core.utils.StatusBarUtil;
+import com.smasher.core.utils.StatusBarUtil;
 import com.smasher.widget.base.BaseActivity;
 
 /**

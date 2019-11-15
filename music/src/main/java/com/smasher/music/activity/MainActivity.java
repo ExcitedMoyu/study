@@ -16,7 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
+//import androidx.viewpager2.widget.ViewPager2;
 
 import com.smasher.music.R;
 
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         ButterKnife.bind(this);
         mHandler = new Handler(this);
         ViewPager viewPager = new ViewPager(this);
-        ViewPager2 viewPager2 = new ViewPager2(this);
+//        ViewPager2 viewPager2 = new ViewPager2(this);
         initPermissionNeed();
     }
 

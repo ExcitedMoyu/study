@@ -2,7 +2,6 @@ package com.smasher.draw.activity;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.Intent;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
 import android.graphics.MaskFilter;
@@ -31,9 +30,8 @@ import com.smasher.draw.R;
 import com.smasher.draw.view.BlurMaskFilterView;
 import com.smasher.draw.view.RhythmView;
 import com.smasher.draw.view.SuccessView;
-import com.smasher.oa.core.utils.DensityUtil;
-import com.smasher.oa.core.utils.StatusBarUtil;
-import com.smasher.oa.core.utils.TintUtil;
+import com.smasher.core.utils.DensityUtil;
+import com.smasher.core.utils.TintUtil;
 import com.smasher.widget.helper.AnimationExDrawable;
 import com.smasher.widget.helper.ThemeTransformHelper;
 

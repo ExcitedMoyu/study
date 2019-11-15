@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 
-import com.smasher.oa.core.utils.NetworkUtil;
+import com.smasher.core.utils.NetworkUtil;
 
 /**
  * @author matao

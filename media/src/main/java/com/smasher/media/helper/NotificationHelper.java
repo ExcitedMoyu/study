@@ -24,7 +24,7 @@ import androidx.media.app.NotificationCompat.MediaStyle;
 import com.smasher.media.R;
 import com.smasher.media.constant.Constant;
 import com.smasher.media.service.MediaService;
-import com.smasher.oa.core.utils.NotificationUtil;
+import com.smasher.core.utils.NotificationUtil;
 
 import java.util.Random;
 
