@@ -129,8 +129,8 @@ public class DiskUtil {
     /**
      * 转换文件大小
      *
-     * @param fileSize
-     * @return
+     * @param fileSize fileSize
+     * @return String
      */
     private static String formatFileSize(long fileSize) {
         DecimalFormat df = new DecimalFormat("#.00");
@@ -154,9 +154,9 @@ public class DiskUtil {
     /**
      * 转换文件大小,指定转换的类型
      *
-     * @param fileSize
-     * @param sizeType
-     * @return
+     * @param fileSize fileSize
+     * @param sizeType sizeType
+     * @return double
      */
     private static double formatFileSize(long fileSize, int sizeType) {
         DecimalFormat df = new DecimalFormat("#.00");

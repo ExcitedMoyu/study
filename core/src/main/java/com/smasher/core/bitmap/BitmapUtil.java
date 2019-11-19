@@ -36,7 +36,7 @@ public class BitmapUtil {
      * @param options   options
      * @param reqWidth  reqWidth
      * @param reqHeight reqHeight
-     * @return int
+     * @return
      */
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
@@ -77,7 +77,6 @@ public class BitmapUtil {
 
     /**
      * 获得圆角图片的方法
-     * Bitmap
      */
     public static Bitmap getRoundCornerBitmap(Bitmap bitmap, String tag, float roundPx) {
         try {
@@ -209,19 +208,20 @@ public class BitmapUtil {
     /**
      * 压缩图片
      *
-     * @param width height
+     * @param imgPath imgPath
      * @return Bitmap
      */
     public static Bitmap compressBitmap(String imgPath, int width, int height) {
         Bitmap srcBitmap = DeBitmapFactory.decodeFile(imgPath, width, height);
-        if (srcBitmap == null || srcBitmap.isRecycled())
+        if (srcBitmap == null || srcBitmap.isRecycled()) {
             return null;
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         //质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
         srcBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         int options = 100;
+        //循环判断如果压缩后图片是否大于100kb,大于继续压缩
         while (baos.toByteArray().length / 1024 > 100) {
-            //循环判断如果压缩后图片是否大于100kb,大于继续压缩
             //重置baos即清空baos
             baos.reset();
             //这里压缩options%，把压缩后的数据存放到baos中
@@ -231,15 +231,14 @@ public class BitmapUtil {
         }
         //把压缩后的数据baos存放到ByteArrayInputStream中
         ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
-        //把ByteArrayInputStream数据生成图片
         return BitmapFactory.decodeStream(isBm, null, null);
     }
 
     /**
      * 创建一个纯色的图片
      *
-     * @param w w
-     * @param h h
+     * @param w     w
+     * @param h     h
      * @param color color
      * @return Bitmap
      */
@@ -254,7 +253,7 @@ public class BitmapUtil {
     /**
      * 创建一个带有蒙版效果的Bitmap
      *
-     * @param bmp bmp
+     * @param bmp   bmp
      * @param color color
      * @return Bitmap
      */
@@ -276,10 +275,8 @@ public class BitmapUtil {
                     maskBitmap.recycle();
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception | OutOfMemoryError e) {
             e.printStackTrace();
-        } catch (OutOfMemoryError err) {
-            err.printStackTrace();
         }
         return copyBitmap;
     }
@@ -287,7 +284,7 @@ public class BitmapUtil {
     /**
      * 创建一个带有蒙版效果的Bitmap
      *
-     * @param bmp bmp
+     * @param bmp   bmp
      * @param color color
      * @return Bitmap
      */

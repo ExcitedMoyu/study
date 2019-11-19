@@ -138,8 +138,9 @@ public class FileUtil {
     }
 
     public static byte[] loadFileBytes(File file) {
-        if (file == null || !file.exists())
+        if (file == null || !file.exists()) {
             return null;
+        }
 
         InputStream is = null;
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -205,8 +206,9 @@ public class FileUtil {
     }
 
     public static void copyFile(File sourceFile, File targetFile, boolean overwrite) {
-        if (!sourceFile.exists())
+        if (!sourceFile.exists()) {
             return;
+        }
         if (targetFile.exists()) {
             if (overwrite) {
                 targetFile.delete();
@@ -472,8 +474,9 @@ public class FileUtil {
             (new File(newPath)).mkdirs();
             File a = new File(oldPath);
             String[] file = a.list();
-            if (file == null)
+            if (file == null) {
                 return;
+            }
             File temp = null;
             for (int i = 0; i < file.length; i++) {
                 if (oldPath.endsWith(File.separator)) {
