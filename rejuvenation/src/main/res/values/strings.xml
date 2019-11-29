@@ -27,4 +27,44 @@
 
 
     <string name="splash_skip">跳过(%1$s)</string>
+
+
+
+
+    <!-- 日期和时间 -->
+    <string name="time_in_minute">1分钟内</string>
+    <string name="time_a_moment_ago">刚刚</string>
+    <string name="few_minute_ago">分钟前</string>
+    <string name="few_minute_later">分钟后</string>
+    <string name="few_hours_ago">小时前</string>
+    <string name="few_hours_later">小时后</string>
+    <string name="few_days_ago">天前</string>
+    <string name="few_days_later">天后</string>
+    <string name="few_month_ago">个月前</string>
+    <string name="few_month_later">个月后</string>
+    <string name="few_year_ago">年前</string>
+    <string name="few_year_later">年后</string>
+
+    <string name="date_deprecated">已过期</string>
+    <string name="date_year">年</string>
+    <string name="date_month">月</string>
+    <string name="date_day">日</string>
+    <string name="date_day_chinese">天</string>
+
+    <string name="date_yesterday">昨天</string>
+    <string name="date_day_before_yesterday">前天</string>
+    <string name="date_format">yyyy年MM月dd kk:mm</string>
+
+    <string name="time_minute">分</string>
+    <string name="time_second">秒</string>
+    <string name="time_hour">时</string>
+
+    <string name="time_hours">小时</string>
+    <string name="time_minutes">分钟</string>
+
+    <string name="time_today">今天 %1$s</string>
+    <string name="time_yesterday">昨天 %1$s</string>
+    <string name="time_the_day_before_yesterday">前天 %1$s</string>
+
+
 </resources>
