@@ -16,7 +16,7 @@ import com.smasher.core.entity.Warning;
  * @author Smasher
  * on 2019/11/20 0020
  */
-@Database(entities = {Warning.class, User.class}, version = 1, exportSchema = true)
+@Database(entities = {Warning.class, User.class}, version = 1, exportSchema = false)
 public abstract class SmasherDateBase extends RoomDatabase {
 
 

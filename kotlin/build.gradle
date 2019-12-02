@@ -31,32 +31,33 @@ android {
 }
 
 dependencies {
+    def dep = rootProject.ext
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "com.google.android.material:material:$material"
+    implementation "com.google.android.material:material:$dep.material"
 
-    implementation "androidx.appcompat:appcompat:$appcompat"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
-    implementation "androidx.recyclerview:recyclerview:$recyclerview"
+    implementation "androidx.appcompat:appcompat:$dep.appcompat"
+    implementation "androidx.constraintlayout:constraintlayout:$dep.constraintlayout"
+    implementation "androidx.recyclerview:recyclerview:$dep.recyclerview"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
-    implementation "org.jetbrains.anko:anko-common:${anko_version}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$dep.kotlin_version"
+    implementation "org.jetbrains.anko:anko-common:$dep.anko_version"
 
     //ButterKnife
     implementation 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
 
     //dagger2
-    implementation "com.google.dagger:dagger:$dagger"
-    implementation "com.google.dagger:dagger-android-support:$dagger_android_support"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_compiler"
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_android_processor"
+    implementation "com.google.dagger:dagger:$dep.dagger"
+    implementation "com.google.dagger:dagger-android-support:$dep.dagger_android_support"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dep.dagger_compiler"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dep.dagger_android_processor"
 
 
-    testImplementation "junit:junit:$junit"
-    androidTestImplementation "androidx.test:runner:$test_runner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
+    testImplementation "junit:junit:$dep.junit"
+    androidTestImplementation "androidx.test:runner:$dep.test_runner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$dep.espresso_core"
 
 }
