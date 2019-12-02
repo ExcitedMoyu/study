@@ -6,11 +6,11 @@
     android:orientation="vertical">
 
 
-    <com.smasher.widget.behavior.SlidingCardContainer
+    <com.smasher.widget.activity.behavior.SlidingCardContainer
         android:layout_width="match_parent"
         android:layout_height="800dp"
         android:layout_marginTop="60dp">
 
-    </com.smasher.widget.behavior.SlidingCardContainer>
+    </com.smasher.widget.activity.behavior.SlidingCardContainer>
 
 </LinearLayout>

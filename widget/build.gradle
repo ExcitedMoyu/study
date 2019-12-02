@@ -41,6 +41,14 @@ dependencies {
 
     implementation "com.github.hackware1993:MagicIndicator:$dep.indicator"
 
+    //开源动画库
+    api "com.nineoldandroids:library:$dep.nineoldandroids"
+
+    //butterknife
+    api "com.jakewharton:butterknife:$dep.butterknife"
+    //annotationProcessor是处理注解的工具，是APT(Annotation Processing Tool)的一种
+    annotationProcessor "com.jakewharton:butterknife-compiler:$dep.butterknifeCompiler"
+
     testImplementation "junit:junit:$dep.junit"
     androidTestImplementation "androidx.test:runner:$dep.test_runner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$dep.espresso_core"

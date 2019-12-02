@@ -1,4 +1,4 @@
-package com.smasher.widget.behavior;
+package com.smasher.widget.activity.behavior;
 
 import android.content.Context;
 import android.util.AttributeSet;

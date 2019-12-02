@@ -1,4 +1,4 @@
-package com.smasher.widget.basic;
+package com.smasher.widget.activity.basic;
 
 import android.content.Context;
 

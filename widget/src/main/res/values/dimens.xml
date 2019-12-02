@@ -1,3 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="stepper_width_button">30dp</dimen>
+    <dimen name="stepper_padding_button">10dp</dimen>
+    <dimen name="stepper_textSize">15sp</dimen>
 </resources>

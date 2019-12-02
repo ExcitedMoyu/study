@@ -1,4 +1,4 @@
-package com.smasher.widget.basic;
+package com.smasher.widget.activity.basic;
 
 import android.view.View;
 import android.widget.TextView;

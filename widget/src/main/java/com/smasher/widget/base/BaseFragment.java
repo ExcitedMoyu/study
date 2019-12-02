@@ -3,7 +3,9 @@ package com.smasher.widget.base;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +15,9 @@ import com.smasher.core.other.BusProvider;
 import com.smasher.widget.struct.FunctionManager;
 
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * @author matao
  */
@@ -21,52 +26,62 @@ public abstract class BaseFragment extends Fragment {
     private static final String TAG = "BaseFragment";
     protected FunctionManager mFunctionManager;
     protected Context mContext;
-    protected int mPageIndex = 1;
-
-
-    protected boolean mIsVisible;
     protected boolean mHasLoaded;
-    protected boolean mHasPrepare;
+    private Unbinder unbinder;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onViewCreated: loading" + this.toString());
+        Log.d(TAG, "onCreate: loading" + this.toString());
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         BusProvider.getInstance().register(this);
-        Log.d(TAG, "onViewCreated: loading" + this.toString());
+        Log.d(TAG, "onActivityCreated: " + this.toString());
     }
 
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = LayoutInflater.from(mContext).inflate(getLayoutRes(), container, false);
+        unbinder = ButterKnife.bind(this, view);
+        initView();
+        return view;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated: loading" + this.toString());
-        if (mIsVisible) {
-            initData();
-            Log.e(TAG, "onViewCreated: loading" + this.toString());
-            mHasLoaded = true;
-        }
-        mHasPrepare = true;
+        Log.d(TAG, "onViewCreated: " + this.toString());
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        Log.d(TAG, "onViewCreated: loading" + this.toString());
+        Log.d(TAG, "onAttach: " + this.toString());
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!mHasLoaded) {
+            lazyLoad();
+            mHasLoaded = true;
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        unbinder.unbind();
         BusProvider.getInstance().unregister(this);
-        Log.d(TAG, "onViewCreated: loading" + this.toString());
+        Log.d(TAG, "onDestroyView: " + this.toString());
     }
 
 
@@ -80,33 +95,8 @@ public abstract class BaseFragment extends Fragment {
 
 
     //懒加载
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        mIsVisible = getUserVisibleHint();
-        if (!mIsVisible || mHasLoaded || !mHasPrepare) {
-            //不可见||加载过||View未创建
-            StringBuilder tag = new StringBuilder();
-
-            if (!mIsVisible) {
-                tag.append("!mIsVisible").append(" ");
-            }
-            if (mHasLoaded) {
-                tag.append("mHasLoaded").append(" ");
-            }
-            if (!mHasPrepare) {
-                tag.append("!mHasPrepare").append(" ");
-            }
-
-            Log.d(TAG, "setUserVisibleHint: " + this.toString() + tag.toString());
-            return;
-        }
-        lazyLoad();
-    }
-
     private void lazyLoad() {
-        Log.d(TAG, "onViewCreated: loading" + this.toString());
+        Log.d(TAG, "lazyLoad: loading" + this.toString());
         initData();
     }
 
@@ -114,6 +104,20 @@ public abstract class BaseFragment extends Fragment {
      * 加载数据
      */
     protected abstract void initData();
+
+
+    /**
+     * 初始化页面
+     */
+    protected abstract void initView();
+
+
+    /**
+     * 构建页面
+     *
+     * @return LayoutRes
+     */
+    protected abstract int getLayoutRes();
 
 
 }

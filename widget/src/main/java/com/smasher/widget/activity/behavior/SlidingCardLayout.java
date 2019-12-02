@@ -1,4 +1,4 @@
-package com.smasher.widget.behavior;
+package com.smasher.widget.activity.behavior;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -54,7 +54,7 @@ public class SlidingCardLayout extends FrameLayout {
 
     private void initView(Context context, AttributeSet attrs, int defStyleAttr) {
 
-        LayoutInflater.from(context).inflate(R.layout.card_layout, this);
+        LayoutInflater.from(context).inflate(R.layout.layout_content_card, this);
         mList = findViewById(R.id.list);
         mHeader = findViewById(R.id.header);
 

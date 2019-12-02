@@ -1,4 +1,4 @@
-package com.smasher.widget.flow;
+package com.smasher.widget.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;

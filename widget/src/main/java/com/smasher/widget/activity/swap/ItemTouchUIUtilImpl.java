@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.smasher.widget.slideswaphelper;
+package com.smasher.widget.activity.swap;
 
 import android.graphics.Canvas;
 import android.view.View;

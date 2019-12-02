@@ -15,8 +15,8 @@ import com.smasher.rejuvenation.R
 import com.smasher.widget.activity.AlarmActivity
 import com.smasher.widget.activity.WidgetActivity
 import com.smasher.widget.base.BaseActivity
-import com.smasher.widget.basic.IndicatorActivity
-import com.smasher.widget.slideswaphelper.test.SlideMenuActivity
+import com.smasher.widget.activity.basic.IndicatorActivity
+import com.smasher.widget.activity.swap.test.SlideMenuActivity
 import kotlinx.android.synthetic.main.activity_practise.*
 import kotlinx.android.synthetic.main.content_basic.*
 

@@ -1,4 +1,4 @@
-package com.smasher.widget.behavior;
+package com.smasher.widget.activity.behavior;
 
 import androidx.appcompat.app.AppCompatActivity;
 

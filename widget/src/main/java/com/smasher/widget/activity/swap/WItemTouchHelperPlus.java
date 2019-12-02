@@ -1,4 +1,4 @@
-package com.smasher.widget.slideswaphelper;
+package com.smasher.widget.activity.swap;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

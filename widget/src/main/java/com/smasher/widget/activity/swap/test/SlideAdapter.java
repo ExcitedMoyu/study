@@ -1,4 +1,4 @@
-package com.smasher.widget.slideswaphelper.test;
+package com.smasher.widget.activity.swap.test;
 
 import android.content.Context;
 import android.view.LayoutInflater;

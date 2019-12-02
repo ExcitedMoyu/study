@@ -1,4 +1,4 @@
-package com.smasher.widget.slideswaphelper.test;
+package com.smasher.widget.activity.swap.test;
 
 import android.view.View;
 import android.widget.LinearLayout;
@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import com.smasher.core.utils.DensityUtil;
 import com.smasher.widget.R;
 import com.smasher.widget.base.BaseRecyclerViewHolder;
-import com.smasher.widget.slideswaphelper.SlideSwapAction;
+import com.smasher.widget.activity.swap.SlideSwapAction;
 
 public class SlideViewHolder extends BaseRecyclerViewHolder<Object> implements SlideSwapAction {
     private TextView mItemText;

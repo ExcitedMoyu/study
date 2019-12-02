@@ -1,4 +1,4 @@
-package com.smasher.widget.slideswaphelper.test;
+package com.smasher.widget.activity.swap.test;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.smasher.widget.R;
 import com.smasher.widget.base.BaseActivity;
-import com.smasher.widget.slideswaphelper.PlusItemSlideCallback;
-import com.smasher.widget.slideswaphelper.WItemTouchHelperPlus;
+import com.smasher.widget.activity.swap.PlusItemSlideCallback;
+import com.smasher.widget.activity.swap.WItemTouchHelperPlus;
 
 import java.util.ArrayList;
 import java.util.List;

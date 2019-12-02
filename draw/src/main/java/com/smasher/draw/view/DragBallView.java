@@ -158,9 +158,9 @@ public class DragBallView extends View {
 
         if (!disappear) {
             if (msgCount > 0) {
-                if (pointEnd.x==0||pointEnd.y==0){
+                if (pointEnd.x == 0 || pointEnd.y == 0) {
                     drawText(canvas, msgCount, pointStart);
-                }else {
+                } else {
                     drawText(canvas, msgCount, pointEnd);
                 }
             }
@@ -286,6 +286,8 @@ public class DragBallView extends View {
                         valueAnimator.start();
                     }
                 }
+                break;
+            default:
                 break;
         }
         return true;

@@ -1,11 +1,9 @@
-package com.smasher.widget.basic;
+package com.smasher.widget.activity.basic;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,15 +54,17 @@ public class MFragment extends BaseFragment {
         mHasLoaded = true;
     }
 
-
     @Override
-    public void onResume() {
-        super.onResume();
-        if (!mHasLoaded) {
-            initData();
-        }
+    protected void initView() {
 
     }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.fragment_basic;
+    }
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,13 +81,6 @@ public class MFragment extends BaseFragment {
             mPosition = bundle.getString("index", "-1");
         }
 
-    }
-
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_basic, container, false);
     }
 
 
