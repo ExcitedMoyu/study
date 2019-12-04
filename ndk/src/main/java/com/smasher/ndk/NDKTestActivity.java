@@ -3,14 +3,10 @@ package com.smasher.ndk;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,13 +33,8 @@ public class NDKTestActivity extends BaseActivity {
     }
 
     @Override
-    public void setFunctionsForFragment(String tag) {
-
-    }
-
-    @Override
-    public View getRootView() {
-        return LayoutInflater.from(this).inflate(R.layout.activity_ndk_test, null);
+    public int getRootViewRes() {
+        return R.layout.activity_ndk_test;
     }
 
     @Override

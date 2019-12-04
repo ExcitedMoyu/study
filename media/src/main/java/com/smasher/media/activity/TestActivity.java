@@ -1,15 +1,13 @@
 package com.smasher.media.activity;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.smasher.media.R;
 import com.smasher.core.utils.StatusBarUtil;
+import com.smasher.media.R;
 import com.smasher.widget.base.BaseActivity;
 
 /**
@@ -30,14 +28,10 @@ public class TestActivity extends BaseActivity {
     }
 
     @Override
-    public void setFunctionsForFragment(String tag) {
-
+    public int getRootViewRes() {
+        return R.layout.activity_media_test;
     }
 
-    @Override
-    public View getRootView() {
-        return LayoutInflater.from(this).inflate(R.layout.activity_media_test, null);
-    }
 
     @Override
     public void initView() {

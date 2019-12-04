@@ -4,22 +4,20 @@ import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.MenuItem
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
-import android.view.View
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.smasher.media.activity.InitActivity
-import com.smasher.rejuvenation.entity.MajorData
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.adapter.MajorAdapter
+import com.smasher.rejuvenation.entity.MajorData
 import com.smasher.rxjava.RxJavaActivity
 import com.smasher.widget.base.BaseActivity
 import com.smasher.zxing.activity.CaptureActivity
@@ -73,16 +71,12 @@ class MajorActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedLis
         navView.setNavigationItemSelectedListener(this)
     }
 
-    override fun setFunctionsForFragment(tag: String?) {
-
-    }
-
-    override fun getRootView(): View {
-        return LayoutInflater.from(this).inflate(R.layout.activity_major, null)
-    }
-
     override fun initData() {
         buildList()
+    }
+
+    override fun getRootViewRes(): Int {
+        return R.layout.activity_major
     }
 
     private fun buildList() {

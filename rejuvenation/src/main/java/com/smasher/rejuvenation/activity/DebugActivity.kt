@@ -3,7 +3,6 @@ package com.smasher.rejuvenation.activity
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import com.smasher.rejuvenation.R
@@ -71,16 +70,12 @@ class DebugActivity : BaseActivity(), View.OnClickListener {
     }
 
 
-    override fun setFunctionsForFragment(tag: String?) {
-
-    }
-
-    override fun getRootView(): View {
-        return LayoutInflater.from(this).inflate(R.layout.activity_debug, null)
-    }
-
     override fun initData() {
 
+    }
+
+    override fun getRootViewRes(): Int {
+        return R.layout.activity_debug
     }
 
     private fun initStatus() {

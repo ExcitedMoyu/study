@@ -3,7 +3,6 @@ package com.smasher.media.activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback;
@@ -15,7 +14,6 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -32,6 +30,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.smasher.core.utils.StatusBarUtil;
 import com.smasher.media.R;
 import com.smasher.media.adapter.MusicListAdapter;
 import com.smasher.media.annotation.PlayMode;
@@ -39,7 +38,6 @@ import com.smasher.media.constant.Constant;
 import com.smasher.media.helper.AnimationHelper;
 import com.smasher.media.helper.MediaBrowserHelper;
 import com.smasher.media.service.MediaService;
-import com.smasher.core.utils.StatusBarUtil;
 import com.smasher.widget.base.BaseActivity;
 import com.smasher.widget.base.OnItemClickListener;
 
@@ -100,14 +98,10 @@ public class ListActivity extends BaseActivity implements OnItemClickListener,
     }
 
     @Override
-    public void setFunctionsForFragment(String tag) {
-
+    public int getRootViewRes() {
+        return R.layout.activity_media_list;
     }
 
-    @Override
-    public View getRootView() {
-        return LayoutInflater.from(this).inflate(R.layout.activity_media_list, null);
-    }
 
     private void initListener() {
         mPrepare.setOnClickListener(this);

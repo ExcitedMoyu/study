@@ -2,17 +2,14 @@ package com.smasher.rejuvenation.activity
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
-
 import com.smasher.dagger.entity.HelloWorld
 import com.smasher.dagger.entity.SellMoe
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.RejuvenatedApplication
 import com.smasher.widget.base.BaseActivity
-
 import javax.inject.Inject
 
 
@@ -45,15 +42,12 @@ class DaggerActivity : BaseActivity(), View.OnClickListener {
 
     }
 
-    override fun setFunctionsForFragment(tag: String?) {
-
-    }
-
-    override fun getRootView(): View {
-        return LayoutInflater.from(this).inflate(R.layout.activity_dagger, null)
-    }
 
     override fun initData() {
+    }
+
+    override fun getRootViewRes(): Int {
+        return R.layout.activity_dagger
     }
 
 

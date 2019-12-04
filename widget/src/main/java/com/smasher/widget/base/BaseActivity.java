@@ -3,6 +3,8 @@ package com.smasher.widget.base;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -11,9 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.smasher.core.activityoptions.ActivityManager;
+import com.smasher.core.log.Logger;
 import com.smasher.core.other.BusProvider;
 import com.smasher.widget.receiver.NetworkReceiver;
 import com.smasher.widget.receiver.NetworkReceiver.NetStatusMonitor;
+
+import butterknife.ButterKnife;
 
 
 /**
@@ -21,8 +26,8 @@ import com.smasher.widget.receiver.NetworkReceiver.NetStatusMonitor;
  */
 public abstract class BaseActivity extends AppCompatActivity implements NetStatusMonitor {
 
+    private static final String TAG = "BaseActivity";
     protected View mRoot;
-    protected int mPageIndex = 1;
     private NetworkReceiver mNetworkReceiver;
 
 
@@ -31,7 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetStatu
         super.onCreate(savedInstanceState);
         // 透明状态栏
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        mRoot = getRootView();
+        mRoot = buildView();
         setContentView(mRoot);
 
         registerNetworkReceiver();
@@ -39,9 +44,17 @@ public abstract class BaseActivity extends AppCompatActivity implements NetStatu
         ActivityManager.getInstance().addActivity(this);
         BusProvider.getInstance().register(this);
 
+        //ButterKnife
+        ButterKnife.bind(this);
+
         initView();
 
         initData();
+    }
+
+
+    public View buildView() {
+        return LayoutInflater.from(this).inflate(getRootViewRes(), null);
     }
 
 
@@ -50,7 +63,8 @@ public abstract class BaseActivity extends AppCompatActivity implements NetStatu
      *
      * @return RootView
      */
-    public abstract View getRootView();
+    public abstract int getRootViewRes();
+
 
     /**
      * 进行初始化相关的View
@@ -59,33 +73,64 @@ public abstract class BaseActivity extends AppCompatActivity implements NetStatu
 
 
     /**
-     * 为fragment 绑定通信接口
-     *
-     * @param tag fragment tag
-     */
-    public abstract void setFunctionsForFragment(String tag);
-
-    /**
      * 进行初始化相关的数据
      */
     public abstract void initData();
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    /**
+     * 为fragment 绑定通信接口
+     *
+     * @param tag fragment tag
+     */
+    public void setFunctionsForFragment(String tag) {
     }
 
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Logger.d(TAG, "onRestoreInstanceState: ");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Logger.d(TAG, "onRestart: ");
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Logger.d(TAG, "onStart: ");
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Logger.d(TAG, "onResume: ");
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Logger.d(TAG, "onPause: ");
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+        Logger.d(TAG, "onStop: ");
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Logger.d(TAG, "onDestroy: ");
         unRegisterNetworkReceiver();
         BusProvider.getInstance().unregister(this);
         ActivityManager.getInstance().removeActivity(this);
@@ -112,7 +157,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetStatu
             unregisterReceiver(mNetworkReceiver);
         }
     }
-
 
     @Override
     public void onNetChange(boolean netStatus) {

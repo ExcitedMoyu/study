@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,11 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.smasher.core.utils.StatusBarUtil;
 import com.smasher.media.R;
 import com.smasher.media.constant.Constant;
 import com.smasher.media.helper.TestHelper;
 import com.smasher.media.service.MediaService;
-import com.smasher.core.utils.StatusBarUtil;
 import com.smasher.widget.base.BaseActivity;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -59,14 +58,10 @@ public class InitActivity extends BaseActivity implements Handler.Callback,
     }
 
     @Override
-    public void setFunctionsForFragment(String tag) {
-
+    public int getRootViewRes() {
+        return R.layout.activity_media_init;
     }
 
-    @Override
-    public View getRootView() {
-        return LayoutInflater.from(this).inflate(R.layout.activity_media_init, null);
-    }
 
     private void initListener() {
         buttonStart.setOnClickListener(this);

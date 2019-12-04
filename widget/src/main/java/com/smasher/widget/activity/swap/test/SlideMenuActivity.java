@@ -1,17 +1,15 @@
 package com.smasher.widget.activity.swap.test;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.smasher.widget.R;
-import com.smasher.widget.base.BaseActivity;
 import com.smasher.widget.activity.swap.PlusItemSlideCallback;
 import com.smasher.widget.activity.swap.WItemTouchHelperPlus;
+import com.smasher.widget.base.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +32,8 @@ public class SlideMenuActivity extends BaseActivity {
     }
 
     @Override
-    public View getRootView() {
-        return LayoutInflater.from(this).inflate(R.layout.activity_slide_menu, null);
+    public int getRootViewRes() {
+        return R.layout.activity_slide_menu;
     }
 
     @Override
@@ -53,10 +51,6 @@ public class SlideMenuActivity extends BaseActivity {
         extension.attachToRecyclerView(mRecyclerView);
     }
 
-    @Override
-    public void setFunctionsForFragment(String tag) {
-
-    }
 
     @Override
     public void initData() {

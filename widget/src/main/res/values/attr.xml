@@ -33,4 +33,16 @@
         <attr name="stepper_rightButtonResources" format="color|reference"/>
     </declare-styleable>
 
+
+    <declare-styleable name="ScrollBanner">
+        <attr name="banner_interval" format="integer"/>
+        <attr name="banner_auto_play" format="boolean"/>
+        <attr name="banner_loop" format="boolean"/>
+        <attr name="banner_orientation" format="enum">
+            <enum name="horizontal" value="0"/>
+            <enum name="vertical" value="1"/>
+        </attr>
+    </declare-styleable>
+
+
 </resources>

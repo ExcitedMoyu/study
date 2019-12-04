@@ -32,20 +32,16 @@ class PractiseActivity : BaseActivity(), View.OnClickListener {
     }
 
 
-    override fun getRootView(): View {
-        return LayoutInflater.from(this).inflate(R.layout.activity_practise, null)
-    }
-
     override fun initView() {
-
-    }
-
-    override fun setFunctionsForFragment(tag: String?) {
 
     }
 
     override fun initData() {
 
+    }
+
+    override fun getRootViewRes(): Int {
+        return R.layout.activity_practise
     }
 
 

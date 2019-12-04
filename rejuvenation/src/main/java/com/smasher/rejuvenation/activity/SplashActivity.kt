@@ -7,15 +7,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
+import com.smasher.core.utils.DensityUtil
 import com.smasher.downloader.handler.WeakReferenceHandler
 import com.smasher.draw.bean.CircleBean
 import com.smasher.ndk.PrimaryService
-import com.smasher.core.utils.DensityUtil
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.util.LogUtil
 import com.smasher.widget.base.BaseActivity
@@ -59,12 +58,6 @@ class SplashActivity : BaseActivity(), Handler.Callback {
         mHandler = WeakReferenceHandler(this)
     }
 
-    override fun setFunctionsForFragment(tag: String?) {
-    }
-
-    override fun getRootView(): View {
-        return LayoutInflater.from(this).inflate(R.layout.activity_splash, null);
-    }
 
     override fun initView() {
         image.setImageResource(R.drawable.back_space)
@@ -82,6 +75,10 @@ class SplashActivity : BaseActivity(), Handler.Callback {
         startPrimaryService()
         initPoint()
         bubble!!.circleBeen = circleBeanList
+    }
+
+    override fun getRootViewRes(): Int {
+        return R.layout.activity_splash
     }
 
     override fun onResume() {
