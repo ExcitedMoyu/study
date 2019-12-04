@@ -6,6 +6,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import butterknife.ButterKnife;
+
 
 /**
  * @author matao
@@ -22,6 +24,7 @@ public class BaseRecyclerViewHolder<T> extends RecyclerView.ViewHolder {
     public BaseRecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
         mContext = itemView.getContext();
+        ButterKnife.bind(this, itemView);
     }
 
 
@@ -48,7 +51,6 @@ public class BaseRecyclerViewHolder<T> extends RecyclerView.ViewHolder {
     public String getString(int res) {
         return mContext.getString(res);
     }
-
 
 
     private View.OnClickListener itemListener = new View.OnClickListener() {

@@ -2,8 +2,11 @@ package com.smasher.widget.base;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,10 +61,7 @@ public abstract class BaseRecyclerViewAdapter<T, VH extends BaseRecyclerViewHold
 
     @Override
     public void onBindViewHolder(@NonNull VH viewHolder, int position) {
-        if (mList.isEmpty() || position < 0 || position >= mList.size()) {
-            return;
-        }
-        T item = mList.get(position);
+        T item = getItem(position);
         if (item == null) {
             Log.e(TAG, "data item is null");
             return;
@@ -79,5 +79,18 @@ public abstract class BaseRecyclerViewAdapter<T, VH extends BaseRecyclerViewHold
             return 0;
         }
         return mList.size();
+    }
+
+
+    public T getItem(int position) {
+        if (mList.isEmpty() || position < 0 || position >= mList.size()) {
+            return null;
+        }
+        return mList.get(position);
+    }
+
+
+    public View build(@LayoutRes int resource, ViewGroup viewGroup, boolean attachToRoot) {
+        return LayoutInflater.from(mContext).inflate(resource, viewGroup, attachToRoot);
     }
 }
