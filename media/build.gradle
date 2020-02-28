@@ -34,12 +34,13 @@ dependencies {
     implementation "com.google.android.material:material:$dep.material"
 
     implementation 'androidx.media:media:1.2.0-alpha01'
-    implementation 'androidx.media2:media2-common:1.0.1'
-    implementation 'androidx.media2:media2-player:1.0.1'
-    implementation 'androidx.media2:media2-session:1.0.1'
+    implementation 'androidx.media2:media2-common:1.0.3'
+    implementation 'androidx.media2:media2-player:1.0.3'
+    implementation 'androidx.media2:media2-session:1.0.3'
 
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    implementation "androidx.legacy:legacy-support-v4:$dep.supportV4"
     implementation "androidx.multidex:multidex:$dep.multidex"
     implementation "androidx.appcompat:appcompat:$dep.appcompat"
     implementation "androidx.recyclerview:recyclerview:$dep.recyclerview"

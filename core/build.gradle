@@ -34,8 +34,10 @@ dependencies {
     def dep = rootProject.ext
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation "com.google.android.material:material:$dep.material"
     implementation "androidx.appcompat:appcompat:$dep.appcompat"
+    implementation "androidx.constraintlayout:constraintlayout:$dep.constraintlayout"
+
+    implementation "com.google.android.material:material:$dep.material"
     implementation "androidx.annotation:annotation:$dep.annotation"
 
     api "com.squareup:otto:$dep.otto"
@@ -55,7 +57,7 @@ dependencies {
     api "com.squareup.retrofit2:adapter-rxjava2:$dep.adapter_rxjava2"
 
 
-    def room_version = '2.2.2'
+    def room_version = '2.2.4'
 
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version" // use kapt for Kotlin

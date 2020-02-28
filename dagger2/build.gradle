@@ -26,6 +26,7 @@ android {
 dependencies {
     def dep = rootProject.ext
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation "androidx.appcompat:appcompat:${dep.appcompat}"
     implementation "androidx.constraintlayout:constraintlayout:$dep.constraintlayout"
 

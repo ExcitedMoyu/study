@@ -37,6 +37,7 @@ android {
 dependencies {
     def dep = rootProject.ext
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation "androidx.appcompat:appcompat:$dep.appcompat"
 
     implementation "com.squareup.okhttp3:okhttp:$dep.okhttp"
