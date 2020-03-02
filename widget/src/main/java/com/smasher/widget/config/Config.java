@@ -1,4 +1,4 @@
-package com.smasher.rejuvenation.config;
+package com.smasher.widget.config;
 
 /**
  * @author Smasher

@@ -1,25 +1,19 @@
-package com.smasher.rejuvenation.util;
+package com.smasher.widget.net;
 
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.smasher.core.log.Logger;
 import com.smasher.core.other.ApplicationContext;
-import com.smasher.core.utils.NetworkUtil;
-import com.smasher.rejuvenation.config.Config;
+import com.smasher.widget.config.Config;
+import com.smasher.widget.net.interceptor.AddCookiesInterceptor;
+import com.smasher.widget.net.interceptor.ReceivedCookiesInterceptor;
 
 import java.io.File;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
-import okhttp3.CacheControl;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -34,6 +28,14 @@ public class HttpUtil {
     private Retrofit gatewayRetrofit;
     private Retrofit wxRetrofit;
     private Retrofit testRetrofit;
+    /**
+     * 云端响应头拦截器，用来配置缓存策略
+     * Dangerous interceptor that rewrites the server's cache-control header.
+     */
+    private final Interceptor mRewriteCacheControlInterceptor = new AddCookiesInterceptor();
+
+    private final Interceptor mLoggingInterceptor = new ReceivedCookiesInterceptor();
+
 
     public static HttpUtil getInstance() {
         gson = new GsonBuilder().create();
@@ -139,58 +141,4 @@ public class HttpUtil {
     }
 
 
-    /**
-     * 云端响应头拦截器，用来配置缓存策略
-     * Dangerous interceptor that rewrites the server's cache-control header.
-     */
-    private final Interceptor mRewriteCacheControlInterceptor = chain -> {
-        Request request = chain.request();
-        Request newRequest;
-        if (!NetworkUtil.isNetworkAvailable()) {
-            request = request.newBuilder()
-                    .cacheControl(CacheControl.FORCE_CACHE)
-                    .build();
-            Logger.d("no network");
-        }
-        if (NetworkUtil.isNetworkAvailable()) {
-            //有网的时候读接口上的@Headers里的配置，你可以在这里进行统一的设置
-            //UserManager.getInstance().getUserToken()
-            String token = "Bearer ";
-            String cacheControl = request.cacheControl().toString();
-            newRequest = request.newBuilder()
-                    .header("Cache-Control", cacheControl)
-                    .header("Authorization", token)
-                    .removeHeader("Pragma")
-                    .build();
-            return chain.proceed(newRequest);
-        } else {
-            newRequest = request.newBuilder()
-                    .header("Cache-Control", "public, only-if-cached, max-stale=" + 0)
-                    .removeHeader("Pragma")
-                    .build();
-            return chain.proceed(newRequest);
-        }
-    };
-
-    private final Interceptor mLoggingInterceptor = chain -> {
-        Request request = chain.request();
-        long t1 = System.nanoTime();
-        Logger.i(String.format("Sending request %s on %s%n%s", request.url(), chain.connection(), request.headers()));
-        Response response = chain.proceed(request);
-        long t2 = System.nanoTime();
-        Logger.i(String.format(Locale.getDefault(), "Received response for %s in %.1fms%n%s",
-                response.request().url(), (t2 - t1) / 1e6d, response.headers()));
-        MediaType mediaType = null;
-        String resp = "";
-        if (response.body() != null) {
-            mediaType = response.body().contentType();
-            resp = response.body().string();
-            Logger.json(resp);
-        }
-        return response.newBuilder()
-                .body(ResponseBody.create(mediaType, resp))
-                .build();
-
-        //return response;
-    };
 }
