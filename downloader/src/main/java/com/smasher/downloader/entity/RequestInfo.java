@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.IntDef;
 
+import com.smasher.downloader.annotation.RequestType;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -15,23 +17,9 @@ import java.lang.annotation.RetentionPolicy;
 public class RequestInfo implements Parcelable {
 
 
-    public static final int COMMAND_DOWNLOAD = 0;
-    public static final int COMMAND_PAUSE = 1;
-    public static final int COMMAND_INSTALL = 2;
-    public static final int COMMAND_OPEN = 3;
-
-
-    @IntDef({COMMAND_DOWNLOAD, COMMAND_PAUSE, COMMAND_INSTALL, COMMAND_OPEN})
-    @Retention(RetentionPolicy.SOURCE)
-    @interface RequestType {
-    }
-
-
     public RequestInfo() {
     }
 
-
-    @RequestType
     private int mCommand = 0;
 
     private DownloadInfo mDownloadInfo;
@@ -41,7 +29,7 @@ public class RequestInfo implements Parcelable {
         return mCommand;
     }
 
-    public void setCommand(int command) {
+    public void setCommand(@RequestType int command) {
         mCommand = command;
     }
 

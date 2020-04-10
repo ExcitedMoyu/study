@@ -14,6 +14,7 @@ import androidx.core.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.smasher.downloader.annotation.State;
 import com.smasher.downloader.entity.DownloadInfo;
 import com.smasher.downloader.manager.DownloadManager;
 
@@ -118,20 +119,20 @@ public class DownloadUtils {
     public static void checkStatus(Context context, DownloadInfo mInfo, boolean contains) {
         //是否已经安装
         if (isInstalled(context, mInfo)) {
-            mInfo.setStatus(DownloadInfo.JS_STATE_INSTALLED);
+            mInfo.setStatus(State.JS_STATE_INSTALLED);
         } else if (DownloadUtils.getFileSize(mInfo) > 0) {
             int percent = getUnCacheProgress(context, mInfo.getFullName(), DownloadUtils.getFileSize(mInfo));
             if (percent == DOWNLOAD_PERCENT_SUCCESS) {
-                mInfo.setStatus(DownloadInfo.JS_STATE_FINISH);
+                mInfo.setStatus(State.JS_STATE_FINISH);
             } else {
                 if (contains) {
                     //do nothing
                 } else {
-                    mInfo.setStatus(DownloadInfo.JS_STATE_PAUSE);
+                    mInfo.setStatus(State.JS_STATE_PAUSE);
                 }
             }
         } else {
-            mInfo.setStatus(DownloadInfo.JS_STATE_NORMAL);
+            mInfo.setStatus(State.JS_STATE_NORMAL);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.smasher.downloader.execute;
 
+import com.smasher.downloader.annotation.State;
 import com.smasher.downloader.entity.DownloadInfo;
 import com.smasher.downloader.task.DownloadTask;
 
@@ -31,7 +32,7 @@ public class DownloadExecutor extends ThreadPoolExecutor {
     public void executeTask(DownloadTask task) {
         DownloadInfo info = task.getDownloadInfo();
         if (!task.isRunning()) {
-            info.setStatus(DownloadInfo.JS_STATE_WAIT);
+            info.setStatus(State.JS_STATE_WAIT);
             execute(task);
         }
     }

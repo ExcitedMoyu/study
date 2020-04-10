@@ -1,7 +1,7 @@
 package com.smasher.rejuvenation.activity
 
 import com.smasher.rejuvenation.R
-import com.smasher.widget.base.BaseActivity
+import com.smasher.rejuvenation.base.BaseActivity
 
 class CrashActivity : BaseActivity() {
 

@@ -19,7 +19,7 @@ import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.adapter.MajorAdapter
 import com.smasher.rejuvenation.entity.MajorData
 import com.smasher.rxjava.RxJavaActivity
-import com.smasher.widget.base.BaseActivity
+import com.smasher.rejuvenation.base.BaseActivity
 import com.smasher.zxing.activity.CaptureActivity
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions

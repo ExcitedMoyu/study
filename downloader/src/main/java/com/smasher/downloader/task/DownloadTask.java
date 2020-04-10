@@ -4,6 +4,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.smasher.downloader.annotation.State;
 import com.smasher.downloader.entity.DownloadInfo;
 import com.smasher.downloader.handler.WeakReferenceHandler;
 import com.smasher.downloader.manager.DownloadManager;
@@ -46,24 +47,24 @@ public class DownloadTask implements Runnable {
      * 暂停
      */
     public void stop() {
-        mDownloadInfo.setStatus(DownloadInfo.JS_STATE_PAUSE);
+        mDownloadInfo.setStatus(State.JS_STATE_PAUSE);
     }
 
 
     @Override
     public void run() {
-        mDownloadInfo.setStatus(DownloadInfo.JS_STATE_DOWNLOAD_PRE);
+        mDownloadInfo.setStatus(State.JS_STATE_DOWNLOAD_PRE);
         sendMessage();
 
         File target;
         //获取文件长度
         long contentLength = getContentLength(mDownloadInfo);
         if (contentLength > 0) {
-            mDownloadInfo.setStatus(DownloadInfo.JS_STATE_DOWNLOADING);
+            mDownloadInfo.setStatus(State.JS_STATE_DOWNLOADING);
             sendMessage();
             target = checkLocalFile(mDownloadInfo);
         } else {
-            mDownloadInfo.setStatus(DownloadInfo.JS_STATE_FAILED);
+            mDownloadInfo.setStatus(State.JS_STATE_FAILED);
             sendMessage();
             return;
         }
@@ -189,7 +190,7 @@ public class DownloadTask implements Runnable {
     private void downLoadAPK(DownloadInfo downloadInfo, File saveFile) {
 
         Log.d(TAG, "downLoadAPK: downloading...");
-        downloadInfo.setStatus(DownloadInfo.JS_STATE_DOWNLOADING);
+        downloadInfo.setStatus(State.JS_STATE_DOWNLOADING);
 
         InputStream is = null;
         RandomAccessFile accessFile = null;
@@ -245,11 +246,11 @@ public class DownloadTask implements Runnable {
             }
 
             //下载完成
-            downloadInfo.setStatus(DownloadInfo.JS_STATE_FINISH);
+            downloadInfo.setStatus(State.JS_STATE_FINISH);
             sendMessage();
         } catch (Exception e) {
-            if (downloadInfo.getStatus() != DownloadInfo.JS_STATE_PAUSE) {
-                downloadInfo.setStatus(DownloadInfo.JS_STATE_FAILED);
+            if (downloadInfo.getStatus() != State.JS_STATE_PAUSE) {
+                downloadInfo.setStatus(State.JS_STATE_FAILED);
                 sendMessage();
             } else {
                 sendMessage();
@@ -280,7 +281,7 @@ public class DownloadTask implements Runnable {
     }
 
     private boolean isPaused(DownloadInfo downloadInfo) {
-        return downloadInfo.getStatus() == DownloadInfo.JS_STATE_PAUSE;
+        return downloadInfo.getStatus() == State.JS_STATE_PAUSE;
     }
 
 
@@ -326,10 +327,10 @@ public class DownloadTask implements Runnable {
     }
 
     public boolean isRunning() {
-        return mDownloadInfo.getStatus() == DownloadInfo.JS_STATE_DOWNLOADING ||
-                mDownloadInfo.getStatus() == DownloadInfo.JS_STATE_DOWNLOAD_PRE ||
-                mDownloadInfo.getStatus() == DownloadInfo.JS_STATE_GET_TOTAL ||
-                mDownloadInfo.getStatus() == DownloadInfo.JS_STATE_WAIT;
+        return mDownloadInfo.getStatus() == State.JS_STATE_DOWNLOADING ||
+                mDownloadInfo.getStatus() == State.JS_STATE_DOWNLOAD_PRE ||
+                mDownloadInfo.getStatus() == State.JS_STATE_GET_TOTAL ||
+                mDownloadInfo.getStatus() == State.JS_STATE_WAIT;
 
     }
 }

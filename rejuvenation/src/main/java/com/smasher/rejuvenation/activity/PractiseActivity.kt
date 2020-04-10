@@ -3,7 +3,6 @@ package com.smasher.rejuvenation.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 //import com.smasher.aidl.activity.local.LocalActivity
@@ -12,11 +11,11 @@ import com.smasher.draw.activity.DrawableActivity
 import com.smasher.media.activity.TestActivity
 import com.smasher.core.utils.StatusBarUtil
 import com.smasher.rejuvenation.R
-import com.smasher.widget.activity.AlarmActivity
-import com.smasher.widget.activity.WidgetActivity
-import com.smasher.widget.base.BaseActivity
-import com.smasher.widget.activity.basic.IndicatorActivity
-import com.smasher.widget.activity.swap.test.SlideMenuActivity
+import com.smasher.rejuvenation.activity.activity.AlarmActivity
+import com.smasher.rejuvenation.activity.activity.WidgetActivity
+import com.smasher.rejuvenation.base.BaseActivity
+import com.smasher.rejuvenation.activity.activity.basic.IndicatorActivity
+import com.smasher.rejuvenation.activity.activity.swap.test.SlideMenuActivity
 import kotlinx.android.synthetic.main.activity_practise.*
 import kotlinx.android.synthetic.main.content_basic.*
 

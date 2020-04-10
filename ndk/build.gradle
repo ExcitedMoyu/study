@@ -1,12 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
-
+    compileSdkVersion defaultCompileSdkVersion
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 28
+        minSdkVersion defaultMinSdkVersion
+        targetSdkVersion defaultTargetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -14,7 +13,8 @@ android {
 
         ndk {
 //            moduleName "Java2C-jni" //so文件名
-            abiFilters "x86_64", "armeabi-v7a", "x86" //CPU类型arm64-v8a, armeabi-v7a, x86, x86_64
+            abiFilters "armeabi-v7a", "x86_64", "armeabi-v7a", "x86"
+            //CPU类型arm64-v8a, armeabi-v7a, x86, x86_64
         }
 
         externalNativeBuild {
@@ -46,18 +46,13 @@ android {
 
 dependencies {
 
-    def dep = rootProject.ext
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "com.google.android.material:material:$dep.material"
+    implementation "androidx.appcompat:appcompat:$appcompat"
 
-    implementation "androidx.appcompat:appcompat:$dep.appcompat"
-    implementation "androidx.recyclerview:recyclerview:$dep.recyclerview"
-    implementation "androidx.constraintlayout:constraintlayout:$dep.constraintlayout"
-
-    testImplementation "junit:junit:$dep.junit"
-    androidTestImplementation "androidx.test:runner:$dep.test_runner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$dep.espresso_core"
+    testImplementation "junit:junit:$junit"
+    androidTestImplementation "androidx.test:runner:$test_runner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
 
     implementation project(path: ':widget')
     implementation project(path: ':core')

@@ -9,7 +9,7 @@ import com.smasher.dagger.entity.HelloWorld
 import com.smasher.dagger.entity.SellMoe
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.RejuvenatedApplication
-import com.smasher.widget.base.BaseActivity
+import com.smasher.rejuvenation.base.BaseActivity
 import javax.inject.Inject
 
 

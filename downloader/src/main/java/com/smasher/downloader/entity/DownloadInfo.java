@@ -6,6 +6,9 @@ import android.text.TextUtils;
 
 import androidx.annotation.IntDef;
 
+import com.smasher.downloader.annotation.DownloadType;
+import com.smasher.downloader.annotation.State;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -71,14 +74,12 @@ public class DownloadInfo implements Parcelable {
     /**
      * 下载类型
      */
-    @DownloadType
     private int downLoadType = 0;
 
 
     /**
      * 状态信息
      */
-    @State
     private int status = 0;
 
 
@@ -194,7 +195,7 @@ public class DownloadInfo implements Parcelable {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(@State int status) {
         this.status = status;
     }
 
@@ -202,7 +203,7 @@ public class DownloadInfo implements Parcelable {
         return downLoadType;
     }
 
-    public void setDownLoadType(int downLoadType) {
+    public void setDownLoadType(@DownloadType int downLoadType) {
         this.downLoadType = downLoadType;
     }
 
@@ -259,92 +260,5 @@ public class DownloadInfo implements Parcelable {
     public boolean equals(Object obj) {
         return obj instanceof DownloadInfo && this.getUniqueKey().equals(((DownloadInfo) obj).getUniqueKey());
     }
-
-
-    //region 下载类型
-
-    /**
-     * 普通文件
-     */
-    public static final int DOWN_LOAD_TYPE_COMMON = 100;
-
-    /**
-     * apk安装包文件
-     */
-    public static final int DOWN_LOAD_TYPE_APK = 101;
-
-    @IntDef({DOWN_LOAD_TYPE_COMMON, DOWN_LOAD_TYPE_APK})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface DownloadType {
-    }
-
-    //region
-
-
-    //region #状态
-
-    /**
-     * 默认状态
-     */
-    public static final int JS_STATE_NORMAL = 0;
-
-
-    /**
-     * 任务排队
-     */
-    public static final int JS_STATE_WAIT = 1;
-
-
-    /**
-     * 下载准备中
-     */
-    public static final int JS_STATE_DOWNLOAD_PRE = 2;
-
-
-    /**
-     * 下载准备中
-     */
-    public static final int JS_STATE_GET_TOTAL = 3;
-
-
-    /**
-     * 下载中
-     */
-    public static final int JS_STATE_DOWNLOADING = 4;
-
-
-    /**
-     * 暂停
-     */
-    public static final int JS_STATE_PAUSE = 5;
-
-
-    /**
-     * 下载完成
-     */
-    public static final int JS_STATE_FINISH = 6;
-
-
-    /**
-     * 失败
-     */
-    public static final int JS_STATE_FAILED = 7;
-
-
-    /**
-     * 已安装
-     */
-    public static final int JS_STATE_INSTALLED = 8;
-
-
-    @IntDef({JS_STATE_NORMAL, JS_STATE_WAIT, JS_STATE_DOWNLOAD_PRE, JS_STATE_GET_TOTAL,
-            JS_STATE_DOWNLOADING, JS_STATE_FINISH, JS_STATE_PAUSE, JS_STATE_FAILED,
-            JS_STATE_INSTALLED})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface State {
-    }
-
-    // end region
-
 
 }

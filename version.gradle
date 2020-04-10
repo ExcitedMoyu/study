@@ -14,13 +14,21 @@ ext {
     appcompat = '1.1.0'
     recyclerview = '1.1.0'
 
+    flexbox = '2.0.0'
+    vectordrawable = '1.1.0'
+    navigation = '2.2.1'
+    fragment = '1.2.2'
+    transition = '1.3.1'
+    viewpager2 = '1.0.0'
+
+
     rxJava = '2.2.15'
     rxAndroid = '2.1.1'
     retrofit = '2.7.1'
     converter_gson = '2.7.1'
     adapter_rxjava2 = '2.7.1'
 
-    butterknife = '10.2.0'
+    butterknife = '10.2.1'
     butterknifeCompiler = '10.2.1'
 
     permission = "3.0.0"
@@ -40,7 +48,7 @@ ext {
     glide_annotations = '4.11.0'
     okhttp3_integration = '4.11.0'
 
-    okhttp = '4.2.2'
+    okhttp = '4.4.0'
     leakcanary = '1.6.3'
 
     dagger = '2.26'
@@ -56,6 +64,11 @@ ext {
     targetSdkVersion = 28
     compileSdkVersion = 28
     buildToolsVersion = '28.0.3'
+
+    defaultMinSdkVersion = 19
+    defaultTargetSdkVersion = 29
+    defaultCompileSdkVersion = 29
+    defaultBuildToolsVersion = '29.0.2'
 
 
 

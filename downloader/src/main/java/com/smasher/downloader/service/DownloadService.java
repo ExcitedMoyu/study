@@ -16,6 +16,9 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.smasher.downloader.R;
+import com.smasher.downloader.annotation.DownloadType;
+import com.smasher.downloader.annotation.RequestType;
+import com.smasher.downloader.annotation.State;
 import com.smasher.downloader.entity.DownloadInfo;
 import com.smasher.downloader.entity.RequestInfo;
 import com.smasher.downloader.execute.DownloadExecutor;
@@ -134,14 +137,14 @@ public class DownloadService extends Service implements Handler.Callback {
         int requestType = request.getCommand();
 
         switch (requestType) {
-            case RequestInfo.COMMAND_DOWNLOAD:
-            case RequestInfo.COMMAND_PAUSE:
+            case RequestType.COMMAND_DOWNLOAD:
+            case RequestType.COMMAND_PAUSE:
                 actionTask(request);
                 break;
-            case RequestInfo.COMMAND_INSTALL:
+            case RequestType.COMMAND_INSTALL:
                 install(info);
                 break;
-            case RequestInfo.COMMAND_OPEN:
+            case RequestType.COMMAND_OPEN:
                 openGame(info);
                 break;
             default:
@@ -183,12 +186,12 @@ public class DownloadService extends Service implements Handler.Callback {
             return;
         }
 
-        if (requestType == RequestInfo.COMMAND_DOWNLOAD) {
+        if (requestType == RequestType.COMMAND_DOWNLOAD) {
             if (!executeTip(info)) {
                 executeDownload(task);
             }
         } else {
-            if (task.getDownloadInfo().getStatus() != DownloadInfo.JS_STATE_PAUSE) {
+            if (task.getDownloadInfo().getStatus() != State.JS_STATE_PAUSE) {
                 task.stop();
             }
         }
@@ -273,7 +276,7 @@ public class DownloadService extends Service implements Handler.Callback {
     private boolean executeTip(DownloadInfo info) {
         boolean wifi = NetworkUtil.isWifiAvailable(this);
         if (!wifi && showTip) {
-            info.setStatus(DownloadInfo.JS_STATE_PAUSE);
+            info.setStatus(State.JS_STATE_PAUSE);
             //首次提示
             showTip = false;
             sendToast(environmentNotWifi);
@@ -308,35 +311,35 @@ public class DownloadService extends Service implements Handler.Callback {
         }
 
         switch (what) {
-            case DownloadInfo.JS_STATE_NORMAL:
+            case State.JS_STATE_NORMAL:
                 //do nothing
                 break;
-            case DownloadInfo.JS_STATE_WAIT:
+            case State.JS_STATE_WAIT:
                 if (mDownloadListener != null) {
                     mDownloadListener.onDownLoadWait(downloadInfo);
                 }
                 break;
-            case DownloadInfo.JS_STATE_DOWNLOAD_PRE:
+            case State.JS_STATE_DOWNLOAD_PRE:
                 if (mDownloadListener != null) {
                     mDownloadListener.onDownLoadProgress(downloadInfo);
                 }
                 break;
-            case DownloadInfo.JS_STATE_GET_TOTAL:
+            case State.JS_STATE_GET_TOTAL:
                 if (mDownloadListener != null) {
                     mDownloadListener.onDownLoadProgress(downloadInfo);
                 }
                 break;
-            case DownloadInfo.JS_STATE_DOWNLOADING:
+            case State.JS_STATE_DOWNLOADING:
                 if (mDownloadListener != null) {
                     mDownloadListener.onDownLoadProgress(downloadInfo);
                 }
                 break;
-            case DownloadInfo.JS_STATE_PAUSE:
+            case State.JS_STATE_PAUSE:
                 if (mDownloadListener != null) {
                     mDownloadListener.onDownLoadPause(downloadInfo);
                 }
                 break;
-            case DownloadInfo.JS_STATE_FINISH:
+            case State.JS_STATE_FINISH:
                 if (needInstall(downloadInfo)) {
                     install(downloadInfo);
                 }
@@ -344,12 +347,12 @@ public class DownloadService extends Service implements Handler.Callback {
                     mDownloadListener.onDownLoadFinished(downloadInfo);
                 }
                 break;
-            case DownloadInfo.JS_STATE_FAILED:
+            case State.JS_STATE_FAILED:
                 if (mDownloadListener != null) {
                     mDownloadListener.onDownLoadError(downloadInfo);
                 }
                 break;
-            case DownloadInfo.JS_STATE_INSTALLED:
+            case State.JS_STATE_INSTALLED:
                 break;
             default:
                 break;
@@ -358,7 +361,7 @@ public class DownloadService extends Service implements Handler.Callback {
     }
 
     private boolean needInstall(DownloadInfo downloadInfo) {
-        return downloadInfo.getDownLoadType() == DownloadInfo.DOWN_LOAD_TYPE_APK;
+        return downloadInfo.getDownLoadType() == DownloadType.DOWN_LOAD_TYPE_APK;
     }
 
 

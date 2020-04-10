@@ -3,6 +3,8 @@ package com.smasher.widget.base;
 
 import androidx.annotation.Nullable;
 
+import com.smasher.widget.base.IBaseView;
+
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 

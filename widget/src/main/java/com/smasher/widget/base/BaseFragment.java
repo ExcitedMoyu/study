@@ -15,9 +15,6 @@ import com.smasher.core.other.BusProvider;
 import com.smasher.widget.struct.FunctionManager;
 
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * @author matao
  */
@@ -27,7 +24,6 @@ public abstract class BaseFragment extends Fragment {
     protected FunctionManager mFunctionManager;
     protected Context mContext;
     protected boolean mHasLoaded;
-    private Unbinder unbinder;
 
 
     @Override
@@ -48,9 +44,13 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(mContext).inflate(getLayoutRes(), container, false);
-        unbinder = ButterKnife.bind(this, view);
+        initButterKnife(view);
         initView();
         return view;
+    }
+
+    protected void initButterKnife(View view) {
+
     }
 
     @Override
@@ -79,7 +79,6 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         BusProvider.getInstance().unregister(this);
         Log.d(TAG, "onDestroyView: " + this.toString());
     }

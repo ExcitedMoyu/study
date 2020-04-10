@@ -5,9 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.smasher.rejuvenation.entity.MajorData
 import com.smasher.rejuvenation.R
-import com.smasher.widget.base.BaseRecyclerViewHolder
 
 /**
  * @author matao

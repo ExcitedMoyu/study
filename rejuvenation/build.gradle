@@ -4,13 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
 
+    compileSdkVersion defaultCompileSdkVersion
 
     defaultConfig {
         applicationId "com.smasher.rejuvenation"
-        minSdkVersion 19
-        targetSdkVersion 28
+        minSdkVersion defaultMinSdkVersion
+        targetSdkVersion defaultTargetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -35,20 +35,21 @@ android {
 }
 
 dependencies {
-    def dep = rootProject.ext
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.google.android.material:material:$dep.material"
-    implementation "androidx.core:core-ktx:$dep.core_ktx"
-    implementation "androidx.multidex:multidex:$dep.multidex"
-    implementation "androidx.appcompat:appcompat:$dep.appcompat"
-    implementation "androidx.recyclerview:recyclerview:$dep.recyclerview"
-    implementation "androidx.constraintlayout:constraintlayout:$dep.constraintlayout"
+    implementation "androidx.core:core-ktx:$core_ktx"
+    implementation "androidx.multidex:multidex:$multidex"
+    implementation "androidx.appcompat:appcompat:$appcompat"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$dep.kotlin_version"
-    implementation "org.jetbrains.anko:anko-common:$dep.anko_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.anko:anko-common:$anko_version"
 
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$dep.leakcanary"
+    //butterknife
+    implementation "com.jakewharton:butterknife:$butterknife"
+    //annotationProcessor是处理注解的工具，是APT(Annotation Processing Tool)的一种
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeCompiler"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
@@ -64,22 +65,22 @@ dependencies {
     implementation project(path: ':media')
     implementation project(path: ':rxjava')
 
-    testImplementation "junit:junit:$dep.junit"
-    androidTestImplementation "androidx.test:runner:$dep.test_runner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$dep.espresso_core"
+    testImplementation "junit:junit:$junit"
+    androidTestImplementation "androidx.test:runner:$test_runner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
 
 
-    kapt "com.github.bumptech.glide:compiler:$dep.glideCompiler"
-    annotationProcessor "com.github.bumptech.glide:compiler:$dep.glideCompiler"
-    implementation "com.github.bumptech.glide:annotations:$dep.glide_annotations"
+    kapt "com.github.bumptech.glide:compiler:$glideCompiler"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glideCompiler"
+    implementation "com.github.bumptech.glide:annotations:$glide_annotations"
 
-    implementation "pub.devrel:easypermissions:$dep.permission"
+    implementation "pub.devrel:easypermissions:$permission"
 
-    implementation "com.google.dagger:dagger:$dep.dagger"
-    implementation "com.google.dagger:dagger-android-support:$dep.dagger_android_support"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dep.dagger_compiler"
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dep.dagger_android_processor"
-    kapt "com.google.dagger:dagger-compiler:$dep.dagger_compiler"
+    implementation "com.google.dagger:dagger:$dagger"
+    implementation "com.google.dagger:dagger-android-support:$dagger_android_support"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_compiler"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_android_processor"
+    kapt "com.google.dagger:dagger-compiler:$dagger_compiler"
 
     def room_version = '2.2.4'
     implementation "androidx.room:room-runtime:$room_version"

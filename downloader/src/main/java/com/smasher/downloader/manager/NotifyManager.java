@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.smasher.downloader.R;
+import com.smasher.downloader.annotation.State;
 import com.smasher.downloader.entity.DownloadInfo;
 
 
@@ -169,24 +170,24 @@ public class NotifyManager {
         int progress = getProgress(downloadInfo);
         String contentText = "";
         switch (downloadInfo.getStatus()) {
-            case DownloadInfo.JS_STATE_FAILED:
+            case State.JS_STATE_FAILED:
                 contentText = context.getString(R.string.download_status_failed);
                 break;
-            case DownloadInfo.JS_STATE_GET_TOTAL:
-            case DownloadInfo.JS_STATE_DOWNLOAD_PRE:
-            case DownloadInfo.JS_STATE_DOWNLOADING:
+            case State.JS_STATE_GET_TOTAL:
+            case State.JS_STATE_DOWNLOAD_PRE:
+            case State.JS_STATE_DOWNLOADING:
                 contentText = String.format(context.getString(R.string.download_status_downloading), progress);
                 if (progress == 0) {
                     contentText = context.getString(R.string.download_status_init);
                 }
                 break;
-            case DownloadInfo.JS_STATE_FINISH:
+            case State.JS_STATE_FINISH:
                 contentText = context.getString(R.string.download_status_success);
                 break;
-            case DownloadInfo.JS_STATE_PAUSE:
+            case State.JS_STATE_PAUSE:
                 contentText = String.format(context.getString(R.string.download_status_pause), progress);
                 break;
-            case DownloadInfo.JS_STATE_WAIT:
+            case State.JS_STATE_WAIT:
                 contentText = context.getString(R.string.download_status_wait);
                 break;
             default:
@@ -201,19 +202,19 @@ public class NotifyManager {
             return;
         }
         switch (downloadInfo.getStatus()) {
-            case DownloadInfo.JS_STATE_FAILED:
-            case DownloadInfo.JS_STATE_FINISH:
+            case State.JS_STATE_FAILED:
+            case State.JS_STATE_FINISH:
                 mBuilder.setAutoCancel(true);
                 mBuilder.setOngoing(false);
                 break;
-            case DownloadInfo.JS_STATE_GET_TOTAL:
-            case DownloadInfo.JS_STATE_DOWNLOAD_PRE:
-            case DownloadInfo.JS_STATE_DOWNLOADING:
+            case State.JS_STATE_GET_TOTAL:
+            case State.JS_STATE_DOWNLOAD_PRE:
+            case State.JS_STATE_DOWNLOADING:
                 mBuilder.setAutoCancel(false);
                 mBuilder.setOngoing(true);
                 break;
-            case DownloadInfo.JS_STATE_PAUSE:
-            case DownloadInfo.JS_STATE_WAIT:
+            case State.JS_STATE_PAUSE:
+            case State.JS_STATE_WAIT:
                 mBuilder.setAutoCancel(false);
                 mBuilder.setOngoing(false);
                 break;

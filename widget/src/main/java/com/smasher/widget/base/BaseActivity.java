@@ -3,7 +3,6 @@ package com.smasher.widget.base;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,8 +16,6 @@ import com.smasher.core.log.Logger;
 import com.smasher.core.other.BusProvider;
 import com.smasher.widget.receiver.NetworkReceiver;
 import com.smasher.widget.receiver.NetworkReceiver.NetStatusMonitor;
-
-import butterknife.ButterKnife;
 
 
 /**
@@ -44,12 +41,14 @@ public abstract class BaseActivity extends AppCompatActivity implements NetStatu
         ActivityManager.getInstance().addActivity(this);
         BusProvider.getInstance().register(this);
 
-        //ButterKnife
-        ButterKnife.bind(this);
-
+        initButterKnife();
         initView();
 
         initData();
+    }
+
+    protected void initButterKnife() {
+
     }
 
 

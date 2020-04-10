@@ -10,7 +10,7 @@ import com.smasher.rejuvenation.holder.BaseMajorViewHolder
 import com.smasher.rejuvenation.holder.MajorCommonViewHolder
 import com.smasher.rejuvenation.holder.MajorPagerExViewHolder
 import com.smasher.rejuvenation.holder.MajorPagerViewHolder
-import com.smasher.widget.base.BaseRecyclerViewAdapter
+import com.smasher.rejuvenation.base.BaseRecyclerViewAdapter
 
 /**
  * @author matao

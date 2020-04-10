@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.smasher.rejuvenation">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".RejuvenatedApplication"
@@ -11,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.RoomActivity"></activity>
+
         <activity
             android:name=".activity.SplashActivity"
             android:theme="@style/Splash">
@@ -35,7 +42,7 @@
         <activity
             android:name=".activity.PractiseActivity"
             android:label="@string/title_activity_basic"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.DaggerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -47,11 +54,32 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_debug"
             android:theme="@style/FullscreenTheme" />
-    </application>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
+        <activity android:name=".activity.RoomActivity" />
+        <activity
+            android:name=".activity.activity.basic.IndicatorActivity"
+            android:label="@string/title_activity_basic"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.activity.WidgetActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.activity.AlarmActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.activity.behavior.BehaviorActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.activity.swap.test.SlideMenuActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        <activity
+            android:name="com.smasher.rejuvenation.activity.activity.NDKTestActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+    </application>
+
 
 </manifest>

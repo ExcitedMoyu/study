@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.Button
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.util.LogUtil
-import com.smasher.widget.base.BaseActivity
+import com.smasher.rejuvenation.base.BaseActivity
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

@@ -11,6 +11,7 @@ import android.util.Log;
 
 import androidx.annotation.DrawableRes;
 
+import com.smasher.downloader.annotation.RequestType;
 import com.smasher.downloader.entity.DownloadInfo;
 import com.smasher.downloader.entity.RequestInfo;
 import com.smasher.downloader.listener.DownloadListener;
@@ -152,7 +153,7 @@ public class DownloadManager implements DownloadListener {
      * @return DownloadManager (方便链式调用)
      */
     public DownloadManager addTask(DownloadInfo info) {
-        int requestType = RequestInfo.COMMAND_DOWNLOAD;
+        int requestType = RequestType.COMMAND_DOWNLOAD;
         RequestInfo requestInfo = createRequest(info, requestType);
         Log.i(TAG, "addTask() requestInfo=" + requestInfo);
         requests.add(requestInfo);
@@ -166,7 +167,7 @@ public class DownloadManager implements DownloadListener {
      * @return DownloadManager (方便链式调用)
      */
     public DownloadManager pauseTask(DownloadInfo info) {
-        int requestType = RequestInfo.COMMAND_PAUSE;
+        int requestType = RequestType.COMMAND_PAUSE;
         RequestInfo requestInfo = createRequest(info, requestType);
         Log.i(TAG, "pauseTask() -> requestInfo=" + requestInfo);
         requests.add(requestInfo);

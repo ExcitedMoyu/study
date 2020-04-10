@@ -17,7 +17,7 @@ import com.smasher.draw.bean.CircleBean
 import com.smasher.ndk.PrimaryService
 import com.smasher.rejuvenation.R
 import com.smasher.rejuvenation.util.LogUtil
-import com.smasher.widget.base.BaseActivity
+import com.smasher.rejuvenation.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import java.util.*
 import java.util.concurrent.Executors
